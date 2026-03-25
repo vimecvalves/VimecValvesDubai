@@ -1,0 +1,23 @@
+---
+import HeroSection from "@/components/about_us/department/HeroSection.astro";
+import GetInTouch from "@/components/home/GetInTouch.astro";
+import Layout from "@/components/layout/Layout.astro";
+import { contentfulClient } from "@/libs/content/contentful/data";
+
+interface Params {
+  department: string;
+}
+
+export const prerender = false;
+
+const { department } = Astro.params;
+
+const data = await contentfulClient.getEntry(department!, {
+  locale: Astro.currentLocale,
+});
+---
+
+<Layout>
+  <HeroSection data={data} />
+  <GetInTouch />
+</Layout>

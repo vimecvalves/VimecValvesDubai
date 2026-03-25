@@ -1,0 +1,57 @@
+---
+import { ui } from "@/i18n/ui";
+import type { TypeNewsNEvents } from "@/libs/content/contentful/entriesType";
+import main_padding from "@/styles/padding";
+import Breadcrumbs from "@/ui/Breadcrumbs.astro";
+import HeroSectionHeader from "@/ui/HeroSectionHeader.astro";
+import { Icon } from "astro-icon/components";
+import type { EntrySkeletonType, Entry } from "contentful";
+import formattedDate from "@/libs/helpers/formattedDate";
+import estimateReadingTime from "@/libs/helpers/estimateReadingTime";
+import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
+import { uiUtilities } from "@/i18n/ui";
+
+type Props = Entry<TypeNewsNEvents, undefined, string>;
+const { fields, metadata, sys } = Astro.props;
+
+const local = Astro.currentLocale as "en" | "it";
+
+const breadcrumbsData = [
+  { link: "/", title: ui[local]["news&events"].single.breadcrumbs[0] },
+  {
+    link: "/news&events",
+    title: ui[local]["news&events"].single.breadcrumbs[1],
+  },
+  { link: "", title: fields.title },
+];
+---
+
+<section
+  class:list={[
+    "wrapper md:mt-32 mt-28 flex flex-col items-start",
+    main_padding.t,
+  ]}
+>
+  <Breadcrumbs data={breadcrumbsData} />
+  <span
+    class="mt-6 mb-2 px-3 py-1 bg-vim-red rounded-md text-white text-sm font-bold"
+    >{fields.type}</span
+  >
+  <HeroSectionHeader title={fields.title} />
+  <p class="text-vim-blue font-semibold mt-2">
+    {formattedDate(fields.date)} | {
+      estimateReadingTime(documentToHtmlString(fields.description))
+    }
+    {uiUtilities[local].estimateReadingTime}
+  </p>
+  <div class="flex items-center gap-4 mt-3">
+    Share
+    <div
+      class="flex items-center justify-center gap-2 text-vim-blue font-medium text-lg"
+    >
+      <Icon name="gg:link" />
+      <Icon name="hugeicons:instagram" />
+      <Icon name="ic:round-facebook" />
+    </div>
+  </div>
+</section>

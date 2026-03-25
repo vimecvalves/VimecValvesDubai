@@ -1,0 +1,42 @@
+---
+import main_padding from "@/styles/padding";
+import { Image } from "astro:assets";
+import Link from "@/libs/helpers/Link.astro";
+import data from "@/libs/content/mics";
+import { ui } from "@/i18n/ui";
+import CustomBtn from "@/ui/CustomBtn.astro";
+import { contentfulClient } from "@/libs/content/contentful/data";
+import type { TypeNewsNEvents } from "@/libs/content/contentful/entriesType";
+import NewsCard from "../news&events/newsCard.astro";
+const locale = Astro.currentLocale as "en" | "it";
+
+const data = await contentfulClient.getEntries<TypeNewsNEvents>({
+  content_type: "newsEvents",
+  locale: locale,
+  limit: 2,
+});
+---
+
+<section
+  class={`wrapper text-black flex flex-col items-start  relative z-0  ${main_padding.y}`}
+>
+  <div class="flex items-center md:justify-between justify-center w-full">
+    <h2 class="lg:text-5xl text-4xl font-medium">
+      {ui[locale].home["news-events"]}
+    </h2>
+    <CustomBtn href="news&events" className="max-md:hidden uppercase"
+      >{ui[locale].buttons["view-all"]}</CustomBtn
+    >
+  </div>
+  <hr
+    class="md:my-10 my-6 md:border-gray-400 border-t-transparent max-md:bg-transparent w-full"
+  />
+  <div class="w-full grid md:grid-cols-2 gap-10 relative z-0">
+    {data.items.map((item) => <NewsCard item={item} />)}
+  </div>
+  <CustomBtn
+    href="news&events"
+    className="md:hidden w-full  mx-auto mt-6 uppercase"
+    >{ui[locale].buttons["view-all"]}</CustomBtn
+  >
+</section>

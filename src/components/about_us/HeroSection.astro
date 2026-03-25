@@ -1,0 +1,49 @@
+---
+import main_padding from "@/styles/padding.ts";
+import bg from "@/assets/image/about/about page bg.webp";
+import img1 from "@/assets/image/about/img1.webp";
+import img2 from "@/assets/image/about/img 2.jpg";
+
+import { getImage, Image } from "astro:assets";
+import { ui } from "@/i18n/ui";
+const local = Astro.currentLocale as "en" | "it";
+
+const [OImg1, OImg2] = await Promise.all([
+  getImage({ src: img1 }),
+  getImage({ src: img2 }),
+]);
+---
+
+<section
+  class={`flex w-full flex-col items-start justify-start relative z-0 bg-center bg-cover `}
+>
+  <Image
+    src={bg}
+    alt=""
+    class="w-full object-cover object-center max-h-[500px]"
+  />
+  <div class:list={["wrapper flex flex-col items-start", main_padding.b]}>
+    <h2
+      class="text-3xl font-medium px-10 py-3 rounded-t-[20px] -translate-y-full bg-white text-vim-blue"
+    >
+      {ui[local]["about us"]["hero-section"].title}
+    </h2>
+
+    <menu class="grid md:grid-cols-2 gap-10">
+      <li class="flex flex-col gap-10">
+        <p set:html={ui[local]["about us"]["hero-section"].contents[0]} />
+
+        <span
+          style=`background-image: url('${OImg1.src}');`
+          class="rounded-[10px] w-full bg-cover bg-center aspect-square"></span>
+      </li>
+      <li class="flex flex-col gap-10">
+        <span
+          style=`background-image: url('${OImg2.src}');`
+          class="rounded-[10px] max-md:order-2 w-full bg-cover bg-center aspect-square"
+        ></span>
+        <p set:html={ui[local]["about us"]["hero-section"].contents[1]} />
+      </li>
+    </menu>
+  </div>
+</section>

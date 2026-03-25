@@ -1,0 +1,68 @@
+---
+import { ClientRouter } from "astro:transitions";
+import Header from "./Header/index.astro";
+import Footer from "./Footer.astro";
+
+import "@/styles/global.css";
+
+interface Props {
+  hideTopFooter?: boolean;
+}
+
+const { hideTopFooter = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="font-sf-pro overflow-x-hidden scroll-smooth antialiased">
+  <head>
+    <title>Best Quality Sampling Valve Manufacturers in UK | Vimec</title>
+    <meta
+      name="description"
+      content="Vimec Group Italia is one of the best company for quality sampling valve manufacturers in italy for the design, manufacturing and supply of quality industrial valves."
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <ClientRouter />
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-MPQZFGXD");
+    </script>
+    <!-- End Google Tag Manager -->
+    <link rel="canonical" href="https://www.vimecvalves.co.uk/en/" />
+  </head>
+  <body>
+    <Header />
+    <slot />
+    <Footer hideTop={hideTopFooter} />
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-MPQZFGXD"
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"></iframe></noscript
+    >
+    <!-- End Google Tag Manager (noscript) -->
+  </body>
+</html>
+
+<style>
+  html,
+  body {
+    background: white;
+  }
+  @view-transition {
+    navigation: auto;
+  }
+</style>

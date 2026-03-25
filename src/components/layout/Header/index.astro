@@ -1,0 +1,316 @@
+---
+import { Icon } from "astro-icon/components";
+import LanguageSwitcher from "./Language-Switcher";
+import logo from "@/assets/image/Logo-changing.gif";
+import { Image } from "astro:assets";
+
+const locale = Astro.currentLocale as "en" | "it";
+
+import MobileMenu from "./MobileMenu";
+import Link from "@/libs/helpers/Link.astro";
+import { ui, links } from "@/i18n/ui";
+
+import { getRelativeLocaleUrl } from "astro:i18n";
+import CustomBtn from "@/ui/CustomBtn.astro";
+import SearchComponent from "./SearchComponent";
+import { socialMedia } from "@/libs/content/mics";
+import { contentfulClient } from "@/libs/content/contentful/data";
+import {
+  type TypeApprovals,
+  type TypeDepartmentAboutUs,
+  type TypeDownloads,
+  type TypeGallery,
+  type TypeNewsNEvents,
+  type TypeProduct,
+} from "@/libs/content/contentful/entriesType";
+import Logo from "./Logo.astro";
+
+// @ts-ignore
+const link = (l: string) => getRelativeLocaleUrl(locale, l);
+
+const [product, downloads, newsEvents, gallery, departmentAboutUs] =
+  await Promise.all([
+    contentfulClient.getEntries<TypeProduct>({
+      content_type: "product",
+      locale: locale,
+      limit: 6,
+    }),
+
+    contentfulClient.getEntries<TypeDownloads>({
+      content_type: "downloads",
+      locale: locale,
+    }),
+
+    contentfulClient.getEntries<TypeNewsNEvents>({
+      content_type: "newsEvents",
+      locale: locale,
+    }),
+    contentfulClient.getEntries<TypeGallery>({
+      content_type: "gallery",
+      locale: locale,
+    }),
+
+    contentfulClient.getEntries<TypeDepartmentAboutUs>({
+      content_type: "departmentAboutUs",
+      locale: locale,
+      order: ["sys.createdAt"],
+    }),
+  ]);
+
+const localSearchData = [
+  {
+    title: "Contact Md",
+
+    content: "",
+    link: link("/contact_us#contact-md"),
+  },
+  {
+    title: "Our Products",
+
+    content:
+      "Discover our precision-engineered valves, crafted to meet the demanding standards of the oil and gas industry with unmatched quality and reliability",
+    link: link("/products"),
+  },
+  {
+    title: "About us",
+
+    content: `Vimec Group Italia Srl., formerly known as Vimec Srl. (Since 1967), operates from a state-of-the-art manufacturing facility in Cividate Al Piano, Bergamo, Italy.
+
+    Established in 1967 in Opera Milan, Italy, Vimec Srl. built a legacy of excellence in valve manufacturing. In 2018, the company transitioned to Vimec Group Italia Srl., securing exclusive global manufacturing rights for its trademark Vimec Valves.
+
+    We ensure that no other company in Italy is authorized to manufacture or supply valves under the Vimec Valves trademark, which is legally registered to safeguard its integrity and reputation.
+
+    Our new facility is equipped with cutting-edge resources, advanced machinery, ERP software, and enhanced designs to provide efficient, high-quality products and services. With over 50 years of expertise, Vimec Valves continues to lead in reliability and performance.
+
+    Vimec Valves are trusted globally across industries such as Oil & Gas, Chemical, Petrochemical, and Power Plants, delivering exceptional solutions for critical engineering applications.
+
+    At Vimec Group Italia, our commitment is to deliver unmatched quality and expertise. With a forward-thinking approach, we are confident in exceeding our clients' expectations and driving future growth.`,
+    link: link("/about_us"),
+  },
+  {
+    title: "Our History",
+
+    content: `1967
+    Vimec, was established in 1967 in Opera, Milan, Italy by Ernesto Pighetti as an individual craft company to produce different mechanical components (machining on behalf of third-party companies).
+
+    1985
+    In 1985, with its ideology of continuous improvement, Vimec upgraded the technological content of its products and commenced the manufacturing of Industrial Valves, Instrumentation & Accessories such as Manifolds, Double Block and Bleed Valves, Monoflanges, Ball Valves, Needle Valves, Multiport, Check Valves, Globe Valves, Condensing Pots, Distribution Manifolds, Air Headers Distributors, Sampling Cylinders and accessories.
+
+    1994
+    In 1994, the company Vimec Srl was established and took over the individual craft company. Since the inception of the company Vimec Srl, it offers a wide variety of valves to meet different kinds of applications with a heritage that exceeds 50 years and a pioneer of Double Block and Bleed and Instrumentation Valves.
+
+    2013
+    In 2013, Vimec Srl, had diversified its range into other valve packages to include Gate, Globe, Check and Butterfly Valves in a variety of alloys, trims, configurations, sizes and pressure classes, from general to severe applications for the (Oil & Gas, Chemical, Petrochemical and Power Plants).
+
+    2018
+    In 2018, the company Vimec Group Italia Srl has been established and acquired the trademark Vimec Valves and all its manufacturing rights globally.`,
+    link: link("/about_us#our-history"),
+  },
+  {
+    title: "Get in touch",
+
+    content: `Looking for Reliable Valve Solutions? Contact Us!
+              As a trusted valve manufacturer, we're ready to support your needs. Reach out today to discuss how we can deliver high-quality solutions for your project`,
+    link: link("/contact_us"),
+  },
+  {
+    title: "News & Events",
+
+    content: `Stay updated with the latest news, industry insights, and events from Vimec Valves as we continue to innovate and lead in the oil and gas sector.`,
+    link: link("/news&events"),
+  },
+  {
+    title: "Downloads",
+
+    content: `Access our latest catalogs, technical specifications, and product manuals to learn more about our high-quality valves for the oil and gas industry.`,
+    link: link("/downloads"),
+  },
+  {
+    title: "Gallery",
+
+    content: `Explore our journey through image showcasing our advanced manufacturing, precision engineered valves, and commitment to excellence in the oil and gas industry.`,
+    link: link("/gallery"),
+  },
+];
+
+const processItems = (
+  items: any[],
+  mapFunction: {
+    (item: any): { title: any; content: any; link: string };
+    (item: any): { title: any; content: any; link: any };
+    (item: any): { title: any; content: any; link: string };
+    (item: any): { title: any; content: null; link: string };
+  },
+) => {
+  if (!items) {
+    return [];
+  }
+  return items.map(mapFunction);
+};
+
+const dataForSearch = () => {
+  const results = [
+    ...processItems(
+      product?.items,
+      (item: {
+        fields: { name: any; description: any };
+        sys: { id: string };
+      }) => ({
+        title: item.fields.name,
+        content: item.fields.description,
+        link: link("products/" + item.sys.id),
+      }),
+    ),
+    ...processItems(
+      downloads?.items,
+      (item: {
+        fields: {
+          title: any;
+          file: { fields: { file: { fileName: any; url: any } } };
+        };
+      }) => ({
+        title: item.fields.title,
+        content: item.fields.file?.fields.file.fileName,
+        link: link("downloads/#" + item.fields.title),
+      }),
+    ),
+    ...processItems(
+      newsEvents?.items,
+      (item: {
+        fields: { title: any; description: any };
+        sys: { id: string };
+      }) => ({
+        title: item.fields.title,
+        content: item.fields.description,
+        link: link("news&events/" + item.sys.id),
+      }),
+    ),
+    ...processItems(
+      gallery?.items,
+      (item: { fields: { title: any }; sys: { id: string } }) => ({
+        title: item.fields.title,
+        content: null,
+        link: link("gallery/" + item.sys.id),
+      }),
+    ),
+    ...localSearchData,
+  ];
+
+  return results;
+};
+
+const navLinks = links.map((item) => {
+  switch (item.key) {
+    case "about":
+      return {
+        ...item,
+        list: departmentAboutUs.items.map((item) => {
+          return {
+            title: item.fields.title.replace(/\s*\(.*?\)\s*/g, ""),
+            link: "about_us/" + item.sys.id,
+          };
+        }),
+      };
+    default:
+      return item;
+  }
+});
+---
+
+<nav
+  transition:name="header"
+  class="absolute top-0 z-50 flex w-full flex-col bg-white"
+>
+  <div class="bg-vim-blue w-full py-4">
+    <div class="wrapper flex items-center justify-between gap-10 sm:gap-20">
+      <div class="flex items-center justify-start gap-10">
+        <a
+          href="tel:+441902953025"
+          class="flex items-center justify-start gap-1 text-white"
+        >
+          <Icon name="ic:round-phone" /> +44 1902 953025
+        </a>
+        <a
+          href="mailto:sales@vimecvalves.co.uk"
+          class="flex items-center justify-start gap-1 text-white max-md:hidden"
+        >
+          <Icon name="material-symbols-light:mail" /> sales@vimecvalves.co.uk
+        </a>
+      </div>
+      <div class="flex items-center justify-end gap-10">
+        <div
+          class="flex items-center justify-start gap-4 text-base text-white max-lg:hidden"
+        >
+          {
+            socialMedia.map((item) => (
+              <a href={item.link} target="_blank" class="">
+                <Icon name={item.icon} class="hover:text-white/50" />
+              </a>
+            ))
+          }
+        </div>
+        <LanguageSwitcher client:load locale={locale!} />
+      </div>
+    </div>
+  </div>
+  <div class="wrapper flex items-center justify-between gap-10 py-4">
+    <Link href="/">
+      <!-- <Image
+        src={logo}
+        alt=""
+        class="h-16 scale-[130%] object-contain w-auto"
+        fetchpriority="high"
+      /> -->
+      <Logo />
+    </Link>
+    <menu
+      class="flex items-center justify-center gap-6 text-center font-medium uppercase max-xl:text-sm max-lg:hidden"
+    >
+      {
+        navLinks.map((item, idx) => (
+          <li class="group relative z-0 flex items-center justify-center">
+            <Link
+              href={item.link}
+              class="flex items-center justify-center gap-2"
+            >
+              {ui[locale].sections.nav[item.key]}{" "}
+              {item.list && (
+                <Icon
+                  name="weui:arrow-outlined"
+                  class="rotate-90 text-2xl duration-500 group-hover:-rotate-90 max-xl:text-xl"
+                />
+              )}
+            </Link>
+            {item.list && (
+              <ul class="absolute top-full left-1/2 hidden w-max max-w-[240px] -translate-x-1/2 flex-col gap-2 rounded-[3px] border border-[#C1C1C1] bg-white p-4 text-start uppercase shadow-lg duration-300 group-hover:flex starting:translate-y-4">
+                {item.list.map((subItem) => (
+                  <Link href={subItem.link} class="hover:text-black/80">
+                    {subItem.title}
+                  </Link>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))
+      }
+    </menu>
+
+    <div class="flex items-center gap-5 max-lg:hidden">
+      <SearchComponent data={dataForSearch()} client:load />
+
+      <CustomBtn
+        href="contact_us"
+        className="uppercase max-xl:text-xs lg:px-3 2xl:px-6"
+      >
+        {ui[locale].buttons.contact}
+      </CustomBtn>
+    </div>
+
+    <MobileMenu
+      client:only="react"
+      links={navLinks!}
+      locale={locale!}
+      searchData={dataForSearch()}
+    />
+  </div>
+</nav>

@@ -1,0 +1,55 @@
+---
+import main_padding from "@/styles/padding";
+import bg from "@/assets/image/home/second section bg.webp";
+import flag from "@/assets/image/home/SomeCounts flag.webp";
+
+import { getImage, Image } from "astro:assets";
+import { ui } from "@/i18n/ui";
+
+const optimizedBackgroundImage = await getImage({ src: bg });
+
+const local = Astro.currentLocale as "en" | "it";
+---
+
+<section
+  style={{ backgroundImage: `url('${optimizedBackgroundImage.src}')` }}
+  class={` min-h-[600px] text-white flex items-start bg-center bg-cover  justify-between flex-col lg:gap-40 gap-80 relative z-0 w-full ${main_padding.y} max-lg:!pb-0`}
+>
+  <menu
+    class="wrapper flex flex-wrap items-start justify-center lg:gap-10 gap-5"
+  >
+    {
+      ui[local].home["some-count"].stats.map(
+        (item: { title: unknown; subtitle: unknown }) => (
+          <li class="flex flex-col items-center gap-2">
+            <h3 class="font-bold lg:text-5xl text-3xl">{item.title}</h3>
+            <p class="font-medium lg:text-lg text-sm max-w-[20ch] text-center">
+              {item.subtitle}
+            </p>
+          </li>
+        ),
+      )
+    }
+  </menu>
+
+  <div class="wrapper max-lg:!w-full flex items-end justify-end">
+    <div
+      class="flex flex-col gap-3 p-10 bg-white text-black lg:rounded-md rounded-t-2xl relative z-0 overflow-hidden lg:pr-40 lg:pb-20 pb-40"
+    >
+      <p class="text-sm uppercase">{ui[local].home["some-count"].subtile}</p>
+      <h2 class="text-3xl font-medium max-w-[20ch]">
+        {ui[local].home["some-count"].title}
+      </h2>
+      <p
+        class="text-base font-normal lg:max-w-[50ch]"
+        set:html={ui[local].home["some-count"].describe}
+      />
+
+      <Image
+        src={flag}
+        alt=""
+        class="absolute bottom-0 right-0 h-[60%] w-auto -z-10 object-contain object-bottom"
+      />
+    </div>
+  </div>
+</section>

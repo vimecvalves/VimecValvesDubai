@@ -1,0 +1,19 @@
+---
+type Props = astroHTML.JSX.ButtonHTMLAttributes & {
+  invert?: boolean;
+  className?: string;
+};
+
+const { invert = false, className = "", ...props } = Astro.props;
+const classes = [
+  "px-6 py-2.5 border rounded-md font-medium text-center duration-300 cursor-pointer",
+  invert
+    ? "text-white bg-vim-blue hover:bg-white hover:text-vim-blue border-2 border-vim-blue"
+    : "hover:text-white text-vim-blue hover:bg-vim-blue border-vim-blue",
+  className,
+].join(" ");
+---
+
+<button class={classes} {...props}>
+  <slot />
+</button>

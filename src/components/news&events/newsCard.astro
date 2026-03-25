@@ -1,0 +1,53 @@
+---
+import { ui } from "@/i18n/ui";
+import formattedDate from "@/libs/helpers/formattedDate";
+import Link from "@/libs/helpers/Link.astro";
+import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
+import { Image } from "astro:assets";
+
+const local = Astro.currentLocale as "en" | "it";
+
+type Props = {
+  item: any;
+};
+
+const { item } = Astro.props;
+---
+
+<Link
+  href={"news&events/" + item.sys.id}
+  class="flex w-full flex-col items-start justify-start rounded-[20px] duration-300 hover:bg-[#F3F3F3] max-md:bg-[#F3F3F3]"
+>
+  <div
+    class="flex aspect-video h-auto w-full items-center justify-center overflow-hidden rounded-[20px]"
+  >
+    <Image
+      src={item.fields.featuredImage.fields.file.url}
+      width={500}
+      height={500}
+      transition:name={item.fields.featuredImage.fields.file.url}
+      alt={item.fields.featuredImage.fields.file.fileName}
+      class="h-full w-full overflow-hidden rounded-[20px] object-cover"
+    />
+  </div>
+  <div class="px-6 py-6">
+    <span class="text-vim-red mt-4 text-sm font-bold uppercase">
+      {item.fields.type}
+    </span>
+    <h3 class="text-2xl font-medium">{item.fields.title}</h3>
+
+    <span
+      class="mt-2 mb-6 line-clamp-3"
+      set:html={documentToHtmlString(item.fields.description)}
+    />
+
+    <div
+      class="text-vim-blue mt-auto flex items-center justify-between gap-10 text-sm"
+    >
+      <p class="font-medium">{formattedDate(item.fields.date)}</p>
+      <button class="font-bold underline">
+        {ui[local].buttons["read-more"]}
+      </button>
+    </div>
+  </div>
+</Link>

@@ -1,0 +1,59 @@
+---
+import Layout from "@/components/layout/Layout.astro";
+import main_padding from "@/styles/padding";
+import HeroSectionHeader from "@/ui/HeroSectionHeader.astro";
+
+import image from "@/assets/image/dummi/download.webp";
+
+import { getRelativeLocaleUrlList } from "astro:i18n";
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import { ui } from "@/i18n/ui";
+import { contentfulClient } from "@/libs/content/contentful/data";
+import type { TypeDownloads } from "@/libs/content/contentful/entriesType";
+import Catalogue from "@/components/downloads/Catalogue";
+
+const local = Astro.currentLocale as "en" | "it";
+
+export const prerender = false;
+
+const data = await contentfulClient.getEntries<TypeDownloads>({
+  content_type: "downloads",
+  locale: local,
+});
+---
+
+<Layout>
+  <section class:list={["wrapper mt-32 flex flex-col gap-10 py-16 sm:pb-20"]}>
+    <HeroSectionHeader
+      title={ui[local].downloads["hero-section"].title}
+      content={ui[local].downloads["hero-section"].content}
+    />
+
+    <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+      {
+        data.items.map((item) => (
+          <Catalogue client:load item={item} local={local!} />
+        ))
+      }
+    </div>
+  </section>
+</Layout>
+
+<script is:inline>
+  window.addEventListener("load", () => {
+    const hash = window.location.hash;
+
+    if (!hash) return;
+
+    const targetId = decodeURIComponent(
+      hash.replace("#", "").replace(/\/$/, ""),
+    );
+
+    const el = document.getElementById(targetId);
+
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  });
+</script>

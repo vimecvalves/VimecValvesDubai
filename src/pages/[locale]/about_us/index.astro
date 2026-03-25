@@ -1,0 +1,16 @@
+---
+import HeroSection from "@/components/about_us/HeroSection.astro";
+import OurHistory from "@/components/about_us/OurHistory.astro";
+import GetInTouch from "@/components/home/GetInTouch.astro";
+import Layout from "@/components/layout/Layout.astro";
+
+import { getRelativeLocaleUrlList } from "astro:i18n";
+
+export const prerender = false;
+---
+
+<Layout>
+  <HeroSection />
+  <OurHistory />
+  <GetInTouch />
+</Layout>

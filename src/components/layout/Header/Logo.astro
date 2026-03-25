@@ -1,0 +1,44 @@
+---
+import { Image } from "astro:assets";
+---
+
+<div class="h-16 w-[160px] perspective-[1000px]">
+  <div
+    class="flipper relative h-full w-full transition-transform duration-[1500ms] ease-in-out [transform-style:preserve-3d]"
+  >
+    <div
+      class="front absolute z-20 h-full w-full [transform:rotateY(0deg)] [backface-visibility:hidden]"
+    >
+      <Image
+        src="https://raw.githubusercontent.com/vimecvalves/Public/refs/heads/main/Old%20Logo.svg"
+        alt="Old Logo"
+        width={200}
+        height={90}
+        loading="eager"
+        class:list="w-full h-full object-contain"
+      />
+    </div>
+    <div
+      class="back absolute h-full w-full [transform:rotateY(180deg)] [backface-visibility:hidden]"
+    >
+      <Image
+        src="https://raw.githubusercontent.com/vimecvalves/Public/refs/heads/main/New%20Logo.svg"
+        alt="New Logo"
+        width={200}
+        height={90}
+        loading="eager"
+        class:list="w-full h-full object-contain"
+      />
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  let flipped = false;
+
+  setInterval(() => {
+    const flipper = document.querySelector(".flipper");
+    flipped = !flipped;
+    flipper.style.transform = flipped ? "rotateY(180deg)" : "rotateY(0deg)";
+  }, 4000); // Flip every 4 seconds (2s delay + 1.5s animation looks smooth)
+</script>

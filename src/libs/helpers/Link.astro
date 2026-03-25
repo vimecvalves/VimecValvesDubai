@@ -1,0 +1,18 @@
+---
+type Props = astroHTML.JSX.AnchorHTMLAttributes;
+
+const props = Astro.props;
+
+const locale = Astro.currentLocale as "en" | "it";
+
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+// @ts-ignore
+const link = props.href
+  ? getRelativeLocaleUrl(locale, props.href)
+  : "javascript:void(0)";
+---
+
+<a href={link} {...props}>
+  <slot />
+</a>

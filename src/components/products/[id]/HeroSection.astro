@@ -1,0 +1,185 @@
+---
+import { ui } from "@/i18n/ui";
+import type { TypeProduct } from "@/libs/content/contentful/entriesType";
+import main_padding from "@/styles/padding";
+import Breadcrumbs from "@/ui/Breadcrumbs.astro";
+import CustomBtn from "@/ui/CustomBtn.astro";
+import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
+import type { ImageMetadata } from "astro";
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import type { Entry } from "contentful";
+
+type Props = Entry<TypeProduct>;
+
+const { fields, metadata, sys } = Astro.props;
+const local = Astro.currentLocale as "en" | "it";
+
+const breadcrumbsData = [
+  { link: "/", title: ui[local].products.single.breadcrumbs[0] },
+  { link: "/products", title: ui[local].products.single.breadcrumbs[1] },
+  { link: "", title: fields.name },
+];
+
+let selectedImageIndex = 0;
+---
+
+<section class:list={["wrapper mt-28 flex flex-col md:mt-32", main_padding.y]}>
+  <Breadcrumbs data={breadcrumbsData} />
+
+  <div class="mt-6 grid w-full gap-10 md:grid-cols-[.4fr,.6fr]">
+    <div class="flex w-full flex-col gap-5">
+      <Image
+        id="mainImage"
+        loading="eager"
+        src={fields?.images?.[selectedImageIndex]?.fields?.file?.url}
+        alt={fields?.file?.fileName + "image"}
+        width={fields?.images?.[0]?.fields?.file?.details?.image?.width}
+        height={fields?.images?.[0]?.fields?.file?.details?.image?.width}
+        class="aspect-square h-auto w-full rounded-[10px] bg-[#F4F4F4] object-contain object-center p-10"
+      />
+
+      <menu
+        style=""
+        class="thumbnails flex snap-x snap-mandatory snap-start items-center justify-start gap-4 overflow-x-auto"
+      >
+        {
+          fields?.images?.map((item, idx: string) => (
+            <>
+              <Image
+                src={item?.fields?.file?.url}
+                alt={item?.fields?.file?.fileName}
+                width={80}
+                height={80}
+                data-index={idx}
+                class="aspect-square h-auto w-20 cursor-pointer rounded-[10px] bg-[#F4F4F4] p-1"
+              />
+            </>
+          ))
+        }
+      </menu>
+    </div>
+    <div class="flex w-full flex-col items-start gap-4 pt-6">
+      <h2 class="max-w-[25ch] text-3xl font-medium md:text-4xl">
+        {fields.name}
+      </h2>
+      <span set:html={documentToHtmlString(fields?.description)} />
+      <CustomBtn href="contact_us" className="mt-4 uppercase">
+        {ui[local].buttons["get in touch"]}</CustomBtn
+      >
+    </div>
+  </div>
+
+  {
+    fields.features && (
+      <menu class="mt-20 flex w-[min(100%,400px)] flex-col items-start gap-4">
+        {fields.features.map(
+          (
+            item: { fields: { title: unknown; lIstItem: any[] } },
+            idx: number,
+          ) => {
+            return (
+              <li
+                data-toggle={idx === 0 ? "true" : "false"}
+                onclick="handleClick(event)"
+                class="mainLi flex w-full cursor-pointer flex-col duration-300"
+              >
+                <h3 class="flex items-center justify-between gap-10 border-b border-[#CDCDCD] py-3 text-2xl font-medium">
+                  {item.fields.title}{" "}
+                  <Icon
+                    name="weui:arrow-outlined"
+                    class:list={[
+                      "svg duration-300",
+                      idx === 0 ? "-rotate-90" : "rotate-90",
+                    ]}
+                  />
+                </h3>
+                <menu
+                  transition:name={`${item.fields.title + "list"}`}
+                  class:list={[
+                    "mt-5 list-disc flex-col",
+                    idx === 0 ? "" : "hidden",
+                  ]}
+                >
+                  {item.fields.lIstItem.map((point: unknown) => (
+                    <li class="pl-6 [text-indent:-20px_!important]">{point}</li>
+                  ))}
+                </menu>
+              </li>
+            );
+          },
+        )}
+      </menu>
+    )
+  }
+</section>
+
+<script lang="ts">
+  function isClick(clickedElement, menu, arrow) {
+    const isToggle = clickedElement.dataset.toggle;
+    if (!menu || !arrow) return;
+
+    if (isToggle === "true") {
+      clickedElement.dataset.toggle = "false";
+      menu.classList.add("hidden");
+      arrow.classList.add("-rotate-90");
+      arrow.classList.remove("rotate-90");
+    } else {
+      clickedElement.dataset.toggle = "true";
+      menu.classList.remove("hidden");
+      arrow.classList.add("rotate-90");
+      arrow.classList.remove("-rotate-90");
+    }
+  }
+
+  const handleClick = (event) => {
+    const clickedElement = event.target.closest(".mainLi");
+    const menu =
+      clickedElement && clickedElement.querySelector(":scope > menu");
+    const arrow = clickedElement && clickedElement.querySelector(".svg");
+
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        requestAnimationFrame(() => {
+          isClick(clickedElement, menu, arrow);
+        });
+      });
+    } else {
+      isClick(clickedElement, menu, arrow);
+    }
+  };
+
+  const mainImage = document.getElementById("mainImage");
+  const thumbnails = document.querySelectorAll("menu.thumbnails > img");
+
+  thumbnails.forEach((element) => {
+    element.addEventListener("click", () => {
+      mainImage.src = element.src;
+    });
+  });
+</script>
+
+<style>
+  /* Custom scroll bar for the menu */
+  menu.thumbnails {
+    scrollbar-width: revert;
+  }
+
+  menu.thumbnails::-webkit-scrollbar {
+    width: 4px; /* Width of the scroll bar */
+    height: 4px; /* Height of the scroll bar */
+    border-radius: 100px;
+    background-color: rgba(36, 36, 36, 0.123);
+  }
+
+  menu.thumbnails::-webkit-scrollbar-track {
+    background: #81818117; /* Scrollbar track color */
+    border-radius: 10px; /* Rounded corners for the track */
+  }
+
+  menu.thumbnails::-webkit-scrollbar-thumb {
+    background-color: #5858583b; /* Scrollbar thumb color */
+    border-radius: 10px; /* Rounded corners for the thumb */
+    border: 0px solid #47474752; /* Border color around the thumb */
+  }
+</style>

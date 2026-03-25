@@ -1,0 +1,160 @@
+---
+import main_padding from "@/styles/padding";
+import bg from "@/assets/image/home/Get In Touch bg .webp";
+import { getImage } from "astro:assets";
+import { ui } from "@/i18n/ui";
+import CustomBtnB from "@/ui/CustomBtnB.astro";
+import CustomBtn from "@/ui/CustomBtn.astro";
+
+const optimizedBackgroundImage = await getImage({ src: bg });
+
+const local = Astro.currentLocale as "en" | "it";
+---
+
+<section
+  style={{ backgroundImage: `url('${optimizedBackgroundImage.src}')` }}
+  class={` text-white  bg-top bg-cover flex items-center justify-center  relative z-0 w-full  overflow-hidden`}
+>
+  <span
+    class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 w-[40vw] aspect-square h-auto bg-vim-red blur-[240px]"
+  ></span>
+  <span
+    class="absolute right-0 bottom-0 translate-x-1/2 translate-y-1/2 w-[40vw] aspect-square h-auto bg-vim-blue blur-[240px]"
+  ></span>
+
+  <div class="wrapper grid md:grid-cols-2 z-10 items-center">
+    <div class={`flex flex-col items-start gap-4 max-w-[40ch] sm:py-10 py-6 `}>
+      <h2 class="font-medium text-3xl">
+        {ui[local].sections["get-in-touch"].title}
+      </h2>
+      <p class="">
+        {ui[local].sections["get-in-touch"].subtitle}
+      </p>
+      <CustomBtn
+        href="contact_us"
+        className="border-white hover:border-vim-blue  text-white max-md:hidden uppercase"
+      >
+        {ui[local].buttons.contact}
+      </CustomBtn>
+    </div>
+    <form
+      id="contact-form"
+      class={` relative z-0 flex items-start flex-col w-full justify-center px-10 ${main_padding.y}`}
+    >
+      <span
+        class="bg-black/40 backdrop-blur-[25px] h-full md:w-screen w-full absolute inset-0 top-0 left-0 -z-10"
+      ></span>
+
+      <h2 class="font-medium text-3xl mb-10">
+        {ui[local].sections["get-in-touch"].form.title}
+      </h2>
+      <div class="flex flex-col gap-6 w-full">
+        <div class="grid sm:grid-cols-2 w-full gap-4">
+          <label for="firstName" class="flex flex-col gap-1 w-full">
+            <h4>{ui[local].sections["get-in-touch"].form["first-name"]}*</h4>
+            <input
+              type="text"
+              name="firstName"
+              required
+              class="py-2 px-3 rounded-xl bg-white/10 border w-full"
+            />
+          </label>
+          <label for="lastName" class="flex flex-col gap-1 w-full">
+            <h4>{ui[local].sections["get-in-touch"].form["last-name"]}*</h4>
+            <input
+              name="lastName"
+              type="text" required
+              class="py-2 px-3 rounded-xl bg-white/10 border w-full"
+            />
+          </label>
+        </div>
+
+        <label for="Company name*" class="flex flex-col gap-1 w-full">
+          <h4>{ui[local].sections["get-in-touch"].form["company-name"]}</h4>
+          <input
+            name="companyName"
+            type="text"
+            class="py-2 px-3 rounded-xl bg-white/10 border w-full"
+          />
+        </label>
+
+        <div class="grid sm:grid-cols-2 w-full gap-4">
+          <label for="email" class="flex flex-col gap-1 w-full">
+            <h4>{ui[local].sections["get-in-touch"].form.email}*</h4>
+            <input
+            type="text"
+            name="email"
+            required
+            class="py-2 px-3 rounded-xl bg-white/10 border w-full"
+            />
+          </label>
+          <label for="mobile" class="flex flex-col gap-1 w-full">
+            <h4>{ui[local].sections["get-in-touch"].form.mobile}</h4>
+            <input
+              type="text"
+              name="mobile"
+              class="py-2 px-3 rounded-xl bg-white/10 border w-full"
+            />
+          </label>
+        </div>
+        <label for="message" class="flex flex-col gap-1 w-full">
+          <h4>{ui[local].sections["get-in-touch"].form["your-message"]}</h4>
+          <textarea
+            name="message"
+            rows="4"
+            class="py-2 px-3 rounded-xl bg-white/10 border w-full"></textarea>
+        </label>
+      </div>
+      <CustomBtnB
+        type="submit"
+        invert
+        className="uppercase mt-4 border-transparent"
+      >
+        {ui[local].buttons["send message"]}</CustomBtnB
+      >
+    </form>
+  </div>
+</section>
+
+<script>
+  import emailjs from "@emailjs/browser";
+  import { publicID, serviceID, templateID } from "@/libs/emailjs";
+
+  const form = document.getElementById("contact-form") as HTMLFormElement;
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    let firstName = formData.get("firstName");
+    let lastName = formData.get("lastName");
+    let companyName = formData.get("companyName");
+    let mobile = formData.get("mobile");
+    let email = formData.get("email");
+    let message = formData.get("message");
+
+    try {
+      const result = await emailjs.send(
+        serviceID, // Service ID from EmailJS
+        templateID, // Template ID from EmailJS
+        {
+          name: `${firstName} ${lastName}`,
+          companyName: companyName,
+          mobile: mobile,
+          email: email,
+          message: message,
+        },
+        publicID,
+      );
+
+      console.log("Email sent successfully:", result);
+      if (result.status === 200) {
+        form.reset();
+      }
+    } catch (error) {
+      console.error("Email sending failed:", error);
+      return { success: false, error: "Failed to send email." };
+    }
+  });
+</script>

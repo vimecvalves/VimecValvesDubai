@@ -1,0 +1,66 @@
+---
+import { CustomBtn } from "@/ui/buttons";
+import main_padding from "@/styles/padding";
+import icons from "@/assets/image/dummi/APPROVALS icon.webp";
+import { Image } from "astro:assets";
+import { ui } from "@/i18n/ui";
+import { contentfulClient } from "@/libs/content/contentful/data";
+import type { TypeApprovals } from "@/libs/content/contentful/entriesType";
+const local = Astro.currentLocale as "en" | "it";
+
+const data = await contentfulClient.getEntries<TypeApprovals>({
+  content_type: "approvalsSupplyReferences",
+});
+
+const flatData = data.items.flatMap((item) => item.fields.references);
+---
+
+<section
+  class={`wrapper text-black flex flex-col items-center overflow-hidden relative z-0  gap-6 ${main_padding.y}`}
+>
+  <h2 class="text-center text-3xl font-medium lg:text-4xl">
+    {ui[local].home["supply-references"]}
+  </h2>
+
+  <div class="w-full">
+    <div class="swiper supply-references-home !overflow-visible">
+      <div class="swiper-wrapper">
+        {
+          flatData.map((item) => (
+            <div class="swiper-slide flex !w-max flex-col items-start justify-start rounded-lg px-10 py-10">
+              <Image
+                src={item.fields.file.url}
+                alt={item.fields.file.fileName}
+                class="h-[66px] w-auto object-contain"
+                height={300}
+                width={300}
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import Swiper from "swiper";
+    // Import Swiper modules
+    import { Autoplay } from "swiper/modules";
+
+    // Import Swiper styles
+    import "swiper/css";
+
+    const swiper = new Swiper(".swiper.supply-references-home", {
+      modules: [Autoplay],
+      spaceBetween: 10,
+      slidesPerView: "auto",
+
+      freeMode: true,
+      loop: true,
+
+      autoplay: {
+        delay: 4500,
+      },
+    });
+  </script>
+</section>

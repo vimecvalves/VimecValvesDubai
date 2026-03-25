@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@import "../assets/font/sf-pro-display/stylesheet.css";
+
+@theme {
+  --font-sf-pro: "SF Pro Display";
+  --color-vim-blue: #15549f;
+  --color-vim-red: #ed1c24;
+}
+
+@layer utilities {
+  .wrapper {
+    width: min(90%, 1620px);
+    margin-inline: auto;
+  }
+}
+

@@ -1,0 +1,57 @@
+---
+import Layout from "@/components/layout/Layout.astro";
+import main_padding from "@/styles/padding";
+import HeroSectionHeader from "@/ui/HeroSectionHeader.astro";
+
+import { getRelativeLocaleUrlList } from "astro:i18n";
+import img from "@/assets/image/dummi/news.png";
+import Link from "@/libs/helpers/Link.astro";
+import { Image } from "astro:assets";
+import { ui } from "@/i18n/ui";
+import { contentfulClient } from "@/libs/content/contentful/data";
+import type { TypeGallery } from "@/libs/content/contentful/entriesType";
+
+export const prerender = false;
+const locale = Astro.currentLocale as "en" | "it";
+
+const data = await contentfulClient.getEntries<TypeGallery>({
+  content_type: "gallery",
+  locale: locale,
+});
+---
+
+<Layout>
+  <section
+    class:list={["wrapper mt-28 flex flex-col gap-10 md:mt-32", main_padding.y]}
+  >
+    <HeroSectionHeader
+      title={ui[locale].gallery["hero-section"].title}
+      content={ui[locale].gallery["hero-section"].content}
+    />
+
+    <div
+      class="grid gap-x-6 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+    >
+      {
+        data.items.map((item) => (
+          <Link
+            href={"/gallery/" + encodeURIComponent(item.sys.id)}
+            class="hover:bg-vim-blue flex flex-col items-center justify-center overflow-hidden rounded-[10px] bg-[#F4F4F4] hover:text-white"
+          >
+            <Image
+              src={item?.fields?.images[0]?.fields?.file?.url}
+              alt={
+                item?.fields?.images[0]?.fields?.file.fileName + " gallery tumble image"
+              }
+              width={300}
+              height={160}
+              transition:name={item.sys.id}
+              class="aspect-video w-full object-cover"
+            />
+            <h2 class="px-10 py-3 text-2xl font-medium">{item.fields.title}</h2>
+          </Link>
+        ))
+      }
+    </div>
+  </section>
+</Layout>

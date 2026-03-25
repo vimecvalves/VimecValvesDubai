@@ -1,0 +1,40 @@
+---
+import GetInTouch from "@/components/home/GetInTouch.astro";
+import Layout from "@/components/layout/Layout.astro";
+import { ui } from "@/i18n/ui";
+import { contentfulClient } from "@/libs/content/contentful/data";
+import type { TypeProduct } from "@/libs/content/contentful/entriesType";
+import main_padding from "@/styles/padding";
+import HeroSectionHeader from "@/ui/HeroSectionHeader.astro";
+import ProductCard from "@/ui/ProductCard.astro";
+
+import { getRelativeLocaleUrlList } from "astro:i18n";
+
+export const prerender = false;
+const local = Astro.currentLocale as "en" | "it";
+
+const data = await contentfulClient.getEntries<TypeProduct>({
+  content_type: "product",
+  locale: local,
+});
+---
+
+<Layout>
+  <section
+    class:list={[
+      "wrapper flex md:mt-32 mt-28 flex-col gap-10 ",
+      main_padding.y,
+    ]}
+  >
+    <HeroSectionHeader
+      title={ui[local].products["hero-section"].title}
+      content={ui[local].products["hero-section"].content}
+    />
+
+    <div class="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
+      {data.items.map((item) => <ProductCard {...item} />)}
+    </div>
+  </section>
+
+  <GetInTouch />
+</Layout>

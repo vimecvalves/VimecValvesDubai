@@ -1,0 +1,121 @@
+---
+import main_padding from "@/styles/padding";
+
+import { Icon } from "astro-icon/components";
+import ProductCard from "@/ui/ProductCard.astro";
+import type { Entry } from "contentful";
+import type { TypeProduct } from "@/libs/content/contentful/entriesType";
+import { ui } from "@/i18n/ui";
+import CustomBtn from "@/ui/CustomBtn.astro";
+
+type Props = Entry<TypeProduct>;
+
+const { fields, metadata, sys } = Astro.props;
+const local = Astro.currentLocale as "en" | "it";
+---
+
+<section
+  class={`wrapper text-black flex flex-col items-start  relative z-0  ${main_padding.y}`}
+>
+  <div class="flex items-center sm:justify-between justify-center w-full">
+    <h2 class="lg:text-5xl text-4xl font-medium">
+      {ui[local].products.single["related products"]}
+    </h2>
+    <CustomBtn href="products" className="max-sm:hidden uppercase"
+      >{ui[local].buttons["view-all-products"]}
+    </CustomBtn>
+  </div>
+  <hr
+    class="sm:my-10 my-6 sm:border-gray-400 border-t-transparent max-sm:bg-transparent w-full"
+  />
+  <div
+    class="w-full flex items-start justify-start gap-4 relative z-0 max-sm:hidden"
+  >
+    <div class="swiper products-home">
+      <div class="swiper-wrapper">
+        {
+          fields.relatedProducts.map((item) => (
+            <ProductCard
+              {...item}
+              className="swiper-slide sm:!w-[min(100%,330px)]"
+            />
+          ))
+        }
+      </div>
+    </div>
+
+    <div
+      class="absolute w-[calc(100%+40px)] -left-5 flex items-center justify-between z-50 text-vim-blue text-4xl top-1/2 -translate-y-1/2"
+    >
+      <Icon
+        name="weui:arrow-outlined"
+        class="!w-10 !h-10 rounded-full !aspect-square flex items-center justify-center border-2 border-vim-blue rotate-180 cursor-pointer hover:text-white hover:bg-vim-blue duration-300 swiper-button-prev"
+      />
+      <Icon
+        name="weui:arrow-outlined"
+        class="!w-10 !h-10 rounded-full !aspect-square flex items-center justify-center border-2 border-vim-blue cursor-pointer hover:text-white hover:bg-vim-blue duration-300 swiper-button-next"
+      />
+    </div>
+    <div class="swiper-pagination absolute left-0 !-bottom-14 z-50"></div>
+  </div>
+  <div
+    class="w-full flex items-start flex-col justify-start gap-4 relative z-0 sm:hidden"
+  >
+    {fields.relatedProducts.map((item) => <ProductCard {...item} />)}
+  </div>
+  <CustomBtn
+    href="products"
+    className="sm:hidden w-full  mx-auto mt-6 uppercase"
+    >{ui[local].buttons["view-all-products"]}</CustomBtn
+  >
+</section>
+
+<script>
+  import Swiper from "swiper";
+  // Import Swiper modules
+  import {
+    Navigation,
+    FreeMode,
+    Thumbs,
+    Mousewheel,
+    Autoplay,
+    Pagination,
+  } from "swiper/modules";
+
+  // Import Swiper styles
+  import "swiper/css";
+  import "swiper/css/navigation";
+  import "swiper/css/free-mode";
+  import "swiper/css/thumbs";
+  import "swiper/css/pagination"; // Added pagination style
+
+  const swiper = new Swiper(".swiper.products-home", {
+    modules: [Navigation, Thumbs, Mousewheel, Autoplay, Pagination],
+    spaceBetween: 10,
+    slidesPerView: "auto",
+    mousewheel: false,
+    freeMode: true,
+    loop: true,
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    pagination: {
+      el: ".swiper-pagination",
+      enabled: true,
+      clickable: true,
+    },
+
+    autoplay: {
+      delay: 4500,
+    },
+
+    breakpoints: {},
+  });
+</script>
+
+<style>
+  .swiper-pagination-bullet-active {
+    background-color: red !important;
+  }
+</style>

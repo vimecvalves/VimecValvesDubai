@@ -1,0 +1,33 @@
+---
+import Layout from "@/components/layout/Layout.astro";
+
+import { getRelativeLocaleUrlList } from "astro:i18n";
+
+import HeroSection from "@/components/contact_us/HeroSection.astro";
+import Details from "@/components/contact_us/Details.astro";
+
+export const prerender = false;
+---
+
+<Layout hideTopFooter>
+  <HeroSection />
+  <Details />
+</Layout>
+
+<script is:inline>
+  window.addEventListener("load", () => {
+    const hash = window.location.hash;
+
+    if (!hash) return;
+
+    const targetId = decodeURIComponent(
+      hash.replace("#", "").replace(/\/$/, ""),
+    );
+
+    const el = document.getElementById(targetId);
+
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  });
+</script>

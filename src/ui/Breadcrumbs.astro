@@ -1,0 +1,26 @@
+---
+import Link from "@/libs/helpers/Link.astro";
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  data: {
+    link: string;
+    title?: string;
+  }[];
+}
+
+const { data } = Astro.props;
+---
+
+<menu class:list={["flex items-center gap-1 font-medium flex-wrap"]}>
+  {
+    data.map((item, idx) => (
+      <Link href={item.link} class="flex items-center gap-1">
+        {item.title}
+        {idx < data.length - 1 && (
+          <Icon name="weui:arrow-outlined" class="text-xl" />
+        )}
+      </Link>
+    ))
+  }
+</menu>
