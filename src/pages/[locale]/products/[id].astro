@@ -15,7 +15,10 @@ const data = await contentfulClient.getEntry<TypeProduct>(id!, {
 });
 ---
 
-<Layout>
+<Layout
+  title={data.fields.name ? `${data.fields.name} | Vimec Valves` : "Product | Vimec Valves"}
+  description={`Learn more about ${data.fields.name} designed by Vimec Valves for industrial sampling and process applications.`}
+>
   <HeroSection {...data} />
   {data.fields.relatedProducts && <RelatedProducts {...data} />}
   <GetInTouch />

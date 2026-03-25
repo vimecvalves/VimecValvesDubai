@@ -19,7 +19,10 @@ const data = await contentfulClient.getEntries<TypeProduct>({
 });
 ---
 
-<Layout>
+<Layout
+  title="Our Products | Vimec Valves"
+  description="Explore our wide range of high-quality industrial valves, including sampling valves, engineered for optimal performance."
+>
   <section
     class:list={[
       "wrapper flex md:mt-32 mt-28 flex-col gap-10 ",

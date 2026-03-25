@@ -23,7 +23,10 @@ const data = await contentfulClient.getEntries<TypeDownloads>({
 });
 ---
 
-<Layout>
+<Layout
+  title="Downloads & Catalogues | Vimec Valves"
+  description="Download Vimec Valves product catalogues, technical specifications, and brochures."
+>
   <section class:list={["wrapper mt-32 flex flex-col gap-10 py-16 sm:pb-20"]}>
     <HeroSectionHeader
       title={ui[local].downloads["hero-section"].title}

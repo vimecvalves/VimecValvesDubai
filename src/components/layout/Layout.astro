@@ -11,18 +11,24 @@ import sfProRegular from "@/assets/font/sf-pro-display/SFProDisplay-Regular.woff
 
 interface Props {
   hideTopFooter?: boolean;
+  title?: string;
+  description?: string;
 }
 
-const { hideTopFooter = false } = Astro.props;
+const { 
+  hideTopFooter = false, 
+  title = "Best Quality Sampling Valve Manufacturers in UK | Vimec",
+  description = "Vimec Group Italia is one of the best company for quality sampling valve manufacturers in italy for the design, manufacturing and supply of quality industrial valves."
+} = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en" class="font-sf-pro overflow-x-hidden scroll-smooth antialiased">
   <head>
-    <title>Best Quality Sampling Valve Manufacturers in UK | Vimec</title>
+    <title>{title}</title>
     <meta
       name="description"
-      content="Vimec Group Italia is one of the best company for quality sampling valve manufacturers in italy for the design, manufacturing and supply of quality industrial valves."
+      content={description}
     />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -46,7 +52,7 @@ const { hideTopFooter = false } = Astro.props;
       })(window, document, "script", "dataLayer", "GTM-MPQZFGXD");
     </script>
     <!-- End Google Tag Manager -->
-    <link rel="canonical" href="https://www.vimecvalves.co.uk/en/" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
   </head>
   <body>
     <Header />

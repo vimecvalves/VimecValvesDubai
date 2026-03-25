@@ -20,7 +20,10 @@ const data = await contentfulClient.getEntries<TypeGallery>({
 });
 ---
 
-<Layout>
+<Layout
+  title="Product Gallery | Vimec Valves"
+  description="View our gallery of precision-engineered sampling valves and industrial products."
+>
   <section
     class:list={["wrapper mt-28 flex flex-col gap-10 md:mt-32", main_padding.y]}
   >

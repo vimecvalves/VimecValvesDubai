@@ -24,7 +24,10 @@ const breadcrumbsData = [
 export const prerender = false;
 ---
 
-<Layout>
+<Layout
+  title={data.fields.title ? `${data.fields.title} | Vimec Valves Gallery` : "Product Gallery | Vimec Valves"}
+  description={`View precision photos and details for ${data.fields.title} in the Vimec Valves gallery.`}
+>
   <section
     class:list={[
       "wrapper flex md:mt-32 mt-28 flex-col gap-10 ",
@@ -37,7 +40,7 @@ export const prerender = false;
         title={data.fields.title + "\u00A0" + ui[local].gallery.single.photos}
       />
     </div>
-    <ImagesGrid client:load data={data} local={local!} server:defer>
+    <ImagesGrid client:visible data={data} local={local!} server:defer>
       <Fallback slot="fallback" />
     </ImagesGrid>
   </section>
