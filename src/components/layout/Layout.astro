@@ -4,6 +4,10 @@ import Header from "./Header/index.astro";
 import Footer from "./Footer.astro";
 
 import "@/styles/global.css";
+import "@/assets/font/sf-pro-display/stylesheet.css";
+import sfProBold from "@/assets/font/sf-pro-display/SFProDisplay-Bold.woff2";
+import sfProMedium from "@/assets/font/sf-pro-display/SFProDisplay-Medium.woff2";
+import sfProRegular from "@/assets/font/sf-pro-display/SFProDisplay-Regular.woff2";
 
 interface Props {
   hideTopFooter?: boolean;
@@ -25,6 +29,9 @@ const { hideTopFooter = false } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <ClientRouter />
+    <link rel="preload" href={sfProBold} as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href={sfProMedium} as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href={sfProRegular} as="font" type="font/woff2" crossorigin="anonymous" />
     <!-- Google Tag Manager -->
     <script>
       (function (w, d, s, l, i) {

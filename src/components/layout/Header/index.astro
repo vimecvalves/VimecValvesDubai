@@ -1,6 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
-import LanguageSwitcher from "./Language-Switcher";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
 import logo from "@/assets/image/Logo-changing.gif";
 import { Image } from "astro:assets";
 
@@ -249,7 +249,7 @@ const navLinks = links.map((item) => {
             ))
           }
         </div>
-        <LanguageSwitcher client:load locale={locale!} />
+        <LanguageSwitcher locale={locale!} />
       </div>
     </div>
   </div>
@@ -296,7 +296,7 @@ const navLinks = links.map((item) => {
     </menu>
 
     <div class="flex items-center gap-5 max-lg:hidden">
-      <SearchComponent data={dataForSearch()} client:load />
+      <SearchComponent data={dataForSearch()} client:idle />
 
       <CustomBtn
         href="contact_us"

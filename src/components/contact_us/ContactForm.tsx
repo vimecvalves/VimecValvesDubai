@@ -1,8 +1,7 @@
 import { ui } from '@/i18n/ui';
 import { CustomBtn, CustomBtnB } from '@/ui/buttons';
 import { useEffect, useRef, useState, type FormEventHandler } from 'react';
-import emailjs from '@emailjs/browser';
-import { publicID, serviceID, templateID } from '@/libs/emailjs';
+import { templateID } from '@/libs/emailjs';
 
 const ContactForm = ({ local }: { local: "en" | "it" }) => {
   const [formToggle, setFormToggle] = useState(false);
@@ -20,23 +19,27 @@ const ContactForm = ({ local }: { local: "en" | "it" }) => {
     let message = formData.get('message');
 
     try {
-      const result = await emailjs.send(
-        serviceID, // Service ID from EmailJS
-        templateID, // Template ID from EmailJS
-        {
-          name: `${firstName} ${lastName}`,
-          mobile: mobile,
-          companyName: companyName,
-          email: email,
-          message: message,
-        },
-        publicID,
-      );
+      const response = await fetch('/api/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templateID,
+          templateParams: {
+            name: `${firstName} ${lastName}`,
+            mobile: mobile,
+            companyName: companyName,
+            email: email,
+            message: message,
+          }
+        })
+      });
 
-      console.log('Email sent successfully:', result);
-      if (result.status === 200) {
+      if (response.ok) {
         formRef.current?.reset();
         setFormToggle(false);
+      } else {
+        console.error('Email sending failed:', await response.text());
+        return { success: false, error: 'Failed to send email.' };
       }
     } catch (error) {
       console.error('Email sending failed:', error);

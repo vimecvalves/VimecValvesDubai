@@ -2,8 +2,7 @@ import { ui } from '@/i18n/ui';
 import { CustomBtnB } from '@/ui/buttons';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useRef, useState } from 'react';
-import emailjs from '@emailjs/browser';
-import { publicID, serviceID, templateIDDonw } from '@/libs/emailjs';
+import { templateIDDonw } from '@/libs/emailjs';
 
 import type { TypeProductCategoryFields } from '@/libs/content/contentful/modules/TypeDownloadFormBlocks';
 
@@ -21,6 +20,7 @@ type Item = {
       fields: {
         file: {
           url: string;
+          fileName?: string;
         };
         title?: string;
       };
@@ -63,25 +63,30 @@ const Catalogue: React.FC<CatalogueProps> = ({ item, local }) => {
     let company = formData.get('company');
 
     try {
-      const result = await emailjs.send(
-        serviceID, // Service ID from EmailJS
-        templateIDDonw, // Template ID from EmailJS
-        {
-          name: `${firstName} ${lastName}`,
-          mobile: mobile,
-          email: email,
-          company: company,
-        },
-        publicID,
-      );
+      const response = await fetch('/api/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templateID: templateIDDonw,
+          templateParams: {
+            name: `${firstName} ${lastName}`,
+            mobile: mobile,
+            email: email,
+            company: company,
+          }
+        })
+      });
 
-      if (result.status === 200) {
+      if (response.ok) {
         formRef.current?.reset();
         window.open(
           openItem?.fields.link ?? openItem?.fields?.file?.fields.file.url,
           '_blank',
         );
         setOpenItem(null);
+      } else {
+        console.error('Email sending failed:', await response.text());
+        return { success: false, error: 'Failed to send email.' };
       }
     } catch (error) {
       console.error('Email sending failed:', error);
@@ -98,7 +103,7 @@ const Catalogue: React.FC<CatalogueProps> = ({ item, local }) => {
       >
         {item?.fields.bannerImage?.fields?.file?.url && (
           <img
-            src={item?.fields?.bannerImage?.fields?.file?.url}
+            src={item?.fields?.bannerImage?.fields?.file?.url + '?fm=webp&q=80'}
             width={300}
             height={200}
             alt={

@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "../assets/font/sf-pro-display/stylesheet.css";
 
 @theme {
   --font-sf-pro: "SF Pro Display";

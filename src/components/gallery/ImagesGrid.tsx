@@ -11,7 +11,7 @@ const ImagesGrid = ({ data, local }: { data: any; local: string }) => {
           <img
             key={idx}
             onClick={() => setOpenId(idx)}
-            src={item.fields.file.url }
+            src={item.fields.file.url + '?fm=webp&q=80'}
             alt=""
             style={{
               viewTransitionName: '_' + item.sys.id,
@@ -19,6 +19,8 @@ const ImagesGrid = ({ data, local }: { data: any; local: string }) => {
             width={280}
             height={280}
             className="object-cover cursor-pointer rounded-md size-full"
+            loading="lazy"
+            decoding="async"
           />
         ))}
       </div>

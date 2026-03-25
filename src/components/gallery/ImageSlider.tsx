@@ -77,7 +77,7 @@ const ImageSlider = ({
               style={{
                 viewTransitionName: '_' + item.sys.id,
               }}
-              src={item.fields.file.url }
+              src={item.fields.file.url + '?fm=webp&q=80'}
               width={item.fields.file.details.image.width}
               height={item.fields.file.details.image.height}
               alt=""

@@ -1,0 +1,70 @@
+---
+import { languages } from '@/i18n/ui';
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const findLang = languages.find((item) => item.lang === locale);
+const pathname = new URL(Astro.request.url).pathname;
+// Extract page path without the current locale
+const page = pathname.replace(`/${locale}/`, '').replace(`/${locale}`, '');
+---
+
+<div class="lang-switcher flex items-center justify-center relative">
+  <button type="button" class="lang-btn flex items-center justify-center gap-4 text-white cursor-pointer decoration-auto border-none bg-transparent">
+    <Icon name={findLang?.flag!} />
+    {findLang?.text}
+    <Icon name="fe:arrow-up" class="arrow duration-300 rotate-180" />
+  </button>
+
+  <menu class="lang-menu absolute left-0 top-10 z-10 bg-white py-3 rounded-md flex flex-col shadow-lg duration-300 ease-out w-fit translate-y-full pointer-events-none opacity-0 m-0">
+    {languages.map((item) => (
+      <li class="list-none m-0 p-0">
+        <a href={`/${item.lang}/${page}`} class="flex items-center shrink-0 justify-start gap-3 hover:bg-slate-50 duration-300 px-3 py-2 cursor-pointer text-black decoration-auto">
+          <Icon name={item.flag} />
+          {item.text}
+        </a>
+      </li>
+    ))}
+  </menu>
+</div>
+
+<script>
+  function setupLanguageSwitchers() {
+    const switchers = document.querySelectorAll('.lang-switcher');
+    switchers.forEach(switcher => {
+      const btn = switcher.querySelector('.lang-btn');
+      const menu = switcher.querySelector('.lang-menu');
+      const arrow = switcher.querySelector('.arrow');
+      
+      btn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = !menu?.classList.contains('opacity-0');
+        if (isOpen) {
+          menu?.classList.add('translate-y-full', 'pointer-events-none', 'opacity-0');
+          menu?.classList.remove('translate-y-0', 'pointer-events-auto');
+          arrow?.classList.add('rotate-180');
+        } else {
+          menu?.classList.remove('translate-y-full', 'pointer-events-none', 'opacity-0');
+          menu?.classList.add('translate-y-0', 'pointer-events-auto');
+          arrow?.classList.remove('rotate-180');
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!switcher.contains(e.target as Node)) {
+          menu?.classList.add('translate-y-full', 'pointer-events-none', 'opacity-0');
+          menu?.classList.remove('translate-y-0', 'pointer-events-auto');
+          arrow?.classList.add('rotate-180');
+        }
+      });
+    });
+  }
+
+  // Setup on initial load and view transitions if used
+  setupLanguageSwitchers();
+  document.addEventListener('astro:page-load', setupLanguageSwitchers);
+</script>

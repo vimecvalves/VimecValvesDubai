@@ -41,7 +41,7 @@ import ContactForm from "./ContactForm";
     }
   </menu>
   <div class="grid max-w-[900px] items-start gap-20 md:grid-cols-2">
-    <ContactForm client:load local={local!} />
+    <ContactForm client:visible local={local!} />
     <div class="flex gap-2">
       <div
         class="flex aspect-square h-full w-auto items-center justify-center overflow-hidden rounded-md"
