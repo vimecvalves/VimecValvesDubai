@@ -117,8 +117,7 @@ const local = Astro.currentLocale as "en" | "it";
 </section>
 
 <script>
-  import emailjs from "@emailjs/browser";
-  import { publicID, serviceID, templateID } from "@/libs/emailjs";
+  import { templateID } from "@/libs/emailjs";
 
   const form = document.getElementById("contact-form") as HTMLFormElement;
 
@@ -135,26 +134,29 @@ const local = Astro.currentLocale as "en" | "it";
     let message = formData.get("message");
 
     try {
-      const result = await emailjs.send(
-        serviceID, // Service ID from EmailJS
-        templateID, // Template ID from EmailJS
-        {
-          name: `${firstName} ${lastName}`,
-          companyName: companyName,
-          mobile: mobile,
-          email: email,
-          message: message,
-        },
-        publicID,
-      );
+      const response = await fetch('/api/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templateID,
+          templateParams: {
+            name: `${firstName} ${lastName}`,
+            companyName: companyName,
+            mobile: mobile,
+            email: email,
+            message: message,
+          }
+        })
+      });
 
-      console.log("Email sent successfully:", result);
-      if (result.status === 200) {
+      if (response.ok) {
+        console.log("Email sent successfully");
         form.reset();
+      } else {
+        console.error("Email sending failed:", await response.text());
       }
     } catch (error) {
       console.error("Email sending failed:", error);
-      return { success: false, error: "Failed to send email." };
     }
   });
 </script>

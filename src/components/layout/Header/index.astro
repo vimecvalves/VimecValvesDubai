@@ -6,7 +6,7 @@ import { Image } from "astro:assets";
 
 const locale = Astro.currentLocale as "en" | "it";
 
-import MobileMenu from "./MobileMenu";
+import MobileMenu from "./MobileMenu.astro";
 import Link from "@/libs/helpers/Link.astro";
 import { ui, links } from "@/i18n/ui";
 
@@ -307,7 +307,6 @@ const navLinks = links.map((item) => {
     </div>
 
     <MobileMenu
-      client:only="react"
       links={navLinks!}
       locale={locale!}
       searchData={dataForSearch()}

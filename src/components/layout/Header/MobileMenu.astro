@@ -1,0 +1,220 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { ui } from "@/i18n/ui";
+import { Icon } from "astro-icon/components";
+import main_padding from "@/styles/padding";
+import SearchComponent from "./SearchComponent";
+import CustomBtn from "@/ui/CustomBtn.astro";
+import { socialMedia } from "@/libs/content/mics";
+
+interface Props {
+  links: {
+    key: string;
+    link: string;
+    list?: {
+      title: never;
+      link: string;
+    }[];
+  }[];
+  locale: string;
+  searchData: any;
+}
+
+const { links, locale, searchData } = Astro.props;
+---
+
+<div class="lg:hidden z-0 mobile-menu-container">
+  <button
+    id="mobile-menu-open-btn"
+    class="relative z-0 flex flex-col items-center justify-evenly p-2 w-10 h-10 border-2 border-vim-blue rounded-lg gap-1"
+  >
+    <span class="w-full h-0.5 bg-vim-blue rounded-full duration-300 transform line-1"></span>
+    <span class="w-full h-0.5 bg-vim-blue rounded-full duration-300 line-2"></span>
+    <span class="w-full h-0.5 bg-vim-blue rounded-full duration-300 transform line-3"></span>
+  </button>
+
+  <div
+    id="mobile-menu-overlay"
+    class={`fixed inset-0 z-[999] isolate overflow-y-scroll duration-300 bg-white w-full h-full ${main_padding.x} py-6 flex flex-col translate-y-20 opacity-0 pointer-events-none`}
+  >
+    <button
+      id="mobile-menu-close-btn"
+      class="self-end relative flex flex-col items-center justify-evenly p-2 w-10 h-10 border-2 border-vim-blue rounded-lg gap-1 mb-6 -z-10"
+    >
+      <span class="w-full h-0.5 bg-vim-blue rounded-full duration-300 rotate-45 translate-y-[7px]"></span>
+      <span class="w-full h-0.5 bg-vim-blue rounded-full duration-300 opacity-0"></span>
+      <span class="w-full h-0.5 bg-vim-blue rounded-full duration-300 -rotate-45 translate-y-[-7px]"></span>
+    </button>
+
+    <SearchComponent data={searchData} client:idle />
+
+    <menu class="text-black w-full flex flex-col gap-2 mt-auto pt-6 duration-300 -z-10">
+      {
+        links.map((item, idx) => (
+          <li class="flex flex-col items-center justify-center group/n relative z-0 py-4 border-b border-[#C1C1C1] last:border-0 mobile-nav-item">
+            <a
+              href={item.list ? "#" : getRelativeLocaleUrl(locale, item.link)}
+              class="flex items-center justify-start gap-2 w-full nav-item-link"
+              data-index={idx}
+            >
+              <!-- @ts-ignore -->
+              {ui[locale].sections.nav[item.key]}
+              {item.list && (
+                <Icon
+                  name="weui:arrow-outlined"
+                  class="text-2xl max-xl:text-xl group-hover/n:-rotate-90 rotate-90 duration-500 nav-arrow"
+                />
+              )}
+            </a>
+
+            {item.list && (
+              <ul class="text-start duration-300 flex flex-col gap-2 p-0 w-full overflow-hidden max-h-0 opacity-0 transition-all nav-sublist">
+                {item.list.map((subItem) => (
+                  <li class="px-4 py-2">
+                    <a
+                      href={`/${locale + "/" + subItem.link}`}
+                      class="hover:text-black/80"
+                    >
+                      {subItem.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))
+      }
+    </menu>
+    <CustomBtn
+      href={getRelativeLocaleUrl(locale, "contact_us")}
+      className="mt-20 -z-10 capitalize"
+    >
+      {ui[locale].buttons.contact}
+    </CustomBtn>
+
+    <div
+      class="flex items-center justify-center w-full mt-8 -z-10 border-t border-[#C1C1C1]"
+    >
+      <menu class="flex items-center justify-center gap-4 bg-white -translate-y-1/2">
+        {
+          socialMedia.map((item) => (
+            <li>
+              <a
+                href={item.link}
+                target="_blank"
+                class="aspect-square p-1 rounded h-auto flex items-center justify-center border border-current text-vim-blue"
+              >
+                <Icon name={item.icon} />
+              </a>
+            </li>
+          ))
+        }
+      </menu>
+    </div>
+
+    <a
+      href="mailto:sales@vimecvalves.co.uk"
+      class="flex items-center justify-start gap-1 mx-auto -z-10"
+    >
+      <Icon name="material-symbols-light:mail" class="text-vim-blue" />
+      sales@vimecvalves.co.uk
+    </a>
+  </div>
+</div>
+
+<script>
+  function setupMobileMenu() {
+    const container = document.querySelector(".mobile-menu-container");
+    if (!container) return;
+
+    const overlay = document.getElementById("mobile-menu-overlay");
+    const openBtn = document.getElementById("mobile-menu-open-btn");
+    const closeBtn = document.getElementById("mobile-menu-close-btn");
+
+    const toggleMenu = () => {
+      const isOpen = overlay?.classList.contains("translate-y-0");
+
+      if (isOpen) {
+        overlay?.classList.remove(
+          "translate-y-0",
+          "opacity-100",
+          "pointer-events-auto"
+        );
+        overlay?.classList.add(
+          "translate-y-20",
+          "opacity-0",
+          "pointer-events-none"
+        );
+        openBtn?.querySelector('.line-1')?.classList.remove('rotate-45', 'translate-y-[7px]');
+        openBtn?.querySelector('.line-2')?.classList.remove('opacity-0');
+        openBtn?.querySelector('.line-3')?.classList.remove('-rotate-45', 'translate-y-[-7px]');
+      } else {
+        overlay?.classList.remove(
+          "translate-y-20",
+          "opacity-0",
+          "pointer-events-none"
+        );
+        overlay?.classList.add(
+          "translate-y-0",
+          "opacity-100",
+          "pointer-events-auto"
+        );
+        openBtn?.querySelector('.line-1')?.classList.add('rotate-45', 'translate-y-[7px]');
+        openBtn?.querySelector('.line-2')?.classList.add('opacity-0');
+        openBtn?.querySelector('.line-3')?.classList.add('-rotate-45', 'translate-y-[-7px]');
+      }
+    };
+
+    openBtn?.addEventListener("click", toggleMenu);
+    closeBtn?.addEventListener("click", toggleMenu);
+
+    const navItems = document.querySelectorAll(".mobile-nav-item");
+    let activeIndex: string | null = null;
+
+    navItems.forEach((item) => {
+      const link = item.querySelector(".nav-item-link") as HTMLAnchorElement;
+      const sublist = item.querySelector(".nav-sublist") as HTMLElement;
+
+      if (link && sublist) {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const index = link.getAttribute("data-index");
+
+          if (activeIndex === index) {
+            // Close active
+            sublist.style.maxHeight = "0px";
+            sublist.style.opacity = "0";
+            sublist.style.paddingTop = "0px";
+            sublist.style.paddingBottom = "0px";
+            activeIndex = null;
+          } else {
+            // Close old active if any
+            if (activeIndex) {
+              const oldActive = document.querySelector(
+                `.nav-item-link[data-index="${activeIndex}"]`
+              );
+              const oldSublist = oldActive?.parentElement?.querySelector(
+                ".nav-sublist"
+              ) as HTMLElement;
+              if (oldSublist) {
+                oldSublist.style.maxHeight = "0px";
+                oldSublist.style.opacity = "0";
+                oldSublist.style.paddingTop = "0px";
+                oldSublist.style.paddingBottom = "0px";
+              }
+            }
+            // Open new
+            sublist.style.maxHeight = sublist.scrollHeight + 40 + "px";
+            sublist.style.opacity = "1";
+            sublist.style.paddingTop = "1rem";
+            sublist.style.paddingBottom = "1rem";
+            activeIndex = index;
+          }
+        });
+      }
+    });
+  }
+
+  setupMobileMenu();
+  document.addEventListener("astro:page-load", setupMobileMenu);
+</script>
