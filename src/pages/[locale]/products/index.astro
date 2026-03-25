@@ -20,7 +20,7 @@ const data = await contentfulClient.getEntries<TypeProduct>({
 ---
 
 <Layout
-  title="Our Products | Vimec Valves"
+  title="Industrial Sampling Valves & Process Valves | Vimec Valves"
   description="Explore our wide range of high-quality industrial valves, including sampling valves, engineered for optimal performance."
 >
   <section
@@ -36,6 +36,19 @@ const data = await contentfulClient.getEntries<TypeProduct>({
 
     <div class="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
       {data.items.map((item) => <ProductCard {...item} />)}
+    </div>
+
+    <div class="prose max-w-none text-gray-700 mt-8 mb-4">
+      <h2 class="text-2xl font-semibold text-[#183a65] mb-4">Leading Manufacturers of Industrial Sampling Valves & Process Valves</h2>
+      <p class="mb-4">
+        Vimec Valves is globally recognized for the engineering, manufacturing, and distribution of high-quality industrial sampling valves and custom process control solutions. With decades of expertise serving the most demanding sectors—including petrochemical, oil and gas, pharmaceutical, power generation, and chemical processing—we have established ourselves as a consistent benchmark for safety, precision, and reliability.
+      </p>
+      <p class="mb-4">
+        Our industrial valves are meticulously crafted out of premium materials like 316L Stainless Steel, Monel, and Hastelloy to meet rigorous international standards. Designed for zero-emission and dead-space-free operations, our diverse portfolio safely protects personnel and the environment from hazardous exposures.
+      </p>
+      <p>
+        Fully compliant with PED, ATEX, and API norms, every Vimec product undergoes comprehensive quality assurance and non-destructive testing, guaranteeing long-lasting performance even under extreme temperatures and corrosive environments. Explore our comprehensive catalog of bespoke technical solutions above.
+      </p>
     </div>
   </section>
 

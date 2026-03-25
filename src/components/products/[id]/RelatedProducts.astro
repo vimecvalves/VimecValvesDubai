@@ -35,10 +35,11 @@ const local = Astro.currentLocale as "en" | "it";
       <div class="swiper-wrapper">
         {
           fields.relatedProducts.map((item) => (
-            <ProductCard
-              {...item}
-              className="swiper-slide sm:!w-[min(100%,330px)]"
-            />
+            <div class="swiper-slide sm:!w-[min(100%,330px)] py-3 px-1">
+              <ProductCard
+                {...item}
+              />
+            </div>
           ))
         }
       </div>

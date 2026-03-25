@@ -6,7 +6,6 @@ import react from "@astrojs/react";
 import netlify from "@astrojs/netlify";
 import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
-import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
   site: "https://www.vimecvalves.co.uk",
@@ -24,15 +23,6 @@ export default defineConfig({
   integrations: [
     icon(),
     react(),
-    sitemap({
-      i18n: {
-        defaultLocale: "en",
-        locales: {
-          en: "en",
-          it: "it",
-        },
-      },
-    }),
   ],
   image: {
     domains: ["images.ctfassets.net"],

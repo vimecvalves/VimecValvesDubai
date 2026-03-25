@@ -39,7 +39,7 @@ const data = await contentfulClient.getEntries<TypeGallery>({
         data.items.map((item) => (
           <Link
             href={"/gallery/" + encodeURIComponent(item.sys.id)}
-            class="hover:bg-vim-blue flex flex-col items-center justify-center overflow-hidden rounded-[10px] bg-[#F4F4F4] hover:text-white"
+            class="flex flex-col items-center justify-center overflow-hidden rounded-xl bg-[#F4F4F4] transition-all duration-300 hover:shadow-lg"
           >
             <Image
               src={item?.fields?.images[0]?.fields?.file?.url}

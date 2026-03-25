@@ -34,10 +34,11 @@ let data = await contentfulClient.getEntries<TypeProduct>({
       <div class="swiper-wrapper">
         {
           data.items.map((item) => (
-            <ProductCard
-              {...item}
-              className="swiper-slide sm:!w-[min(100%,360px)]"
-            />
+            <div class="swiper-slide sm:!w-[min(100%,360px)] py-3 px-1">
+              <ProductCard
+                {...item}
+              />
+            </div>
           ))
         }
       </div>

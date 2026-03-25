@@ -53,6 +53,19 @@ const {
     </script>
     <!-- End Google Tag Manager -->
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Vimec Valves",
+      "url": "https://www.vimecvalves.co.uk",
+      "logo": "https://www.vimecvalves.co.uk/favicon.ico",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "sales@vimecvalves.co.uk",
+        "contactType": "customer service"
+      }
+    })} />
+    <slot name="head" />
   </head>
   <body>
     <Header />

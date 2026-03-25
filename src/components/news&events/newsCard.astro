@@ -16,10 +16,10 @@ const { item } = Astro.props;
 
 <Link
   href={"news&events/" + item.sys.id}
-  class="flex w-full flex-col items-start justify-start rounded-[20px] duration-300 hover:bg-[#F3F3F3] max-md:bg-[#F3F3F3]"
+  class="flex w-full flex-col items-start justify-start bg-gradient-to-br from-[#f9fbff] via-white to-[#f6faff] rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.08)] hover:-translate-y-[1.5px] transition-all duration-500 ease-out"
 >
   <div
-    class="flex aspect-video h-auto w-full items-center justify-center overflow-hidden rounded-[20px]"
+    class="flex aspect-video h-auto w-full items-center justify-center overflow-hidden rounded-t-2xl"
   >
     <Image
       src={item.fields.featuredImage.fields.file.url}
@@ -27,7 +27,7 @@ const { item } = Astro.props;
       height={500}
       transition:name={item.fields.featuredImage.fields.file.url}
       alt={item.fields.featuredImage.fields.file.fileName}
-      class="h-full w-full overflow-hidden rounded-[20px] object-cover"
+      class="h-full w-full overflow-hidden rounded-t-2xl object-cover"
     />
   </div>
   <div class="px-6 py-6">
