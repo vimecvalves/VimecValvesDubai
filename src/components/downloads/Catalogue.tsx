@@ -99,26 +99,32 @@ const Catalogue: React.FC<CatalogueProps> = ({ item, local }) => {
       <div
         id={encodeURI(item.fields.title!)}
         onClick={() => handleClick(item)}
-        className="reveal-up group hover:bg-vim-blue cursor-pointer overflow-hidden rounded-[10px] bg-[#F4F4F4] duration-300"
+        className="reveal-up group flex w-full flex-col items-start justify-start bg-gradient-to-br from-[#f9fbff] via-white to-[#f6faff] rounded-2xl shadow-[0_4px_10px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_32px_rgba(0,0,0,0.12)] hover:-translate-y-[6px] transition-all duration-400 ease-out overflow-hidden cursor-pointer"
       >
         {item?.fields.bannerImage?.fields?.file?.url && (
-          <img
-            src={item?.fields?.bannerImage?.fields?.file?.url + '?fm=webp&q=80'}
-            width={300}
-            height={200}
-            alt={
-              item.fields.bannerImage.fields.file.fileName ||
-              item.fields.title ||
-              'Download banner'
-            }
-            loading="lazy"
-            decoding="async"
-            className="aspect-video h-auto w-full object-cover"
-          />
+          <div className="mx-4 mt-4 aspect-video overflow-hidden rounded-xl w-[calc(100%-2rem)] flex-shrink-0 bg-gray-50">
+            <img
+              src={item?.fields?.bannerImage?.fields?.file?.url + '?fm=webp&w=600&q=80'}
+              width={600}
+              height={400}
+              alt={
+                item.fields.bannerImage.fields.file.fileName ||
+                item.fields.title ||
+                'Download banner'
+              }
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            />
+          </div>
         )}
-        <div className="flex items-center justify-between gap-10 px-6 py-4 text-xl font-medium duration-300 group-hover:text-white">
-          <h3>{item?.fields?.title}</h3>
-          <Icon icon={item.fields.form?.fields.buttonsIcon!} />
+        <div className="px-6 py-5 flex items-center justify-between gap-4 w-full mt-auto">
+          <h3 className="text-xl font-medium leading-snug text-gray-900 group-hover:text-vim-blue transition-colors duration-300 line-clamp-2">
+            {item?.fields?.title}
+          </h3>
+          <span className="flex-shrink-0 flex items-center justify-center p-3 rounded-full bg-blue-50 text-vim-blue group-hover:bg-vim-blue group-hover:text-white transition-colors duration-300">
+            <Icon icon={item.fields.form?.fields.buttonsIcon || 'lucide:download'} className="text-xl" />
+          </span>
         </div>
       </div>
       {openItem && item.fields.needForm === true && (

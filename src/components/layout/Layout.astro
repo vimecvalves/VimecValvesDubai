@@ -113,16 +113,15 @@ const {
     <script>
       function initRevealAnimations() {
         const observerOptions = {
-          threshold: 0.15,
-          rootMargin: "0px 0px -80px 0px",
+          threshold: 0.05,
+          rootMargin: "0px 0px 0px 0px",
         };
 
         const observer = new IntersectionObserver((entries) => {
           let staggerIndex = 0;
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              console.log("Animation triggered:", entry.target);
-              const delay = Math.min(staggerIndex * 0.2, 0.8);
+              const delay = Math.min(staggerIndex * 0.1, 0.5);
               entry.target.style.transitionDelay = `${delay}s`;
               entry.target.classList.add("reveal-visible");
               observer.unobserve(entry.target);
