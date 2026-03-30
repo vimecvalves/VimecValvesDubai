@@ -34,6 +34,7 @@ const {
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="robots" content="index, follow" />
     <ClientRouter />
     <link rel="preload" href={sfProBold} as="font" type="font/woff2" crossorigin="anonymous" />
     <link rel="preload" href={sfProMedium} as="font" type="font/woff2" crossorigin="anonymous" />
@@ -53,23 +54,51 @@ const {
     </script>
     <!-- End Google Tag Manager -->
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
-    <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Vimec Valves",
-      "url": "https://www.vimecvalves.co.uk",
-      "logo": "https://www.vimecvalves.co.uk/favicon.ico",
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "email": "sales@vimecvalves.co.uk",
-        "contactType": "customer service"
-      }
-    })} />
+    <script type="application/ld+json" is:inline>
+      [
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "Vimec Valves",
+          "url": "https://www.vimecvalves.co.uk",
+          "logo": "https://www.vimecvalves.co.uk/favicon.ico",
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+44 1902 953025",
+            "email": "sales@vimecvalves.co.uk",
+            "contactType": "customer service"
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Via Lago d'Iseo, 5",
+            "addressLocality": "Bolgare",
+            "addressRegion": "BG",
+            "postalCode": "24060",
+            "addressCountry": "IT"
+          },
+          "sameAs": [
+            "https://www.linkedin.com/company/vimecvalves/",
+            "https://www.instagram.com/vimecvalves/",
+            "https://www.facebook.com/vimecvalves",
+            "https://youtube.com/@vimecvalves?si=qitjEZGxWVgIxxOA"
+          ]
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "Manufacturer",
+          "name": "Vimec Valves",
+          "description": "Industrial valves manufacturer for oil & gas sector.",
+          "url": "https://www.vimecvalves.co.uk"
+        }
+      ]
+    </script>
     <slot name="head" />
   </head>
   <body>
     <Header />
-    <slot />
+    <main role="main">
+      <slot />
+    </main>
     <Footer hideTop={hideTopFooter} />
     <!-- Google Tag Manager (noscript) -->
     <noscript

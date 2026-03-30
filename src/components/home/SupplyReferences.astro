@@ -50,17 +50,32 @@ const flatData = data.items.flatMap((item) => item.fields.references);
     // Import Swiper styles
     import "swiper/css";
 
-    const swiper = new Swiper(".swiper.supply-references-home", {
-      modules: [Autoplay],
-      spaceBetween: 10,
-      slidesPerView: "auto",
+    let clientLogoCarousel;
+    let pristineHTML = null;
 
-      freeMode: true,
-      loop: true,
+    function initializeClientLogoCarousel() {
+      const swiperEl = document.querySelector(".swiper.supply-references-home");
+      if (!swiperEl) return;
 
-      autoplay: {
-        delay: 4500,
-      },
-    });
+      // 1. Snapshot or Restore
+      if (!pristineHTML) {
+        pristineHTML = swiperEl.innerHTML; // Save pure state on first load
+      } else {
+        swiperEl.innerHTML = pristineHTML; // Restore pure state on return
+      }
+
+      clientLogoCarousel = new Swiper(".swiper.supply-references-home", {
+        modules: [Autoplay],
+        spaceBetween: 10,
+        slidesPerView: "auto",
+        freeMode: true,
+        loop: true,
+        autoplay: {
+          delay: 4500,
+        },
+      });
+    }
+
+    document.addEventListener("astro:page-load", initializeClientLogoCarousel);
   </script>
 </section>

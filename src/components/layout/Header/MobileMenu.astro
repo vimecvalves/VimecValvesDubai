@@ -26,6 +26,7 @@ const { links, locale, searchData } = Astro.props;
 <div class="lg:hidden z-0 mobile-menu-container">
   <button
     id="mobile-menu-open-btn"
+    aria-label="Open mobile menu"
     class="relative z-0 flex flex-col items-center justify-evenly p-2 w-10 h-10 border-2 border-vim-blue rounded-lg gap-1"
   >
     <span class="w-full h-0.5 bg-vim-blue rounded-full duration-300 transform line-1"></span>
@@ -39,6 +40,7 @@ const { links, locale, searchData } = Astro.props;
   >
     <button
       id="mobile-menu-close-btn"
+      aria-label="Close mobile menu"
       class="self-end relative flex flex-col items-center justify-evenly p-2 w-10 h-10 border-2 border-vim-blue rounded-lg gap-1 mb-6 -z-10"
     >
       <span class="w-full h-0.5 bg-vim-blue rounded-full duration-300 rotate-45 translate-y-[7px]"></span>
@@ -53,7 +55,9 @@ const { links, locale, searchData } = Astro.props;
         links.map((item, idx) => (
           <li class="flex flex-col items-center justify-center group/n relative z-0 py-4 border-b border-[#C1C1C1] last:border-0 mobile-nav-item">
             <a
-              href={item.list ? "#" : getRelativeLocaleUrl(locale, item.link)}
+              href={item.list ? undefined : getRelativeLocaleUrl(locale, item.link)}
+              role={item.list ? "button" : undefined}
+              tabindex={item.list ? 0 : undefined}
               class="flex items-center justify-start gap-2 w-full nav-item-link"
               data-index={idx}
             >
@@ -102,7 +106,8 @@ const { links, locale, searchData } = Astro.props;
               <a
                 href={item.link}
                 target="_blank"
-                class="aspect-square p-1 rounded h-auto flex items-center justify-center border border-current text-vim-blue"
+                aria-label="Visit social media"
+                class="aspect-square p-2 rounded h-auto flex items-center justify-center border border-current text-vim-blue"
               >
                 <Icon name={item.icon} />
               </a>
@@ -114,6 +119,7 @@ const { links, locale, searchData } = Astro.props;
 
     <a
       href="mailto:sales@vimecvalves.co.uk"
+      aria-label="Email sales@vimecvalves.co.uk"
       class="flex items-center justify-start gap-1 mx-auto -z-10"
     >
       <Icon name="material-symbols-light:mail" class="text-vim-blue" />

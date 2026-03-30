@@ -6,6 +6,7 @@ const local = Astro.currentLocale as "en" | "it";
 
 <section
   id="our-history"
+  transition:animate="none"
   class:list={[
     main_padding.y,
     "w-full flex items-center justify-center overflow-hidden",
@@ -90,8 +91,12 @@ const local = Astro.currentLocale as "en" | "it";
     }
   }
 
-  adjustTimelinePosition();
-
+  document.addEventListener("astro:page-load", () => {
+    adjustTimelinePosition();
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(adjustTimelinePosition);
+    }
+    setTimeout(adjustTimelinePosition, 100);
+  });
   window.addEventListener("resize", adjustTimelinePosition);
-  window.removeEventListener("resize", adjustTimelinePosition);
 </script>

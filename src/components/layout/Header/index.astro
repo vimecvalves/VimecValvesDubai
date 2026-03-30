@@ -226,12 +226,14 @@ const navLinks = links.map((item) => {
       <div class="flex items-center justify-start gap-10">
         <a
           href="tel:+441902953025"
+          aria-label="Call +44 1902 953025"
           class="flex items-center justify-start gap-1 text-white"
         >
           <Icon name="ic:round-phone" /> +44 1902 953025
         </a>
         <a
           href="mailto:sales@vimecvalves.co.uk"
+          aria-label="Email sales@vimecvalves.co.uk"
           class="flex items-center justify-start gap-1 text-white max-md:hidden"
         >
           <Icon name="material-symbols-light:mail" /> sales@vimecvalves.co.uk
@@ -243,7 +245,7 @@ const navLinks = links.map((item) => {
         >
           {
             socialMedia.map((item) => (
-              <a href={item.link} target="_blank" class="">
+              <a href={item.link} target="_blank" aria-label="Visit social media" class="p-2">
                 <Icon name={item.icon} class="hover:text-white/50" />
               </a>
             ))

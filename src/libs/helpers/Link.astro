@@ -8,9 +8,9 @@ const locale = Astro.currentLocale as "en" | "it";
 import { getRelativeLocaleUrl } from "astro:i18n";
 
 // @ts-ignore
-const link = props.href
+const link = props.href && props.href !== "#"
   ? getRelativeLocaleUrl(locale, props.href)
-  : "javascript:void(0)";
+  : undefined;
 ---
 
 <a href={link} {...props}>

@@ -12,7 +12,7 @@ const ImagesGrid = ({ data, local }: { data: any; local: string }) => {
             key={idx}
             onClick={() => setOpenId(idx)}
             src={item.fields.file.url + '?fm=webp&q=80'}
-            alt=""
+            alt={item.fields.title ? String(item.fields.title) : 'Gallery image'}
             style={{
               viewTransitionName: '_' + item.sys.id,
             }}

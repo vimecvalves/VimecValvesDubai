@@ -1,7 +1,7 @@
 import { ui } from '@/i18n/ui';
 import type { TypeProduct } from '@/libs/content/contentful/entriesType';
 import main_padding from '@/styles/padding';
-import { CustomBtn } from '@/ui/buttons';
+import { CustomBtn, CustomBtnB } from '@/ui/buttons';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import type { Entry } from 'contentful';
 import {
@@ -80,7 +80,7 @@ const ImageSlider = ({
               src={item.fields.file.url + '?fm=webp&q=80'}
               width={item.fields.file.details.image.width}
               height={item.fields.file.details.image.height}
-              alt=""
+              alt={item.fields.title ? String(item.fields.title) : 'Slider image'}
               loading="lazy"
               decoding="async"
               className="object-contain h-full"
@@ -99,18 +99,20 @@ const ImageSlider = ({
         </button>
 
         <div className="flex items-center justify-center gap-4">
-          <CustomBtn
+          <CustomBtnB
             onClick={() => changeIndex('prev')}
             className="px-6 text-2xl py-1 "
+            aria-label="Previous image"
           >
             <Icon icon="solar:arrow-up-linear" className="-rotate-90" />
-          </CustomBtn>
-          <CustomBtn
+          </CustomBtnB>
+          <CustomBtnB
             onClick={() => changeIndex('next')}
             className="px-6 text-2xl py-1 "
+            aria-label="Next image"
           >
             <Icon icon="solar:arrow-up-linear" className="rotate-90" />
-          </CustomBtn>
+          </CustomBtnB>
         </div>
       </div>
     </div>

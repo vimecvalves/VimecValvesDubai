@@ -51,7 +51,8 @@ const local = Astro.currentLocale as "en" | "it";
               <a
                 href={item.link}
                 target="_blank"
-                class="text-vim-blue hover:bg-vim-blue flex aspect-square h-auto items-center justify-center rounded border border-current p-1 hover:text-white"
+                aria-label="Visit social media"
+                class="text-vim-blue hover:bg-vim-blue flex aspect-square h-auto items-center justify-center rounded border border-current p-2 hover:text-white"
               >
                 <Icon name={item.icon} />
               </a>
@@ -139,6 +140,7 @@ const local = Astro.currentLocale as "en" | "it";
               <p class="max-w-[20ch]">{ui[local].sections.footer.md.subtile}</p>
               <a
                 href="mailto:sales@vimecvalves.co.uk"
+                aria-label="Email sales@vimecvalves.co.uk"
                 class="text-vim-blue hover:bg-vim-blue border-vim-blue cursor-pointer rounded-md border px-4 py-1 text-start !text-sm font-medium uppercase duration-300 hover:text-white"
               >
                 {ui[local].sections.footer.md["button-name"]}
@@ -162,7 +164,8 @@ const local = Astro.currentLocale as "en" | "it";
             <Link
               href={item.link}
               target="_blank"
-              class="text-vim-blue flex aspect-square h-auto items-center justify-center rounded border border-current p-1"
+              aria-label="Visit social media"
+              class="text-vim-blue flex aspect-square h-auto items-center justify-center rounded border border-current p-2"
             >
               <Icon name={item.icon} />
             </Link>
@@ -180,6 +183,7 @@ const local = Astro.currentLocale as "en" | "it";
         <p class="max-w-[20ch]">{ui[local].sections.footer.md.subtile}</p>
         <a
           href="mailto:sales@vimecvalves.co.uk"
+          aria-label="Email sales@vimecvalves.co.uk"
           class="text-vim-blue hover:bg-vim-blue border-vim-blue cursor-pointer rounded-md border px-4 py-1 text-start text-xs font-medium uppercase duration-300 hover:text-white lg:text-sm"
         >
           {ui[local].sections.footer.md["button-name"]}

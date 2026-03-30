@@ -201,6 +201,7 @@ const Catalogue: React.FC<CatalogueProps> = ({ item, local }) => {
               type="button"
               onClick={() => setOpenItem(null)}
               className="absolute -top-10 right-0 cursor-pointer rounded-lg bg-white p-1 md:-top-0 md:-right-10"
+              aria-label="Close form"
             >
               <Icon icon="ic:baseline-close" className="text-xl text-black" />
             </button>
