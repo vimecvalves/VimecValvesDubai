@@ -16,38 +16,43 @@ const { item } = Astro.props;
 
 <Link
   href={"news&events/" + item.sys.id}
-  class="flex w-full flex-col items-start justify-start bg-gradient-to-br from-[#f9fbff] via-white to-[#f6faff] rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.08)] hover:-translate-y-[1.5px] transition-all duration-500 ease-out"
+  class="reveal-up group flex w-full flex-col items-start justify-start bg-gradient-to-br from-[#f9fbff] via-white to-[#f6faff] rounded-2xl shadow-[0_4px_10px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_32px_rgba(0,0,0,0.12)] hover:-translate-y-[6px] transition-all duration-400 ease-out overflow-hidden"
 >
-  <div
-    class="flex aspect-video h-auto w-full items-center justify-center overflow-hidden rounded-t-2xl"
-  >
+  {/* Image with hover zoom */}
+  <div class="mx-4 mt-4 aspect-video overflow-hidden rounded-xl">
     <Image
       src={item.fields.featuredImage.fields.file.url}
-      width={500}
-      height={500}
-      transition:name={item.fields.featuredImage.fields.file.url}
+      width={600}
+      height={400}
       alt={item.fields.featuredImage.fields.file.fileName}
-      class="h-full w-full overflow-hidden rounded-t-2xl object-cover"
+      class="h-full w-full rounded-xl object-cover transition-transform duration-400 ease-out group-hover:scale-105"
     />
   </div>
-  <div class="px-6 py-6">
-    <span class="text-vim-red mt-4 text-sm font-bold uppercase">
+
+  <div class="px-6 py-6 flex flex-col flex-grow w-full">
+    {/* Badge */}
+    <span
+      class="inline-block mb-3 self-start rounded px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-white"
+      style="background: #e11d2e; letter-spacing: 0.08em;"
+    >
       {item.fields.type}
     </span>
-    <h3 class="text-2xl font-medium">{item.fields.title}</h3>
 
+    <h3 class="text-2xl font-medium leading-snug">{item.fields.title}</h3>
+
+    {/* Clamped description */}
     <span
-      class="mt-2 mb-6 line-clamp-3"
+      class="mt-2 mb-6 text-gray-500 text-sm leading-relaxed line-clamp-2"
       set:html={documentToHtmlString(item.fields.description)}
     />
 
-    <div
-      class="text-vim-blue mt-auto flex items-center justify-between gap-10 text-sm"
-    >
+    {/* Footer row */}
+    <div class="text-vim-blue mt-auto flex items-center justify-between gap-10 text-sm">
       <p class="font-medium">{formattedDate(item.fields.date)}</p>
-      <button class="font-bold underline">
-        {ui[local].buttons["read-more"]}
-      </button>
+      <span class="font-semibold text-vim-blue hover:underline transition-all">
+        {ui[local].buttons["read-more"]} →
+      </span>
     </div>
   </div>
 </Link>
+

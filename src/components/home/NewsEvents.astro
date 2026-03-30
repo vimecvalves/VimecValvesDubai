@@ -21,7 +21,7 @@ const data = await contentfulClient.getEntries<TypeNewsNEvents>({
   class={`wrapper text-black flex flex-col items-start  relative z-0  ${main_padding.y}`}
 >
   <div class="flex items-center md:justify-between justify-center w-full">
-    <h2 class="lg:text-5xl text-4xl font-medium">
+    <h2 class="reveal-up lg:text-5xl text-4xl font-medium">
       {ui[locale].home["news-events"]}
     </h2>
     <CustomBtn href="news&events" className="max-md:hidden uppercase"

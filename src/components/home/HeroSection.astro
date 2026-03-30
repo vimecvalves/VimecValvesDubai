@@ -37,30 +37,32 @@ let textures = data.map((item) => item.fields.texture.fields.file?.url);
 >
   <div class="flex flex-col items-start justify-center lg:max-w-[40vw]">
     <h1
-      class="mt-28 text-4xl leading-[120%] font-medium lg:mt-52 lg:text-5xl max-w-[18ch]"
+      class="reveal-up mt-28 text-4xl leading-[120%] font-medium lg:mt-52 lg:text-5xl max-w-[18ch]"
     >
       {ui[local].home["hero-section"].title}
     </h1>
-    <p class="mt-3 text-base lg:mt-4 lg:text-lg">
+    <p class="reveal-up mt-3 text-base lg:mt-4 lg:text-lg">
       {ui[local].home["hero-section"].subtitle}
     </p>
     
-    <CustomBtn invert herf="products" className="mt-4 uppercase lg:mt-10">
-      {ui[local].buttons["view-products"]}
-    </CustomBtn>
+    <div class="reveal-up w-full mt-8 lg:mt-12">
+      <CustomBtn invert href="products" className="uppercase">
+        {ui[local].buttons["view-products"]}
+      </CustomBtn>
+    </div>
 
     <Image
       src={years50}
       alt=""
       loading="eager"
       fetchpriority="high"
-      class="mt-10 h-36 w-auto object-contain max-lg:hidden"
+      class="reveal-up mt-10 h-36 w-auto object-contain max-lg:hidden"
     />
   </div>
 
   <div
     id="homeHeroImagesContainer"
-    class="right-0 bottom-[10%] flex h-full w-full items-end max-lg:-translate-x-[20%] lg:absolute lg:w-1/2"
+    class="reveal-up right-0 bottom-[10%] flex h-full w-full items-end max-lg:-translate-x-[20%] lg:absolute lg:w-1/2"
   >
     <Image
       src={textures[0] ?? texture1}

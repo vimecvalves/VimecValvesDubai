@@ -23,11 +23,12 @@ const flatData = data.items.flatMap((item) => item.fields.references);
   </h2>
 
   <div class="w-full">
-    <div class="swiper supply-references-home !overflow-visible">
-      <div class="swiper-wrapper">
+    <supply-references-slider class="contents">
+      <div class="swiper supply-references-home overflow-hidden">
+        <div class="swiper-wrapper">
         {
           flatData.map((item) => (
-            <div class="swiper-slide flex !w-max flex-col items-start justify-start rounded-lg px-10 py-10">
+            <div class="swiper-slide flex !w-max flex-col items-start justify-start rounded-lg px-6 py-6">
               <Image
                 src={item.fields.file.url}
                 alt={item.fields.file.fileName}
@@ -38,44 +39,60 @@ const flatData = data.items.flatMap((item) => item.fields.references);
             </div>
           ))
         }
+        </div>
       </div>
-    </div>
+    </supply-references-slider>
   </div>
 
   <script>
     import Swiper from "swiper";
-    // Import Swiper modules
-    import { Autoplay } from "swiper/modules";
-
-    // Import Swiper styles
+    import { Autoplay, Mousewheel } from "swiper/modules";
     import "swiper/css";
 
-    let clientLogoCarousel;
-    let pristineHTML = null;
+    class SupplyReferencesSlider extends HTMLElement {
+      connectedCallback() {
+        const swiperEl = this.querySelector(".swiper.supply-references-home");
+        if (!swiperEl) return;
 
-    function initializeClientLogoCarousel() {
-      const swiperEl = document.querySelector(".swiper.supply-references-home");
-      if (!swiperEl) return;
+        swiperEl.classList.remove("swiper-initialized");
 
-      // 1. Snapshot or Restore
-      if (!pristineHTML) {
-        pristineHTML = swiperEl.innerHTML; // Save pure state on first load
-      } else {
-        swiperEl.innerHTML = pristineHTML; // Restore pure state on return
+        this.swiper = new Swiper(swiperEl, {
+          modules: [Autoplay, Mousewheel],
+          mousewheel: {
+            forceToAxis: true,
+            releaseOnEdges: true,
+          },
+          spaceBetween: 40,
+          slidesPerView: "auto",
+          speed: 800,
+          loop: true,
+          autoplay: {
+            delay: 4500,
+            disableOnInteraction: false,
+          },
+        });
+
+        this.handleBeforePreparation = () => {
+          if (this.swiper && !this.swiper.destroyed) {
+            this.swiper.destroy(true, true);
+          }
+        };
+
+        document.addEventListener("astro:before-preparation", this.handleBeforePreparation, { once: true });
       }
 
-      clientLogoCarousel = new Swiper(".swiper.supply-references-home", {
-        modules: [Autoplay],
-        spaceBetween: 10,
-        slidesPerView: "auto",
-        freeMode: true,
-        loop: true,
-        autoplay: {
-          delay: 4500,
-        },
-      });
+      disconnectedCallback() {
+        if (this.handleBeforePreparation) {
+          document.removeEventListener("astro:before-preparation", this.handleBeforePreparation);
+        }
+        if (this.swiper && !this.swiper.destroyed) {
+          this.swiper.destroy(true, true);
+        }
+      }
     }
 
-    document.addEventListener("astro:page-load", initializeClientLogoCarousel);
+    if (!customElements.get("supply-references-slider")) {
+      customElements.define("supply-references-slider", SupplyReferencesSlider);
+    }
   </script>
 </section>

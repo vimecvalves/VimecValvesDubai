@@ -99,7 +99,7 @@ const Catalogue: React.FC<CatalogueProps> = ({ item, local }) => {
       <div
         id={encodeURI(item.fields.title!)}
         onClick={() => handleClick(item)}
-        className="group hover:bg-vim-blue cursor-pointer overflow-hidden rounded-[10px] bg-[#F4F4F4] duration-300"
+        className="reveal-up group hover:bg-vim-blue cursor-pointer overflow-hidden rounded-[10px] bg-[#F4F4F4] duration-300"
       >
         {item?.fields.bannerImage?.fields?.file?.url && (
           <img

@@ -19,7 +19,7 @@ let data = await contentfulClient.getEntries<TypeProduct>({
   class={`wrapper text-black flex flex-col items-start  relative z-0  ${main_padding.y}`}
 >
   <div class="flex items-center sm:justify-between justify-center w-full">
-    <h2 class="lg:text-5xl text-4xl font-medium">{ui[locale].home.products}</h2>
+    <h2 class="reveal-up lg:text-5xl text-4xl font-medium">{ui[locale].home.products}</h2>
     <CustomBtn href="products" className="max-sm:hidden uppercase"
       >{ui[locale].buttons["view-all-products"]}</CustomBtn
     >
@@ -28,13 +28,14 @@ let data = await contentfulClient.getEntries<TypeProduct>({
     class="sm:my-10 my-6 sm:border-gray-400 border-t-transparent max-sm:bg-transparent w-full"
   />
   <div
-    class="w-full flex items-start justify-start gap-4 relative z-0 max-sm:hidden"
+    class="w-full flex items-start justify-start gap-4 relative z-0 max-sm:hidden group"
   >
-    <div class="swiper products-home">
+    <product-slider class="contents">
+      <div class="swiper products-home !pt-6 !pb-12 !px-4 !-mt-6 !-mb-12 !-mx-4">
       <div class="swiper-wrapper">
         {
           data.items.map((item) => (
-            <div class="swiper-slide sm:!w-[min(100%,360px)] py-3 px-1">
+            <div class="swiper-slide !h-auto sm:!w-[min(100%,360px)] py-3 px-1">
               <ProductCard
                 {...item}
               />
@@ -45,18 +46,19 @@ let data = await contentfulClient.getEntries<TypeProduct>({
     </div>
 
     <div
-      class="absolute w-[calc(100%+40px)] -left-5 flex items-center justify-between z-50 text-vim-blue text-4xl top-1/2 -translate-y-1/2"
+      class="absolute w-full left-0 px-4 md:px-8 flex items-center justify-between z-50 text-vim-blue text-4xl top-[45%] -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
     >
       <Icon
         name="weui:arrow-outlined"
-        class="!w-10 !h-10 rounded-full !aspect-square flex items-center justify-center border-2 border-vim-blue rotate-180 cursor-pointer hover:text-white hover:bg-vim-blue duration-300 swiper-button-prev bg-white"
+        class="!w-12 !h-12 p-2 rounded-full !aspect-square flex items-center justify-center rotate-180 cursor-pointer text-vim-blue bg-white/90 backdrop-blur-sm shadow-md hover:shadow-xl hover:scale-105 hover:bg-vim-blue hover:text-white transition-all duration-300 swiper-button-prev pointer-events-auto"
       />
       <Icon
         name="weui:arrow-outlined"
-        class="!w-10 !h-10 rounded-full !aspect-square flex items-center justify-center border-2 border-vim-blue cursor-pointer hover:text-white hover:bg-vim-blue duration-300 swiper-button-next bg-white"
+        class="!w-12 !h-12 p-2 rounded-full !aspect-square flex items-center justify-center cursor-pointer text-vim-blue bg-white/90 backdrop-blur-sm shadow-md hover:shadow-xl hover:scale-105 hover:bg-vim-blue hover:text-white transition-all duration-300 swiper-button-next pointer-events-auto"
       />
     </div>
-    <div class="swiper-pagination absolute left-0 !-bottom-14 z-50"></div>
+      <div class="swiper-pagination absolute left-0 !-bottom-14 z-50"></div>
+    </product-slider>
   </div>
   <div
     class="w-full flex items-start flex-col justify-start gap-4 relative z-0 sm:hidden"
@@ -72,7 +74,6 @@ let data = await contentfulClient.getEntries<TypeProduct>({
 
 <script>
   import Swiper from "swiper";
-  // Import Swiper modules
   import {
     Navigation,
     FreeMode,
@@ -82,47 +83,69 @@ let data = await contentfulClient.getEntries<TypeProduct>({
     Pagination,
   } from "swiper/modules";
 
-  // Import Swiper styles
   import "swiper/css";
   import "swiper/css/navigation";
   import "swiper/css/free-mode";
   import "swiper/css/thumbs";
-  import "swiper/css/pagination"; // Added pagination style
+  import "swiper/css/pagination";
 
-  let productSwiper;
-  let pristineHTML = null;
+  class ProductSlider extends HTMLElement {
+    connectedCallback() {
+      const swiperEl = this.querySelector(".swiper.products-home");
+      if (!swiperEl) return;
 
-  function initializeProductSlider() {
-    const swiperEl = document.querySelector(".swiper.products-home");
-    if (!swiperEl) return;
+      swiperEl.classList.remove("swiper-initialized");
 
-    // 1. Snapshot or Restore
-    if (!pristineHTML) {
-      pristineHTML = swiperEl.innerHTML; // Save pure state on first load
-    } else {
-      swiperEl.innerHTML = pristineHTML; // Restore pure state on return
+      this.swiper = new Swiper(swiperEl, {
+        modules: [Navigation, Thumbs, Mousewheel, Autoplay, Pagination],
+        spaceBetween: 30,
+        slidesPerView: "auto",
+        grabCursor: true,
+        mousewheel: {
+          forceToAxis: true,
+          releaseOnEdges: true,
+        },
+        freeMode: true,
+        loop: true,
+        speed: 800,
+        autoplay: {
+          delay: 4500,
+          pauseOnMouseEnter: true,
+          disableOnInteraction: false,
+        },
+        navigation: {
+          nextEl: this.querySelector(".swiper-button-next"),
+          prevEl: this.querySelector(".swiper-button-prev"),
+        },
+        pagination: {
+          el: this.querySelector(".swiper-pagination"),
+          enabled: true,
+          clickable: true,
+        },
+      });
+
+      this.handleBeforePreparation = () => {
+        if (this.swiper && !this.swiper.destroyed) {
+          this.swiper.destroy(true, true);
+        }
+      };
+      
+      document.addEventListener("astro:before-preparation", this.handleBeforePreparation, { once: true });
     }
 
-    productSwiper = new Swiper(".swiper.products-home", {
-      modules: [Navigation, Thumbs, Mousewheel, Autoplay, Pagination],
-      spaceBetween: 10,
-      slidesPerView: "auto",
-      mousewheel: false,
-      freeMode: true,
-      loop: true,
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-      pagination: {
-        el: ".swiper-pagination",
-        enabled: true,
-        clickable: true,
-      },
-    });
+    disconnectedCallback() {
+      if (this.handleBeforePreparation) {
+        document.removeEventListener("astro:before-preparation", this.handleBeforePreparation);
+      }
+      if (this.swiper && !this.swiper.destroyed) {
+        this.swiper.destroy(true, true);
+      }
+    }
   }
 
-  document.addEventListener("astro:page-load", initializeProductSlider);
+  if (!customElements.get("product-slider")) {
+    customElements.define("product-slider", ProductSlider);
+  }
 </script>
 
 <style is:global>

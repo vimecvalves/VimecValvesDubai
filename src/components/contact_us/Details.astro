@@ -19,9 +19,9 @@ import ContactForm from "./ContactForm";
             {item.data.map((loc) => (
               <li id={loc.id} class="flex flex-col gap-6">
                 <h3 class="text-xl font-medium">{loc.type}</h3>
-                <menu class="flex flex-wrap gap-4 h-[-webkit-fill-available]">
+                <menu class="flex flex-col sm:flex-row sm:flex-wrap gap-4 h-full">
                   {loc.links.map((link) => (
-                    <li class={"flex flex-col first:w-full not-first:mt-auto"}>
+                    <li class={"flex flex-col sm:first:w-full sm:not-first:mt-auto break-words min-w-0"}>
                       <span class="text-vim-blue flex items-center gap-3">
                         <Icon name={link.icon} /> {link.title}
                       </span>

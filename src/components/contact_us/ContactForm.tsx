@@ -88,7 +88,7 @@ const ContactForm = ({ local }: { local: "en" | "it" }) => {
             height: formToggle ? 'auto' : '0',
           }}
           onSubmit={handleSubmit}
-          className={`flex items-start overflow-hidden duration-300 flex-col w-full justify-center p-10 border-2 border-vim-blue shadow rounded-xl`}
+          className={`flex items-start overflow-hidden duration-300 flex-col w-full justify-center p-6 md:p-10 border-2 border-vim-blue shadow rounded-xl`}
           onClick={(e) => e.stopPropagation()} // Prevent event propagation
         >
           <div className="flex flex-col gap-6 w-full">

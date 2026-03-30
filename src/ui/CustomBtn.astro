@@ -2,7 +2,7 @@
 type Props = astroHTML.JSX.AnchorHTMLAttributes & {
   invert?: boolean;
   className?: string;
-  herf: string;
+  href?: string;
 };
 
 const { invert = false, href = "/", className = "", ...props } = Astro.props;
