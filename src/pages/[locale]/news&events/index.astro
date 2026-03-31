@@ -14,6 +14,7 @@ import NewsCard from "@/components/news&events/newsCard.astro";
 
 const local = Astro.currentLocale as "en" | "it";
 export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
 
 const data = await contentfulClient.getEntries<TypeNewsNEvents>({
   content_type: "newsEvents",

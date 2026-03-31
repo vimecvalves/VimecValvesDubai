@@ -12,6 +12,7 @@ import { contentfulClient } from "@/libs/content/contentful/data";
 import type { TypeGallery } from "@/libs/content/contentful/entriesType";
 
 export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
 const locale = Astro.currentLocale as "en" | "it";
 
 const data = await contentfulClient.getEntries<TypeGallery>({

@@ -3,12 +3,14 @@ import GetInTouch from "@/components/home/GetInTouch.astro";
 import Layout from "@/components/layout/Layout.astro";
 import HeroSection from "@/components/products/[id]/HeroSection.astro";
 export const prerender = false;
-
 import RelatedProducts from "@/components/products/[id]/RelatedProducts.astro";
 import { contentfulClient } from "@/libs/content/contentful/data";
 import type { TypeProduct } from "@/libs/content/contentful/entriesType";
 
-const { id, local } = Astro.params;
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
+
+const { id } = Astro.params;
+const local = (Astro.currentLocale || Astro.params.locale) as "en" | "it";
 
 const data = await contentfulClient.getEntry<TypeProduct>(id!, {
   locale: local,
