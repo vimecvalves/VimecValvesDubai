@@ -14,6 +14,44 @@ const data = await contentfulClient.getEntry<TypeProduct>(id!, {
   locale: local,
 });
 
+if (local === 'it') {
+  const catUpper = data.fields?.category?.fields?.title?.toUpperCase() || '';
+  
+  // 1. Correct the main product names based on their category mappings (since Italian names are wiped or broken as 'INTÉGRALE')
+  if (['MODULAR', 'COMPACT', 'INTEGRAL'].includes(catUpper)) {
+    data.fields.name = 'Valvole Double Block & Bleed';
+  } else if (catUpper === 'TRUNNION') {
+    data.fields.name = 'Valvole a Sfera Trunnion';
+  } else if (['TOP ENTRY', 'FLOATING', 'METAL SEATED'].includes(catUpper)) {
+    data.fields.name = 'Valvole a Sfera';
+  } else if (['MANIFOLDS', 'MONOFLANGES', 'NEEDLE VALVE'].includes(catUpper)) {
+    data.fields.name = 'Strumentazione';
+  } else if (['CAST STEEL', 'FORGED STEEL'].includes(catUpper)) {
+    data.fields.name = 'Valvole a Saracinesca, Globo e Ritegno';
+  } else if (catUpper === 'DUAL PLATE') {
+    data.fields.name = 'Valvole di Ritegno';
+  } else if (['CONCENTRIC', 'HIGH PERFORMANCE'].includes(catUpper)) {
+    data.fields.name = 'Valvole a Farfalla';
+  } else {
+    // Fallback if there are any others that retain English names
+    let displayName = data.fields.name || '';
+    if (displayName.includes('Double Block & Bleed')) data.fields.name = 'Valvole Double Block & Bleed';
+    else if (displayName.includes('Ball Valves')) data.fields.name = 'Valvole a Sfera';
+    else if (displayName.includes('Instrumentation')) data.fields.name = 'Strumentazione';
+    else if (displayName.includes('Gate, Globe, Check')) data.fields.name = 'Valvole a Saracinesca, Globo e Ritegno';
+    else if (displayName.includes('Check Valves')) data.fields.name = 'Valvole di Ritegno';
+    else if (displayName.includes('Butterfly Valves')) data.fields.name = 'Valvole a Farfalla';
+  }
+
+  // 2. Correct Category titles
+  if (data.fields.category && data.fields.category.fields) {
+    if (catUpper === 'MODULAR') data.fields.category.fields.title = 'Modulare';
+    else if (catUpper === 'COMPACT') data.fields.category.fields.title = 'Compatto';
+    else if (catUpper === 'INTEGRAL') data.fields.category.fields.title = 'Integrale';
+  }
+}
+
+
 const productSchema = {
   "@context": "https://schema.org/",
   "@type": "Product",

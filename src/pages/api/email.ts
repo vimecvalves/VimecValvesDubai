@@ -10,6 +10,7 @@ export const POST: APIRoute = async ({ request }) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Origin": request.headers.get("origin") || new URL(request.url).origin,
       },
       body: JSON.stringify({
         service_id: serviceID,

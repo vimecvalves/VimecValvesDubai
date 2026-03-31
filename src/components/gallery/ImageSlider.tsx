@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 interface GalleryImage {
   fields: {
@@ -27,20 +27,12 @@ const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
   onNavigate,
 }) => {
   const overlayRef = useRef<HTMLDivElement>(null);
-  // 'none' = opening, 'next' = sliding left, 'prev' = sliding right
-  const [direction, setDirection] = useState<'none' | 'next' | 'prev'>('none');
-  // animKey increments on each navigation to force React to remount the img
-  const [animKey, setAnimKey] = useState(0);
 
   const goPrev = useCallback(() => {
-    setDirection('prev');
-    setAnimKey((k) => k + 1);
     onNavigate(activeIndex === 0 ? images.length - 1 : activeIndex - 1);
   }, [activeIndex, images.length, onNavigate]);
 
   const goNext = useCallback(() => {
-    setDirection('next');
-    setAnimKey((k) => k + 1);
     onNavigate((activeIndex + 1) % images.length);
   }, [activeIndex, images.length, onNavigate]);
 
@@ -57,20 +49,6 @@ const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
       window.removeEventListener('keydown', handleKey);
     };
   }, [onClose, goNext, goPrev]);
-
-  const current = images[activeIndex];
-  if (!current) return null;
-
-  const imgUrl = current.fields.file.url + '?fm=webp&q=85&w=1600';
-  const altText = current.fields.title ? String(current.fields.title) : 'Gallery image';
-
-  // Pick animation name based on nav direction
-  const imgAnimation =
-    direction === 'next'
-      ? 'slideInFromRight 420ms cubic-bezier(0.22,1,0.36,1)'
-      : direction === 'prev'
-        ? 'slideInFromLeft 420ms cubic-bezier(0.22,1,0.36,1)'
-        : 'lightboxZoomIn 370ms cubic-bezier(0.22,1,0.36,1)';
 
   // Shared button base style
   const navBtnBase: React.CSSProperties = {
@@ -116,6 +94,54 @@ const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
       aria-modal="true"
       aria-label="Image viewer"
     >
+      {/* Slider container with transform transition */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          display: 'flex',
+          transform: `translateX(-${activeIndex * 100}vw)`,
+          transition: 'transform 1000ms ease-in-out',
+        }}
+        onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      >
+        {images.map((img, i) => (
+          <div
+            key={img.sys.id}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: `${i * 100}%`,
+              width: '100vw',
+              height: '100vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+          >
+            <img
+              src={img.fields.file.url + '?fm=webp&q=85&w=1600'}
+              alt={img.fields.title ? String(img.fields.title) : 'Gallery image'}
+              loading={Math.abs(activeIndex - i) <= 1 ? "eager" : "lazy"}
+              decoding="async"
+              style={{
+                maxHeight: '90vh',
+                maxWidth: 'calc(100vw - 120px)',
+                objectFit: 'contain',
+                borderRadius: 8,
+                boxShadow: 'none',
+                userSelect: 'none',
+                pointerEvents: 'none',
+              }}
+            />
+          </div>
+        ))}
+      </div>
+
       {/* Close button */}
       <button
         onClick={onClose}
@@ -193,25 +219,6 @@ const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
         </button>
       )}
 
-      {/* Image — key+animKey forces remount so animation always replays */}
-      <img
-        key={`${activeIndex}-${animKey}`}
-        src={imgUrl}
-        alt={altText}
-        loading="eager"
-        decoding="async"
-        style={{
-          maxHeight: '90vh',
-          maxWidth: 'calc(100vw - 120px)',
-          objectFit: 'contain',
-          borderRadius: 8,
-          boxShadow: 'none',
-          userSelect: 'none',
-          pointerEvents: 'none',
-          animation: imgAnimation,
-        }}
-      />
-
       {/* Counter */}
       <div
         style={{
@@ -238,18 +245,6 @@ const GalleryLightbox: React.FC<GalleryLightboxProps> = ({
         @keyframes lightboxFadeIn {
           from { opacity: 0; }
           to   { opacity: 1; }
-        }
-        @keyframes lightboxZoomIn {
-          from { opacity: 0; transform: scale(0.94); }
-          to   { opacity: 1; transform: scale(1); }
-        }
-        @keyframes slideInFromRight {
-          from { opacity: 0; transform: translateX(35px); }
-          to   { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slideInFromLeft {
-          from { opacity: 0; transform: translateX(-35px); }
-          to   { opacity: 1; transform: translateX(0); }
         }
       `}</style>
     </div>

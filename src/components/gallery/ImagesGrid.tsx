@@ -28,12 +28,12 @@ const ImagesGrid = ({ data, local }: { data: any; local: string }) => {
             key={item.sys.id}
             type="button"
             onClick={() => setActiveIndex(idx)}
-            className="group relative aspect-square overflow-hidden rounded-lg bg-gray-100 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="group relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-100 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             <img
               src={item.fields.file.url + '?fm=webp&q=80&w=600'}
               alt={item.fields.title ? String(item.fields.title) : 'Gallery image'}
-              width={600}
+              width={800}
               height={600}
               loading="lazy"
               decoding="async"

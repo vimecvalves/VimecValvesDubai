@@ -13,7 +13,6 @@
     "@astrojs/check": "0.9.5",
     "@astrojs/netlify": "6.6.0",
     "@astrojs/react": "4.4.0",
-    "@astrojs/tailwind": "6.0.2",
     "@astrojs/ts-plugin": "1.10.5",
     "@astrojs/vercel": "^9.0.3",
     "@contentful/rich-text-html-renderer": "^17.0.0",
@@ -29,6 +28,9 @@
     "astro-icon": "^1.1.4",
     "astro-seo": "^0.8.4",
     "contentful": "^11.4.0",
+    "contentful-management": "^12.1.0",
+    "deepl-node": "^1.24.0",
+    "dotenv": "^17.3.1",
     "fuse.js": "^7.1.0",
     "prettier": "^3.4.2",
     "prettier-plugin-astro": "^0.14.1",
@@ -38,7 +40,7 @@
     "react-dom": "^18.3.1",
     "swiper": "^11.1.15",
     "tailwind-merge": "^2.5.5",
-    "tailwindcss": "^4.1.5",
+    "tailwindcss": "^4.2.2",
     "typescript": "^5.7.2"
   },
   "devDependencies": {

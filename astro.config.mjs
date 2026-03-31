@@ -20,6 +20,10 @@ export default defineConfig({
   },
 
   output: "server",
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: "hover",
+  },
   integrations: [
     icon(),
     react(),

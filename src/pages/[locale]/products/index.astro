@@ -17,6 +17,45 @@ const data = await contentfulClient.getEntries<TypeProduct>({
   content_type: "product",
   locale: local,
 });
+
+if (local === 'it') {
+  data.items.forEach(item => {
+    const catUpper = item.fields?.category?.fields?.title?.toUpperCase() || '';
+    
+    // 1. Correct the main product names based on their category mappings (since Italian names are wiped or broken as 'INTÉGRALE')
+    if (['MODULAR', 'COMPACT', 'INTEGRAL'].includes(catUpper)) {
+      item.fields.name = 'Valvole Double Block & Bleed';
+    } else if (catUpper === 'TRUNNION') {
+      item.fields.name = 'Valvole a Sfera Trunnion';
+    } else if (['TOP ENTRY', 'FLOATING', 'METAL SEATED'].includes(catUpper)) {
+      item.fields.name = 'Valvole a Sfera';
+    } else if (['MANIFOLDS', 'MONOFLANGES', 'NEEDLE VALVE'].includes(catUpper)) {
+      item.fields.name = 'Strumentazione';
+    } else if (['CAST STEEL', 'FORGED STEEL'].includes(catUpper)) {
+      item.fields.name = 'Valvole a Saracinesca, Globo e Ritegno';
+    } else if (catUpper === 'DUAL PLATE') {
+      item.fields.name = 'Valvole di Ritegno';
+    } else if (['CONCENTRIC', 'HIGH PERFORMANCE'].includes(catUpper)) {
+      item.fields.name = 'Valvole a Farfalla';
+    } else {
+      // Fallback if there are any others that retain English names
+      let displayName = item.fields.name || '';
+      if (displayName.includes('Double Block & Bleed')) item.fields.name = 'Valvole Double Block & Bleed';
+      else if (displayName.includes('Ball Valves')) item.fields.name = 'Valvole a Sfera';
+      else if (displayName.includes('Instrumentation')) item.fields.name = 'Strumentazione';
+      else if (displayName.includes('Gate, Globe, Check')) item.fields.name = 'Valvole a Saracinesca, Globo e Ritegno';
+      else if (displayName.includes('Check Valves')) item.fields.name = 'Valvole di Ritegno';
+      else if (displayName.includes('Butterfly Valves')) item.fields.name = 'Valvole a Farfalla';
+    }
+
+    // 2. Correct specific category subtitle translations requested previously
+    if (item.fields.category && item.fields.category.fields) {
+      if (catUpper === 'MODULAR') item.fields.category.fields.title = 'Modulare';
+      else if (catUpper === 'COMPACT') item.fields.category.fields.title = 'Compatto';
+      else if (catUpper === 'INTEGRAL') item.fields.category.fields.title = 'Integrale';
+    }
+  });
+}
 ---
 
 <Layout

@@ -527,7 +527,40 @@ export const ui = {
                     title: 'Posizione',
                     link: {
                       text: 'Vimec Valves U.K. Ltd<br> Ufficio 20, The Coach House,<br> 11 Owler Ings Road, Brighouse,<br> West Yorkshire, HD6 1EJ,<br> Regno Unito',
-                      href: 'https://www.google.com/maps/place/Via+del+Lavoro,+24050+Cividate+al+Piano+BG,+Italy/@45.547192,9.816674,17z/',
+                      href: 'https://www.google.com/maps/place/Vimec+Valves+U.K.+Ltd/@53.738122,-1.792556,17z/',
+                      target: '_blank',
+                    },
+                  },
+                  {
+                    icon: 'ic:round-phone',
+                    title: 'Telefono',
+                    link: {
+                      text: '+44 1902 953025',
+                      href: 'tel:+441902953025',
+                      target: '_blank',
+                    },
+                  },
+                  {
+                    icon: 'material-symbols:mail',
+                    title: 'Email',
+                    link: {
+                      text: 'sales@vimecvalves.co.uk',
+                      href: 'mailto:sales@vimecvalves.co.uk',
+                      target: '_blank',
+                    },
+                  },
+                ],
+              },
+              {
+                type: 'Stabilimento di produzione in ITALIA',
+                id: 'mfi',
+                links: [
+                  {
+                    icon: 'bxs:map',
+                    title: 'Posizione',
+                    link: {
+                      text: 'Vimec Group Italia Srl<br> Via Lago d’Iseo no.5,<br> Bolgare, 24060,<br> Bergamo (BG), Italia',
+                      href: 'https://maps.app.goo.gl/wY4bBHpKcodjy8TL8',
                       target: '_blank',
                     },
                   },
