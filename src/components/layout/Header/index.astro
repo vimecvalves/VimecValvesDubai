@@ -328,51 +328,70 @@ const navLinks = links.map((item) => {
 <script>
   function setupDesktopNav() {
     const navItems = document.querySelectorAll<HTMLLIElement>('.desktop-nav-item[data-has-list="true"]');
+    const supportsHover = window.matchMedia('(hover: hover)').matches;
     let openIndex: string | null = null;
 
+    function openDropdown(li: HTMLLIElement, idx: string | null) {
+      const dropdown = li.querySelector<HTMLElement>('.desktop-nav-dropdown');
+      const arrow = li.querySelector<HTMLElement>('.desktop-nav-arrow');
+      dropdown?.classList.remove('hidden');
+      dropdown?.classList.add('flex');
+      arrow?.classList.add('-rotate-90');
+      arrow?.classList.remove('rotate-90');
+      openIndex = idx;
+    }
+
+    function closeDropdown(li: HTMLLIElement) {
+      const dropdown = li.querySelector<HTMLElement>('.desktop-nav-dropdown');
+      const arrow = li.querySelector<HTMLElement>('.desktop-nav-arrow');
+      dropdown?.classList.remove('flex');
+      dropdown?.classList.add('hidden');
+      arrow?.classList.remove('-rotate-90');
+      arrow?.classList.add('rotate-90');
+    }
+
     function closeAll() {
-      navItems.forEach((li) => {
-        const dropdown = li.querySelector<HTMLElement>('.desktop-nav-dropdown');
-        const arrow = li.querySelector<HTMLElement>('.desktop-nav-arrow');
-        dropdown?.classList.remove('flex');
-        dropdown?.classList.add('hidden');
-        arrow?.classList.remove('-rotate-90');
-        arrow?.classList.add('rotate-90');
-      });
+      navItems.forEach((li) => closeDropdown(li));
       openIndex = null;
     }
 
     navItems.forEach((li) => {
       const link = li.querySelector<HTMLAnchorElement>('.desktop-nav-link');
-      const dropdown = li.querySelector<HTMLElement>('.desktop-nav-dropdown');
-      const arrow = li.querySelector<HTMLElement>('.desktop-nav-arrow');
       const idx = li.getAttribute('data-index');
 
-      link?.addEventListener('click', (e) => {
-        if (openIndex === idx) {
-          // Already open → navigate normally
+      if (supportsHover) {
+        // ── Hover-capable devices (desktop mouse) ──────────────────────────
+        li.addEventListener('mouseenter', () => openDropdown(li, idx));
+        li.addEventListener('mouseleave', () => closeDropdown(li));
+
+        // On hover devices, clicking the parent link always navigates
+        // (dropdown is already visible on hover, no need to intercept)
+        link?.addEventListener('click', () => closeAll());
+
+      } else {
+        // ── Touch / no-hover devices (tablets, phones) ─────────────────────
+        link?.addEventListener('click', (e) => {
+          if (openIndex === idx) {
+            // Second click → navigate normally
+            closeAll();
+            return;
+          }
+          // First click → open dropdown, block navigation
+          e.preventDefault();
           closeAll();
-          return;
-        }
-        // First click → open dropdown, prevent navigation
-        e.preventDefault();
-        closeAll();
-        dropdown?.classList.remove('hidden');
-        dropdown?.classList.add('flex');
-        arrow?.classList.add('-rotate-90');
-        arrow?.classList.remove('rotate-90');
-        openIndex = idx;
-      });
+          openDropdown(li, idx);
+        });
+      }
     });
 
-    // Close on outside click
+    // Close on outside click (both modes)
     document.addEventListener('click', (e) => {
       const target = e.target as Node;
-      const clickedInsideNav = Array.from(navItems).some((li) => li.contains(target));
-      if (!clickedInsideNav) closeAll();
+      const inside = Array.from(navItems).some((li) => li.contains(target));
+      if (!inside) closeAll();
     });
 
-    // Close on Escape
+    // Close on Escape (both modes)
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeAll();
     });
