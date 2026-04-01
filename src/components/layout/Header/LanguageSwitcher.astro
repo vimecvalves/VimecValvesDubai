@@ -64,7 +64,6 @@ const page = pathname.replace(`/${locale}/`, '').replace(`/${locale}`, '');
     });
   }
 
-  // Setup on initial load and view transitions if used
-  setupLanguageSwitchers();
+  // astro:page-load fires on first load AND after every view transition
   document.addEventListener('astro:page-load', setupLanguageSwitchers);
 </script>

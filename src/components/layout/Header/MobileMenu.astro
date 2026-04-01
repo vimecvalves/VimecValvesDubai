@@ -54,22 +54,32 @@ const { links, locale, searchData } = Astro.props;
       {
         links.map((item, idx) => (
           <li class="flex flex-col items-center justify-center group/n relative z-0 py-4 border-b border-[#C1C1C1] last:border-0 mobile-nav-item">
-            <a
-              href={item.list ? undefined : getRelativeLocaleUrl(locale, item.link)}
-              role={item.list ? "button" : undefined}
-              tabindex={item.list ? 0 : undefined}
-              class="flex items-center justify-start gap-2 w-full nav-item-link"
-              data-index={idx}
-            >
-              <!-- @ts-ignore -->
-              {ui[locale].sections.nav[item.key]}
+            <div class="flex items-center justify-between w-full">
+              {/* Main navigation link — always navigates */}
+              <a
+                href={getRelativeLocaleUrl(locale, item.link)}
+                class="flex-1 flex items-center justify-start gap-2 nav-item-link"
+                data-index={idx}
+              >
+                {/* @ts-ignore */}
+                {ui[locale].sections.nav[item.key]}
+              </a>
+
+              {/* Separate toggle button — only expands/collapses submenu */}
               {item.list && (
-                <Icon
-                  name="weui:arrow-outlined"
-                  class="text-2xl max-xl:text-xl group-hover/n:-rotate-90 rotate-90 duration-500 nav-arrow"
-                />
+                <button
+                  type="button"
+                  aria-label="Expand submenu"
+                  class="p-2 nav-item-toggle flex items-center justify-center"
+                  data-index={idx}
+                >
+                  <Icon
+                    name="weui:arrow-outlined"
+                    class="text-2xl max-xl:text-xl rotate-90 duration-500 nav-arrow"
+                  />
+                </button>
               )}
-            </a>
+            </div>
 
             {item.list && (
               <ul class="text-start duration-300 flex flex-col gap-2 p-0 w-full overflow-hidden max-h-0 opacity-0 transition-all nav-sublist">
@@ -178,13 +188,15 @@ const { links, locale, searchData } = Astro.props;
     let activeIndex: string | null = null;
 
     navItems.forEach((item) => {
-      const link = item.querySelector(".nav-item-link") as HTMLAnchorElement;
+      // The TOGGLE BUTTON controls the accordion — not the main link
+      const toggleBtn = item.querySelector(".nav-item-toggle") as HTMLButtonElement;
       const sublist = item.querySelector(".nav-sublist") as HTMLElement;
+      const arrow = item.querySelector(".nav-arrow") as HTMLElement;
 
-      if (link && sublist) {
-        link.addEventListener("click", (e) => {
-          e.preventDefault();
-          const index = link.getAttribute("data-index");
+      if (toggleBtn && sublist) {
+        toggleBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const index = toggleBtn.getAttribute("data-index");
 
           if (activeIndex === index) {
             // Close active
@@ -192,28 +204,35 @@ const { links, locale, searchData } = Astro.props;
             sublist.style.opacity = "0";
             sublist.style.paddingTop = "0px";
             sublist.style.paddingBottom = "0px";
+            arrow?.classList.remove("-rotate-90");
+            arrow?.classList.add("rotate-90");
             activeIndex = null;
           } else {
             // Close old active if any
             if (activeIndex) {
-              const oldActive = document.querySelector(
-                `.nav-item-link[data-index="${activeIndex}"]`
+              const oldToggle = document.querySelector(
+                `.nav-item-toggle[data-index="${activeIndex}"]`
               );
-              const oldSublist = oldActive?.parentElement?.querySelector(
+              const oldSublist = oldToggle?.closest(".mobile-nav-item")?.querySelector(
                 ".nav-sublist"
               ) as HTMLElement;
+              const oldArrow = oldToggle?.querySelector(".nav-arrow") as HTMLElement;
               if (oldSublist) {
                 oldSublist.style.maxHeight = "0px";
                 oldSublist.style.opacity = "0";
                 oldSublist.style.paddingTop = "0px";
                 oldSublist.style.paddingBottom = "0px";
               }
+              oldArrow?.classList.remove("-rotate-90");
+              oldArrow?.classList.add("rotate-90");
             }
             // Open new
             sublist.style.maxHeight = sublist.scrollHeight + 40 + "px";
             sublist.style.opacity = "1";
             sublist.style.paddingTop = "1rem";
             sublist.style.paddingBottom = "1rem";
+            arrow?.classList.add("-rotate-90");
+            arrow?.classList.remove("rotate-90");
             activeIndex = index;
           }
         });
@@ -221,6 +240,6 @@ const { links, locale, searchData } = Astro.props;
     });
   }
 
-  setupMobileMenu();
+  // astro:page-load fires on first load AND after every view transition
   document.addEventListener("astro:page-load", setupMobileMenu);
 </script>
