@@ -270,25 +270,34 @@ const navLinks = links.map((item) => {
     >
       {
         navLinks.map((item, idx) => (
-          <li class="group relative z-0 flex items-center justify-center">
-            <Link
-              href={item.link}
-              class="flex items-center justify-center gap-2"
+          <li
+            class="desktop-nav-item relative z-0 flex items-center justify-center"
+            data-index={idx}
+            data-has-list={item.list ? "true" : "false"}
+          >
+            <a
+              href={getRelativeLocaleUrl(locale, item.link)}
+              class="desktop-nav-link flex items-center justify-center gap-2"
+              data-index={idx}
             >
               {ui[locale].sections.nav[item.key]}{" "}
               {item.list && (
                 <Icon
                   name="weui:arrow-outlined"
-                  class="rotate-90 text-2xl duration-500 group-hover:-rotate-90 max-xl:text-xl"
+                  class="desktop-nav-arrow rotate-90 text-2xl duration-300 max-xl:text-xl"
                 />
               )}
-            </Link>
+            </a>
             {item.list && (
-              <ul class="absolute top-full left-1/2 hidden w-max max-w-[240px] -translate-x-1/2 flex-col gap-2 rounded-[3px] border border-[#C1C1C1] bg-white p-4 text-start uppercase shadow-lg duration-300 group-hover:flex starting:translate-y-4">
+              <ul
+                class="desktop-nav-dropdown absolute top-full left-1/2 hidden w-max max-w-[240px] -translate-x-1/2 flex-col gap-2 rounded-[3px] border border-[#C1C1C1] bg-white p-4 text-start uppercase shadow-lg duration-300"
+              >
                 {item.list.map((subItem) => (
-                  <Link href={subItem.link} class="hover:text-black/80">
-                    {subItem.title}
-                  </Link>
+                  <li>
+                    <Link href={subItem.link} class="hover:text-black/80 block py-1">
+                      {subItem.title}
+                    </Link>
+                  </li>
                 ))}
               </ul>
             )}
@@ -315,3 +324,59 @@ const navLinks = links.map((item) => {
     />
   </div>
 </nav>
+
+<script>
+  function setupDesktopNav() {
+    const navItems = document.querySelectorAll<HTMLLIElement>('.desktop-nav-item[data-has-list="true"]');
+    let openIndex: string | null = null;
+
+    function closeAll() {
+      navItems.forEach((li) => {
+        const dropdown = li.querySelector<HTMLElement>('.desktop-nav-dropdown');
+        const arrow = li.querySelector<HTMLElement>('.desktop-nav-arrow');
+        dropdown?.classList.remove('flex');
+        dropdown?.classList.add('hidden');
+        arrow?.classList.remove('-rotate-90');
+        arrow?.classList.add('rotate-90');
+      });
+      openIndex = null;
+    }
+
+    navItems.forEach((li) => {
+      const link = li.querySelector<HTMLAnchorElement>('.desktop-nav-link');
+      const dropdown = li.querySelector<HTMLElement>('.desktop-nav-dropdown');
+      const arrow = li.querySelector<HTMLElement>('.desktop-nav-arrow');
+      const idx = li.getAttribute('data-index');
+
+      link?.addEventListener('click', (e) => {
+        if (openIndex === idx) {
+          // Already open → navigate normally
+          closeAll();
+          return;
+        }
+        // First click → open dropdown, prevent navigation
+        e.preventDefault();
+        closeAll();
+        dropdown?.classList.remove('hidden');
+        dropdown?.classList.add('flex');
+        arrow?.classList.add('-rotate-90');
+        arrow?.classList.remove('rotate-90');
+        openIndex = idx;
+      });
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      const target = e.target as Node;
+      const clickedInsideNav = Array.from(navItems).some((li) => li.contains(target));
+      if (!clickedInsideNav) closeAll();
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeAll();
+    });
+  }
+
+  document.addEventListener('astro:page-load', setupDesktopNav);
+</script>
