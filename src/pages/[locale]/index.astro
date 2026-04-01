@@ -34,15 +34,9 @@ const data = await contentfulClient.getEntry<TypeHomePage>(
 >
   <HeroSection data={data.fields.heroSectionImageSlider!} />
   <SomeCounts />
-  <OurProducts server:defer>
-    <Fallback slot="fallback" />
-  </OurProducts>
-  <SupplyReferences server:defer>
-    <Fallback slot="fallback" />
-  </SupplyReferences>
+  <OurProducts />
+  <SupplyReferences />
   <OurHistory />
-  <NewsEvents server:defer>
-    <Fallback slot="fallback" />
-  </NewsEvents>
+  <NewsEvents />
   <GetInTouch />
 </Layout>

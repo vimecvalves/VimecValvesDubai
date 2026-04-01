@@ -124,6 +124,12 @@ let data = await contentfulClient.getEntries<TypeProduct>({
         },
       });
 
+      requestAnimationFrame(() => {
+        if (this.swiper) {
+          this.swiper.update();
+        }
+      });
+
       this.handleBeforePreparation = () => {
         if (this.swiper && !this.swiper.destroyed) {
           this.swiper.destroy(true, true);
