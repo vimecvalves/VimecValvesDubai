@@ -14,21 +14,21 @@ const local = Astro.currentLocale as "en" | "it";
 >
   <div class="w-full relative z-0 flex flex-col wrapper">
     <span
-      class="w-[50vw] md:right-[70%] max-md:left-[70%] top-0 border-t-2 border-transparent border-t-vim-blue absolute -z-10"
+      class="timeline-progress w-[50vw] md:right-[70%] max-md:left-[70%] top-0 border-t-2 border-transparent border-t-vim-blue absolute -z-10"
     >
     </span>
     <span
-      class="w-[50vw] left-[70%] bottom-0 border-b-2 border-transparent border-b-vim-blue absolute -z-10"
-    >
-    </span>
-
-    <span
-      class="md:w-[35%] w-full md:left-0 max-md:right-[2px] top-0 border-t-2 md:border-r-2 max-md:border-l-2 border-vim-blue absolute h-[60%] md:rounded-tr-[40px] max-md:rounded-tl-[40px] -z-10"
+      class="timeline-progress w-[50vw] left-[70%] bottom-0 border-b-2 border-transparent border-b-vim-blue absolute -z-10"
     >
     </span>
 
     <span
-      class="md:w-[65%] w-full right-[2px] bottom-0 border-b-2 border-l-2 border-vim-blue absolute rounded-bl-[40px] h-[60%] -z-10"
+      class="timeline-progress md:w-[35%] w-full md:left-0 max-md:right-[2px] top-0 border-t-2 md:border-r-2 max-md:border-l-2 border-vim-blue absolute h-[60%] md:rounded-tr-[40px] max-md:rounded-tl-[40px] -z-10"
+    >
+    </span>
+
+    <span
+      class="timeline-progress md:w-[65%] w-full right-[2px] bottom-0 border-b-2 border-l-2 border-vim-blue absolute rounded-bl-[40px] h-[60%] -z-10"
     >
     </span>
 
@@ -97,6 +97,98 @@ const local = Astro.currentLocale as "en" | "it";
       document.fonts.ready.then(adjustTimelinePosition);
     }
     setTimeout(adjustTimelinePosition, 100);
+
+    let hasCompleted = false;
+    let targetProgress = 0;
+    let currentProgress = 0;
+    let isAnimating = false;
+
+    const animateTimeline = () => {
+      if (hasCompleted && Math.abs(targetProgress - currentProgress) < 0.001) {
+        currentProgress = 1;
+      } else {
+        currentProgress += (targetProgress - currentProgress) * 0.08;
+      }
+
+      const progressElements = document.querySelectorAll<HTMLElement>(".timeline-progress");
+      progressElements.forEach((el) => {
+        el.style.clipPath = `inset(0 0 ${100 - (currentProgress * 100)}% 0)`;
+      });
+
+      const container = document.getElementById("our-history");
+      if (container) {
+        const containerRect = container.getBoundingClientRect();
+        const containerHeight = containerRect.height;
+        const lineTipAbsolute = containerRect.top + currentProgress * containerHeight;
+
+        const items = document.querySelectorAll<HTMLElement>(".timeline-item");
+        items.forEach((item) => {
+          const itemRect = item.getBoundingClientRect();
+          const itemCenterAbsolute = itemRect.top + itemRect.height / 2;
+
+          if (lineTipAbsolute >= itemCenterAbsolute) {
+            item.classList.add("active");
+          } else {
+            if (!hasCompleted) {
+              item.classList.remove("active");
+            }
+          }
+        });
+      }
+
+      if (hasCompleted && currentProgress >= 1) {
+        isAnimating = false;
+        return;
+      }
+
+      requestAnimationFrame(animateTimeline);
+    };
+
+    const calculateTimelineProgress = () => {
+      if (hasCompleted) return;
+
+      const container = document.getElementById("our-history");
+      if (!container) return;
+
+      const containerRect = container.getBoundingClientRect();
+
+      if (containerRect.top > window.innerHeight) {
+        targetProgress = 0;
+      } else {
+        const triggerPoint = window.innerHeight;
+        const containerHeight = containerRect.height;
+        let scrollDistance = triggerPoint - containerRect.top;
+        targetProgress = Math.max(0, Math.min(1, scrollDistance / containerHeight));
+      }
+
+      if (targetProgress >= 1) {
+        hasCompleted = true;
+      }
+
+      if (!isAnimating) {
+        isAnimating = true;
+        requestAnimationFrame(animateTimeline);
+      }
+    };
+
+    window.addEventListener("scroll", calculateTimelineProgress);
+    calculateTimelineProgress();
   });
   window.addEventListener("resize", adjustTimelinePosition);
 </script>
+
+<style>
+  .timeline-progress {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  .timeline-item {
+    opacity: 0;
+    translate: 0 40px;
+    transition: opacity 600ms ease, translate 600ms ease;
+  }
+  .timeline-item.active {
+    opacity: 1;
+    translate: 0 0;
+  }
+</style>
