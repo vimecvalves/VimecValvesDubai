@@ -24,7 +24,7 @@ const { item } = Astro.props;
       src={item.fields.featuredImage.fields.file.url}
       width={600}
       height={400}
-      alt={item.fields.featuredImage.fields.file.fileName}
+      alt={item.fields.title || "News post image"}
       class="h-full w-full rounded-xl object-cover transition-transform duration-400 ease-out group-hover:scale-105"
     />
   </div>

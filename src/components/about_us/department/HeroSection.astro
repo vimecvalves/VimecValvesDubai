@@ -27,7 +27,7 @@ const { data } = Astro.props;
   <div class="flex size-full items-start justify-center">
     <Image
       src={data.fields.image.fields.file.url}
-      alt={data.fields.image.fields.file.fileName}
+      alt={data.fields.title || "Department hero image"}
       width={500}
       height={600}
       class="rounded-xl overflow-hidden object-center object-cover max-md:w-full max-md:max-h-[400px]"

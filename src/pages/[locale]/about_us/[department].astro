@@ -18,7 +18,10 @@ const data = await contentfulClient.getEntry(department!, {
 });
 ---
 
-<Layout>
+<Layout
+  title={`${data.fields.title} | Vimec Valves`}
+  description={`Learn more about the ${data.fields.title} department at Vimec Valves, committed to engineering and manufacturing high-quality industrial valves.`}
+>
   <HeroSection data={data} />
   <GetInTouch />
 </Layout>

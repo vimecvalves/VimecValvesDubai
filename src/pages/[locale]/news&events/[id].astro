@@ -17,7 +17,24 @@ const data = await contentfulClient.getEntry<TypeNewsNEvents>(id!, {
 });
 ---
 
-<Layout>
+<Layout
+  title={`${data.fields.title} | Vimec News`}
+  description={`Read the latest news and updates from Vimec Valves regarding ${data.fields.title}.`}
+  image={data.fields.featuredImage?.fields?.file?.url}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": data.fields.title,
+    "image": [
+      data.fields.featuredImage?.fields?.file?.url ? `https:${data.fields.featuredImage.fields.file.url}` : ""
+    ],
+    "datePublished": data.sys.createdAt,
+    "author": {
+      "@type": "Organization",
+      "name": "Vimec Valves"
+    }
+  })} />
   <HeroSection {...data} />
 
   <section
@@ -25,7 +42,7 @@ const data = await contentfulClient.getEntry<TypeNewsNEvents>(id!, {
   >
     <Image
       src={data.fields.featuredImage.fields.file.url}
-      alt={data.fields.featuredImage.fields.file.fileName}
+      alt={data.fields.title || "Featured image"}
       transition:name={data.fields.featuredImage.fields.file.url}
       width={data.fields.featuredImage.fields.file.details.image.width}
       height={data.fields.featuredImage.fields.file.details.image.height}

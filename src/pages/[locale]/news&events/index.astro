@@ -22,7 +22,10 @@ const data = await contentfulClient.getEntries<TypeNewsNEvents>({
 });
 ---
 
-<Layout>
+<Layout
+  title="News & Events | Vimec Valves"
+  description="Stay updated with the latest news, events, and announcements from Vimec Valves, an industry leader in industrial valve manufacturing."
+>
   <section
     class:list={[
       "wrapper flex md:mt-32 mt-28 flex-col gap-10 ",

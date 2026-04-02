@@ -108,7 +108,6 @@ const Catalogue: React.FC<CatalogueProps> = ({ item, local }) => {
               width={600}
               height={400}
               alt={
-                item.fields.bannerImage.fields.file.fileName ||
                 item.fields.title ||
                 'Download banner'
               }

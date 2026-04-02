@@ -13,13 +13,25 @@ interface Props {
   hideTopFooter?: boolean;
   title?: string;
   description?: string;
+  image?: string;
 }
 
 const { 
   hideTopFooter = false, 
-  title = "Best Quality Sampling Valve Manufacturers in UK | Vimec",
-  description = "Vimec Group Italia is one of the best company for quality sampling valve manufacturers in italy for the design, manufacturing and supply of quality industrial valves."
+  title = "Vimec Valves",
+  description = "Vimec Group Italia is one of the best company for quality sampling valve manufacturers in italy for the design, manufacturing and supply of quality industrial valves.",
+  image = "/preview.jpg"
 } = Astro.props;
+
+const siteUrl = Astro.site ? Astro.site.toString().replace(/\/$/, "") : "https://www.vimecvalves.co.uk";
+const currentPath = Astro.url.pathname;
+const absolutePageUrl = `${siteUrl}${currentPath}`;
+const absoluteImageUrl = image.startsWith('http') ? image : `${siteUrl}${image.startsWith('/') ? '' : '/'}${image}`;
+
+const pathWithoutLocale = currentPath.replace(/^\/(en|it)/, "").replace(/\/$/, "");
+
+const enUrl = `${siteUrl}/en${pathWithoutLocale}`;
+const itUrl = `${siteUrl}/it${pathWithoutLocale}`;
 ---
 
 <!doctype html>
@@ -30,11 +42,23 @@ const {
       name="description"
       content={description}
     />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={absoluteImageUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={absolutePageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteImageUrl} />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <meta name="robots" content="index, follow" />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="it" href={itUrl} />
+    <link rel="alternate" hreflang="x-default" href={enUrl} />
     <ClientRouter />
     <link rel="preload" href={sfProBold} as="font" type="font/woff2" crossorigin="anonymous" />
     <link rel="preload" href={sfProMedium} as="font" type="font/woff2" crossorigin="anonymous" />

@@ -48,7 +48,7 @@ let selectedImageIndex = 0;
             <>
               <Image
                 src={item?.fields?.file?.url}
-                alt={item?.fields?.file?.fileName}
+                alt={`${fields.name} thumbnail ${idx}`}
                 width={80}
                 height={80}
                 data-index={idx}

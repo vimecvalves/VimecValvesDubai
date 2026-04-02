@@ -31,7 +31,7 @@ const flatData = data.items.flatMap((item) => item.fields.references);
             <div class="swiper-slide flex !w-max flex-col items-start justify-start rounded-lg px-6 py-6">
               <Image
                 src={item.fields.file.url}
-                alt={item.fields.file.fileName}
+                alt={item.fields.title || "Supply reference"}
                 class="h-[66px] w-auto object-contain"
                 height={300}
                 width={300}

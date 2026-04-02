@@ -26,10 +26,10 @@ let valves = data.map((item) => item.fields.image.fields.file?.url);
 let textures = data.map((item) => item.fields.texture.fields.file?.url);
 ---
 {valves.slice(1).map((url) => (
-  url && <link rel="preload" as="image" href={url} />
+  url && <link rel="preload" as="image" href={`${url}?fm=webp&q=80&w=1000`} />
 ))}
 {textures.slice(1).map((url) => (
-  url && <link rel="preload" as="image" href={url} />
+  url && <link rel="preload" as="image" href={`${url}?fm=webp&q=80&w=1000`} />
 ))}
 
 <section
@@ -65,7 +65,7 @@ let textures = data.map((item) => item.fields.texture.fields.file?.url);
     class="reveal-up right-0 bottom-[10%] flex h-full w-full items-end max-lg:-translate-x-[20%] lg:absolute lg:w-1/2"
   >
     <Image
-      src={textures[0] ?? texture1}
+      src={textures[0] ? `${textures[0]}?fm=webp&q=80&w=1000` : texture1}
       alt=""
       id="texture"
       width={1000}
@@ -75,10 +75,10 @@ let textures = data.map((item) => item.fields.texture.fields.file?.url);
       class="transition-image absolute bottom-[0px] left-1/2 h-auto w-full -translate-x-[calc(50%-20%)] !overflow-visible object-contain lg:-translate-x-1/2"
     />
     <Image
-      src={valves[0] ?? valve1}
+      src={valves[0] ? `${valves[0]}?fm=webp&q=80&w=1000` : valve1}
       width={1000}
       height={1000}
-      alt=""
+      alt="Industrial valve preview"
       id="valve"
       loading="eager"
       fetchpriority="high"
@@ -127,8 +127,8 @@ let textures = data.map((item) => item.fields.texture.fields.file?.url);
       textureImg.classList.add("fade-out");
 
       setTimeout(() => {
-        valveImg.src = valves[valveIndex];
-        textureImg.src = textures[textureIndex];
+        valveImg.src = valves[valveIndex] ? valves[valveIndex] + "?fm=webp&q=80&w=1000" : "";
+        textureImg.src = textures[textureIndex] ? textures[textureIndex] + "?fm=webp&q=80&w=1000" : "";
         valveIndex = (valveIndex + 1) % valves.length;
         textureIndex = (textureIndex + 1) % textures.length;
         valveImg.classList.remove("fade-out");

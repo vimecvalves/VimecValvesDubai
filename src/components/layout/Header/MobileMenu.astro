@@ -116,7 +116,7 @@ const { links, locale, searchData } = Astro.props;
               <a
                 href={item.link}
                 target="_blank"
-                aria-label="Visit social media"
+                aria-label={`Visit our ${item.icon.split(':')[1] || 'Social'} page`}
                 class="aspect-square p-2 rounded h-auto flex items-center justify-center border border-current text-vim-blue"
               >
                 <Icon name={item.icon} />

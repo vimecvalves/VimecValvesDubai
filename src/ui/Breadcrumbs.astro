@@ -10,6 +10,30 @@ interface Props {
 }
 
 const { data } = Astro.props;
+
+const siteUrl = Astro.site ? Astro.site.toString().replace(/\/$/, "") : "https://www.vimecvalves.co.uk";
+const locale = Astro.currentLocale || "en";
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": data.map((item, index) => {
+    let finalLink = item.link;
+    if (!finalLink || finalLink === "") {
+        finalLink = Astro.url.pathname;
+    } else if (finalLink === "/") {
+        finalLink = `/${locale}`;
+    } else {
+        finalLink = `/${locale}${finalLink.startsWith('/') ? '' : '/'}${finalLink}`;
+    }
+    return {
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": item.title,
+      "item": `${siteUrl}${finalLink.replace(/\/$/, '')}`
+    };
+  })
+};
 ---
 
 <menu class:list={["flex items-center gap-1 font-medium flex-wrap"]}>
@@ -24,3 +48,4 @@ const { data } = Astro.props;
     ))
   }
 </menu>
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />

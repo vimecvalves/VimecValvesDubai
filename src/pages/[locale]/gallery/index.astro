@@ -46,7 +46,7 @@ const data = await contentfulClient.getEntries<TypeGallery>({
             <Image
               src={item?.fields?.images[0]?.fields?.file?.url}
               alt={
-                item?.fields?.images[0]?.fields?.file.fileName + " gallery image"
+                item.fields.title ? item.fields.title + " gallery thumbnail" : "Gallery thumbnail"
               }
               width={400}
               height={220}

@@ -51,7 +51,7 @@ const local = Astro.currentLocale as "en" | "it";
               <a
                 href={item.link}
                 target="_blank"
-                aria-label="Visit social media"
+                aria-label={`Visit our ${item.icon.split(':')[1] || 'Social'} page`}
                 class="text-vim-blue hover:bg-vim-blue flex aspect-square h-auto items-center justify-center rounded border border-current p-2 hover:text-white"
               >
                 <Icon name={item.icon} />
@@ -164,7 +164,7 @@ const local = Astro.currentLocale as "en" | "it";
             <Link
               href={item.link}
               target="_blank"
-              aria-label="Visit social media"
+              aria-label={`Visit our ${item.icon.split(':')[1] || 'Social'} page`}
               class="text-vim-blue flex aspect-square h-auto items-center justify-center rounded border border-current p-2"
             >
               <Icon name={item.icon} />

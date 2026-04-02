@@ -245,7 +245,7 @@ const navLinks = links.map((item) => {
         >
           {
             socialMedia.map((item) => (
-              <a href={item.link} target="_blank" aria-label="Visit social media" class="p-2">
+              <a href={item.link} target="_blank" aria-label={`Visit our ${item.icon.split(':')[1] || 'Social'} page`} class="p-2">
                 <Icon name={item.icon} class="hover:text-white/50" />
               </a>
             ))
