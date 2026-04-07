@@ -761,7 +761,7 @@ export const links = [
   },
   {
     key: 'about',
-    link: '/about_us',
+    link: '/about-us',
   },
   {
     key: 'products',
@@ -769,7 +769,7 @@ export const links = [
   },
   {
     key: 'news',
-    link: '/news&events',
+    link: '/news-events',
   },
   {
     key: 'downloads',

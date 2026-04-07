@@ -1,50 +1,91 @@
 import type { APIRoute } from 'astro';
 import { contentfulClient } from "@/libs/content/contentful/data";
+import { slugify } from "@/libs/utils/slugify";
 
 export const GET: APIRoute = async () => {
   const siteUrl = "https://www.vimecvalves.co.uk";
   const locales = ['en', 'it'];
   const staticRoutes = [
     '',
-    '/about_us',
+    '/about-us',
     '/contact_us',
     '/downloads',
     '/products',
-    '/gallery'
+    '/gallery',
+    '/news-events'
   ];
 
-  // Fetch all dynamically created product and gallery entries from Contentful
+  // Fetch all dynamically created product, gallery, and news entries from Contentful
   const products = await contentfulClient.getEntries({ content_type: "product" });
   const gallery = await contentfulClient.getEntries({ content_type: "gallery" });
+  const news = await contentfulClient.getEntries({ content_type: "newsEvents" });
+  const aboutUs = await contentfulClient.getEntries({ content_type: "departmentAboutUs" });
 
-  const urls: string[] = [];
+  const urlEntries: string[] = [];
 
-  // Map absolute URLs with locale prefixes
-  locales.forEach((locale) => {
-    // Basic static pages
-    staticRoutes.forEach((route) => {
-      urls.push(`/${locale}${route}`);
+  // Helper to generate the URL blocks with hreflangs
+  const pushUrlBlock = (pathWithoutLocale: string) => {
+    locales.forEach((currentLocale) => {
+      const loc = `${siteUrl}/${currentLocale}${pathWithoutLocale}`;
+      const alternates = locales.map(
+        (altLocale) => `<xhtml:link rel="alternate" hreflang="${altLocale}" href="${siteUrl}/${altLocale}${pathWithoutLocale}"/>`
+      ).join('\n    ');
+      
+      const xDefault = `<xhtml:link rel="alternate" hreflang="x-default" href="${siteUrl}/en${pathWithoutLocale}"/>`;
+
+      urlEntries.push(`<url>
+    <loc>${loc}</loc>
+    ${alternates}
+    ${xDefault}
+  </url>`);
     });
+  };
 
-    // Individual dynamic product pages
-    if (products?.items) {
-      products.items.forEach((item) => {
-        urls.push(`/${locale}/products/${item.sys.id}`);
-      });
-    }
-
-    // Individual dynamic gallery pages
-    if (gallery?.items) {
-      gallery.items.forEach((item) => {
-        urls.push(`/${locale}/gallery/${item.sys.id}`);
-      });
-    }
+  // Add static paths
+  staticRoutes.forEach((route) => {
+    pushUrlBlock(route);
   });
+
+  // Add product pages (using slugification system)
+  if (products?.items) {
+    products.items.forEach((item) => {
+      // @ts-ignore - slug may not exist in types yet
+      const slug = item.fields.slug ?? slugify(item.fields.name);
+      pushUrlBlock(`/products/${slug}`);
+    });
+  }
+
+  // Add gallery pages (using slugification system)
+  if (gallery?.items) {
+    gallery.items.forEach((item) => {
+      // @ts-ignore
+      const slug = item.fields.slug ?? slugify(item.fields.title);
+      pushUrlBlock(`/gallery/${slug}`);
+    });
+  }
+
+  // Add news pages (using slugification system)
+  if (news?.items) {
+    news.items.forEach((item) => {
+      // @ts-ignore
+      const slug = item.fields.slug ?? slugify(item.fields.title);
+      pushUrlBlock(`/news-events/${slug}`);
+    });
+  }
+
+  // Add about-us pages (using slugification system)
+  if (aboutUs?.items) {
+    aboutUs.items.forEach((item) => {
+      // @ts-ignore
+      const slug = item.fields.slug ?? slugify(item.fields.title);
+      pushUrlBlock(`/about-us/${slug}`);
+    });
+  }
 
   // Construct standard sitemap XML
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  ${urls.map((url) => `<url><loc>${siteUrl}${url}</loc></url>`).join('\n  ')}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  ${urlEntries.join('\n  ')}
 </urlset>`;
 
   return new Response(sitemap, {
@@ -55,3 +96,4 @@ export const GET: APIRoute = async () => {
     }
   });
 };
+

@@ -10,6 +10,7 @@ import { Image } from "astro:assets";
 import { ui } from "@/i18n/ui";
 import { contentfulClient } from "@/libs/content/contentful/data";
 import type { TypeGallery } from "@/libs/content/contentful/entriesType";
+import { slugify } from "@/libs/utils/slugify";
 
 export const prerender = false;
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
@@ -17,6 +18,7 @@ const locale = Astro.currentLocale as "en" | "it";
 
 const data = await contentfulClient.getEntries<TypeGallery>({
   content_type: "gallery",
+  include: 2,
   locale: locale,
 });
 ---
@@ -37,9 +39,12 @@ const data = await contentfulClient.getEntries<TypeGallery>({
       class="grid gap-x-6 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
     >
       {
-        data.items.map((item) => (
+        data.items.map((item) => {
+          // @ts-ignore
+          const slug = item.fields.slug ?? slugify(item.fields.title);
+          return (
           <Link
-            href={"/gallery/" + encodeURIComponent(item.sys.id)}
+            href={`gallery/${encodeURIComponent(slug)}`}
             class="reveal-up group relative flex flex-col items-center justify-center overflow-hidden rounded-xl bg-[#F4F4F4] shadow-[0_2px_8px_rgba(0,0,0,0.07)] hover:shadow-[0_10px_28px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-300"
           >
             {/* Image with hover zoom */}
@@ -59,7 +64,8 @@ const data = await contentfulClient.getEntries<TypeGallery>({
               {item.fields.title}
             </h2>
           </Link>
-        ))
+          );
+        })
       }
     </div>
   </section>

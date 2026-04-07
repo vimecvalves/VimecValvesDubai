@@ -1,0 +1,70 @@
+---
+import Layout from "@/components/layout/Layout.astro";
+import HeroSection from "@/components/news-events/[slug]/HeroSection.astro";
+import { contentfulClient } from "@/libs/content/contentful/data";
+import type { TypeNewsNEvents } from "@/libs/content/contentful/entriesType";
+import main_padding from "@/styles/padding";
+import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
+import { Image } from "astro:assets";
+import { slugify } from "@/libs/utils/slugify";
+
+const { slug } = Astro.params;
+const local = Astro.currentLocale as "en" | "it";
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
+
+const allNews = await contentfulClient.getEntries<TypeNewsNEvents>({
+  content_type: 'newsEvents',
+  locale: local,
+  include: 2,
+});
+
+console.log("News URL Slug Param:", slug);
+console.log("News Available Slugs:", allNews.items.map(e => slugify(e.fields.title)));
+
+const data = allNews.items.find(item => {
+  // @ts-ignore
+  const itemSlug = item.fields.slug ?? slugify(item.fields.title);
+  return itemSlug === slug;
+});
+
+if (!data) return new Response(null, { status: 404 });
+---
+
+<Layout
+  title={`${data.fields.title} | Vimec News`}
+  description={`Read the latest news and updates from Vimec Valves regarding ${data.fields.title}.`}
+  image={data.fields.featuredImage?.fields?.file?.url}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": data.fields.title,
+    "image": [
+      data.fields.featuredImage?.fields?.file?.url ? `https:${data.fields.featuredImage.fields.file.url}` : ""
+    ],
+    "datePublished": data.sys.createdAt,
+    "author": {
+      "@type": "Organization",
+      "name": "Vimec Valves"
+    }
+  })} />
+  <HeroSection {...data} />
+
+  <section
+    class:list={["wrapper mt-6 flex flex-col items-start", main_padding.b]}
+  >
+    <Image
+      src={data.fields.featuredImage.fields.file.url}
+      alt={data.fields.title || "Featured image"}
+      transition:name={data.fields.featuredImage.fields.file.url}
+      width={data.fields.featuredImage.fields.file.details.image.width}
+      height={data.fields.featuredImage.fields.file.details.image.height}
+      class="max-h-[800px] w-full rounded-[20px] object-cover"
+    />
+    <span
+      class="mt-6 [column-gap:30px] md:[column-count:2]"
+      set:html={documentToHtmlString(data.fields.description)}
+    />
+  </section>
+</Layout>

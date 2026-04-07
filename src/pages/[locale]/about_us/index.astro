@@ -1,26 +1,6 @@
 ---
-import HeroSection from "@/components/about_us/HeroSection.astro";
-import OurHistory from "@/components/about_us/OurHistory.astro";
-import GetInTouch from "@/components/home/GetInTouch.astro";
-import Layout from "@/components/layout/Layout.astro";
-
-import { getRelativeLocaleUrlList } from "astro:i18n";
-
-export const prerender = true;
-
-export function getStaticPaths() {
-  return [
-    { params: { locale: 'en' } },
-    { params: { locale: 'it' } },
-  ];
-}
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
+const local = Astro.currentLocale as "en" | "it";
+return Astro.redirect(`/${local}/about-us`, 301);
 ---
-
-<Layout
-  title="About Us | Vimec Valves"
-  description="Learn about Vimec Valves, our history, and our commitment to manufacturing the highest quality sampling and industrial valves."
->
-  <HeroSection />
-  <OurHistory />
-  <GetInTouch />
-</Layout>

@@ -1,0 +1,23 @@
+---
+import { contentfulClient } from "@/libs/content/contentful/data";
+import type { TypeDepartmentAboutUs } from "@/libs/content/contentful/entriesType";
+import { slugify } from "@/libs/utils/slugify";
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
+const { id } = Astro.params;
+const local = Astro.currentLocale as "en" | "it";
+
+try {
+  const data = await contentfulClient.getEntry<TypeDepartmentAboutUs>(id!, { locale: local });
+  if (data) {
+    // @ts-ignore
+    const slug = data.fields.slug ?? slugify(data.fields.title);
+    return Astro.redirect(`/${local}/about-us/${slug}`, 301);
+  }
+} catch (error) {
+  // Ignore fetch errors, fallback to 404
+}
+
+return new Response(null, { status: 404 });
+---

@@ -1,20 +1,35 @@
 ---
 import GetInTouch from "@/components/home/GetInTouch.astro";
 import Layout from "@/components/layout/Layout.astro";
-import HeroSection from "@/components/products/[id]/HeroSection.astro";
+import HeroSection from "@/components/products/[slug]/HeroSection.astro";
 export const prerender = false;
-import RelatedProducts from "@/components/products/[id]/RelatedProducts.astro";
+import RelatedProducts from "@/components/products/[slug]/RelatedProducts.astro";
 import { contentfulClient } from "@/libs/content/contentful/data";
 import type { TypeProduct } from "@/libs/content/contentful/entriesType";
+import { slugify } from "@/libs/utils/slugify";
 
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
 
-const { id } = Astro.params;
+const { slug } = Astro.params;
 const local = (Astro.currentLocale || Astro.params.locale) as "en" | "it";
 
-const data = await contentfulClient.getEntry<TypeProduct>(id!, {
+const allProducts = await contentfulClient.getEntries<TypeProduct>({
+  content_type: 'product',
   locale: local,
 });
+
+const data = allProducts.items.find((item) => {
+  // @ts-ignore
+  const generatedSlug = item.fields.slug ?? slugify(item.fields.name);
+  return generatedSlug === slug;
+});
+
+if (!data) {
+  return new Response(null, {
+    status: 404,
+    statusText: 'Not found'
+  });
+}
 
 if (local === 'it') {
   const catUpper = data.fields?.category?.fields?.title?.toUpperCase() || '';

@@ -8,10 +8,35 @@ import { contentfulClient } from "@/libs/content/contentful/data";
 import ImagesGrid from "@/components/gallery/ImagesGrid";
 import Fallback from "@/components/Fallback.astro";
 
-const { id } = Astro.params;
+import { slugify } from "@/libs/utils/slugify";
+import type { TypeGallery } from "@/libs/content/contentful/entriesType";
+
+const { slug } = Astro.params;
 const local = Astro.currentLocale as "en" | "it";
 
-const data = await contentfulClient.getEntry(id!, { locale: local });
+const allGalleries = await contentfulClient.getEntries<TypeGallery>({
+  content_type: 'gallery',
+  locale: local,
+  include: 2,
+});
+
+console.log("Gallery URL Slug Param:", slug);
+console.log("Gallery Available Slugs:", allGalleries.items.map(e => slugify(e.fields.title)));
+
+const data = allGalleries.items.find((item) => {
+  // @ts-ignore
+  const itemSlug = item.fields.slug ?? slugify(item.fields.title);
+  return itemSlug === slug || item.sys.id === slug;
+});
+
+if (!data) return new Response(null, { status: 404 });
+
+// @ts-ignore
+const resolvedSlug = data.fields.slug ?? slugify(data.fields.title);
+
+if (slug === data.sys.id && slug !== resolvedSlug) {
+  return Astro.redirect(`/${local}/gallery/${resolvedSlug}`, 301);
+}
 
 const breadcrumbsData = [
   { link: "/", title: String(ui[local].gallery.single.breadcrumbs[0]) },

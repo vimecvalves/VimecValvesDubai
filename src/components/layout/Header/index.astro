@@ -24,6 +24,7 @@ import {
   type TypeProduct,
 } from "@/libs/content/contentful/entriesType";
 import Logo from "./Logo.astro";
+import { slugify } from "@/libs/utils/slugify";
 
 // @ts-ignore
 const link = (l: string) => getRelativeLocaleUrl(locale, l);
@@ -85,7 +86,7 @@ const localSearchData = [
     Vimec Valves are trusted globally across industries such as Oil & Gas, Chemical, Petrochemical, and Power Plants, delivering exceptional solutions for critical engineering applications.
 
     At Vimec Group Italia, our commitment is to deliver unmatched quality and expertise. With a forward-thinking approach, we are confident in exceeding our clients' expectations and driving future growth.`,
-    link: link("/about_us"),
+    link: link("/about-us"),
   },
   {
     title: "Our History",
@@ -104,7 +105,7 @@ const localSearchData = [
 
     2018
     In 2018, the company Vimec Group Italia Srl has been established and acquired the trademark Vimec Valves and all its manufacturing rights globally.`,
-    link: link("/about_us#our-history"),
+    link: link("/about-us#our-history"),
   },
   {
     title: "Get in touch",
@@ -117,7 +118,7 @@ const localSearchData = [
     title: "News & Events",
 
     content: `Stay updated with the latest news, industry insights, and events from Vimec Valves as we continue to innovate and lead in the oil and gas sector.`,
-    link: link("/news&events"),
+    link: link("/news-events"),
   },
   {
     title: "Downloads",
@@ -177,20 +178,20 @@ const dataForSearch = () => {
     ...processItems(
       newsEvents?.items,
       (item: {
-        fields: { title: any; description: any };
+        fields: { title: any; description: any; slug?: string };
         sys: { id: string };
       }) => ({
         title: item.fields.title,
         content: item.fields.description,
-        link: link("news&events/" + item.sys.id),
+        link: link("news-events/" + (item.fields.slug ?? slugify(item.fields.title))),
       }),
     ),
     ...processItems(
       gallery?.items,
-      (item: { fields: { title: any }; sys: { id: string } }) => ({
+      (item: { fields: { title: any; slug?: string }; sys: { id: string } }) => ({
         title: item.fields.title,
         content: null,
-        link: link("gallery/" + item.sys.id),
+        link: link("gallery/" + (item.fields.slug ?? slugify(item.fields.title))),
       }),
     ),
     ...localSearchData,
@@ -204,10 +205,10 @@ const navLinks = links.map((item) => {
     case "about":
       return {
         ...item,
-        list: departmentAboutUs.items.map((item) => {
+        list: departmentAboutUs.items.map((item: any) => {
           return {
             title: item.fields.title.replace(/\s*\(.*?\)\s*/g, ""),
-            link: "about_us/" + item.sys.id,
+            link: "about-us/" + (item.fields.slug ?? slugify(item.fields.title)),
           };
         }),
       };

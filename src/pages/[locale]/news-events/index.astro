@@ -1,0 +1,45 @@
+---
+import Layout from "@/components/layout/Layout.astro";
+import main_padding from "@/styles/padding";
+import HeroSectionHeader from "@/ui/HeroSectionHeader.astro";
+import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
+import { getRelativeLocaleUrlList } from "astro:i18n";
+import Link from "@/libs/helpers/Link.astro";
+import { Image } from "astro:assets";
+import { contentfulClient } from "@/libs/content/contentful/data";
+import type { TypeNewsNEvents } from "@/libs/content/contentful/entriesType";
+import { ui } from "@/i18n/ui";
+import formattedDate from "@/libs/helpers/formattedDate";
+import NewsCard from "@/components/news-events/newsCard.astro";
+
+const local = Astro.currentLocale as "en" | "it";
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
+
+const data = await contentfulClient.getEntries<TypeNewsNEvents>({
+  content_type: "newsEvents",
+  include: 2,
+  locale: local,
+});
+---
+
+<Layout
+  title="News & Events | Vimec Valves"
+  description="Stay updated with the latest news, events, and announcements from Vimec Valves, an industry leader in industrial valve manufacturing."
+>
+  <section
+    class:list={[
+      "wrapper flex md:mt-32 mt-28 flex-col gap-10 ",
+      main_padding.y,
+    ]}
+  >
+    <HeroSectionHeader
+      title="News & Events"
+      content="Stay updated with the latest news, industry insights, and events from Vimec Valves as we continue to innovate and lead in the oil and gas sector."
+    />
+
+    <div class="w-full grid md:grid-cols-2 gap-10 relative z-0">
+      {data.items.map((item) => <NewsCard item={item} />)}
+    </div>
+  </section>
+</Layout>

@@ -26,6 +26,7 @@ export function getStaticPaths() {
 
 const data = await contentfulClient.getEntries<TypeDownloads>({
   content_type: "downloads",
+  include: 2,
   locale: local,
 });
 ---

@@ -5,6 +5,7 @@ import { twMerge } from "tailwind-merge";
 import Link from "@/libs/helpers/Link.astro";
 import type { TypeProduct } from "@/libs/content/contentful/entriesType";
 import type { Entry } from "contentful";
+import { slugify } from "@/libs/utils/slugify";
 
 interface Props extends Entry<TypeProduct, undefined, string> {
   className?: string;
@@ -14,11 +15,13 @@ interface Props extends Entry<TypeProduct, undefined, string> {
 const { fields, sys, className, eagerLoading = false } = Astro.props;
 
 const { name, images, category } = fields;
+// @ts-ignore
+const slug = fields.slug ?? slugify(name);
 
 ---
 
 <Link
-  href={`/products/${encodeURIComponent(sys.id)}`}
+  href={`/products/${encodeURIComponent(slug)}`}
   class={twMerge(
     `reveal-up bg-gradient-to-br from-[#f8fbff] via-[#ffffff] to-[#f6faff] border border-blue-50 rounded-2xl shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] hover:-translate-y-[8px] backdrop-blur-[2px] transition-all duration-300 w-full h-full px-8 py-8 flex flex-col items-start justify-start group`,
     className,

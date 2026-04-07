@@ -7,7 +7,7 @@ import { ui } from "@/i18n/ui";
 import CustomBtn from "@/ui/CustomBtn.astro";
 import { contentfulClient } from "@/libs/content/contentful/data";
 import type { TypeNewsNEvents } from "@/libs/content/contentful/entriesType";
-import NewsCard from "../news&events/newsCard.astro";
+import NewsCard from "../news-events/newsCard.astro";
 const locale = Astro.currentLocale as "en" | "it";
 
 const data = await contentfulClient.getEntries<TypeNewsNEvents>({
@@ -24,7 +24,7 @@ const data = await contentfulClient.getEntries<TypeNewsNEvents>({
     <h2 class="reveal-up lg:text-5xl text-4xl font-medium">
       {ui[locale].home["news-events"]}
     </h2>
-    <CustomBtn href="news&events" className="max-md:hidden uppercase"
+    <CustomBtn href="news-events" className="max-md:hidden uppercase"
       >{ui[locale].buttons["view-all"]}</CustomBtn
     >
   </div>
@@ -35,7 +35,7 @@ const data = await contentfulClient.getEntries<TypeNewsNEvents>({
     {data.items.map((item) => <NewsCard item={item} />)}
   </div>
   <CustomBtn
-    href="news&events"
+    href="news-events"
     className="md:hidden w-full  mx-auto mt-6 uppercase"
     >{ui[locale].buttons["view-all"]}</CustomBtn
   >
