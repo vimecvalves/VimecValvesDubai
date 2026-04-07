@@ -118,6 +118,23 @@ const productSchema = {
   },
   "additionalProperty": additionalProperty.length > 0 ? additionalProperty : undefined
 };
+
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Industrial Valves",
+  "itemListElement": allProducts.items.map((item, index) => {
+    const catTitle = item.fields.category?.fields?.title || '';
+    const fallbackSlug = slugify(`${catTitle ? catTitle + '-' : ''}${item.fields.name}`);
+    const slugItem = item.fields.slug ?? fallbackSlug;
+    return {
+      "@type": "ListItem",
+      "position": index + 1,
+      "url": new URL(`/${local}/products/${slugItem}`, Astro.site).toString(),
+      "name": item.fields.name
+    };
+  })
+};
 ---
 
 <Layout
@@ -125,6 +142,7 @@ const productSchema = {
   description={`Explore our range of industrial sampling valves and process valves designed for oil, gas and process industries. Learn details about ${data.fields.name}.`}
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />
   <HeroSection {...data} />
 
   {(data.fields.material || data.fields.pressureRating || data.fields.temperatureRange || data.fields.connectionType || data.fields.certifications) && (
