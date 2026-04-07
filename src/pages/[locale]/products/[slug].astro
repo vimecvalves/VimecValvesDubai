@@ -72,6 +72,27 @@ if (local === 'it') {
 }
 
 
+const additionalProperty = [];
+
+if (data.fields.category?.fields?.title) {
+  additionalProperty.push({ "@type": "PropertyValue", "name": "Valve Type", "value": data.fields.category.fields.title });
+}
+if (data.fields.material) {
+  additionalProperty.push({ "@type": "PropertyValue", "name": "Body Material", "value": data.fields.material });
+}
+if (data.fields.pressureRating) {
+  additionalProperty.push({ "@type": "PropertyValue", "name": "Pressure Rating", "value": data.fields.pressureRating });
+}
+if (data.fields.temperatureRange) {
+  additionalProperty.push({ "@type": "PropertyValue", "name": "Temperature Range", "value": data.fields.temperatureRange });
+}
+if (data.fields.connectionType) {
+  additionalProperty.push({ "@type": "PropertyValue", "name": "Connection Type", "value": data.fields.connectionType });
+}
+if (data.fields.certifications) {
+  additionalProperty.push({ "@type": "PropertyValue", "name": "Industry Standards", "value": data.fields.certifications });
+}
+
 const productSchema = {
   "@context": "https://schema.org/",
   "@type": "Product",
@@ -94,7 +115,8 @@ const productSchema = {
       "price": "0"
     },
     "availability": "https://schema.org/InStock"
-  }
+  },
+  "additionalProperty": additionalProperty.length > 0 ? additionalProperty : undefined
 };
 ---
 
