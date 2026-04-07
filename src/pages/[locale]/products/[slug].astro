@@ -4,7 +4,7 @@ import Layout from "@/components/layout/Layout.astro";
 import HeroSection from "@/components/products/[slug]/HeroSection.astro";
 export const prerender = false;
 import ProductFAQ from "@/components/products/[slug]/ProductFAQ.astro";
-import RelatedProducts from "@/components/products/[slug]/RelatedProducts.astro";
+import RelatedProducts from "@/components/products/RelatedProducts.astro";
 import { contentfulClient } from "@/libs/content/contentful/data";
 import type { TypeProduct } from "@/libs/content/contentful/entriesType";
 import { slugify } from "@/libs/utils/slugify";
@@ -187,8 +187,12 @@ const itemListSchema = {
     </section>
   )}
 
+  <RelatedProducts 
+    currentProductId={data.sys.id} 
+    categoryTitle={data.fields.category?.fields?.title || ''} 
+    allProducts={allProducts.items} 
+  />
   <ProductFAQ />
 
-  {data.fields.relatedProducts && <RelatedProducts {...data} />}
   <GetInTouch />
 </Layout>

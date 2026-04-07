@@ -1,0 +1,77 @@
+---
+import { ui } from "@/i18n/ui";
+import type { TypeProduct } from "@/libs/content/contentful/entriesType";
+import type { Entry } from "contentful";
+import ProductCard from "@/ui/ProductCard.astro";
+import main_padding from "@/styles/padding";
+
+interface Props {
+  currentProductId: string;
+  categoryTitle: string;
+  allProducts: Entry<TypeProduct>[];
+}
+
+const { currentProductId, allProducts } = Astro.props;
+const local = Astro.currentLocale as "en" | "it";
+
+// Find current product name
+const currentProduct = allProducts.find((p) => p.sys.id === currentProductId);
+const currentName = String(currentProduct?.fields?.name || "");
+
+// Extract 2-3 keywords from the current product name
+const ignoredWords = ["valves", "valve", "and", "with", "for", "&", "the", "a", "an"];
+const keywords = currentName
+  .split(/[\s,]+/)
+  .map((w) => w.trim().toLowerCase())
+  .filter((w) => w.length > 2 && !ignoredWords.includes(w))
+  .slice(0, 3);
+
+// Determine related products using name similarity
+const scoredProducts = allProducts
+  .filter((item) => item.sys.id !== currentProductId) // Ensure current product is always excluded
+  .map((item) => {
+    // @ts-ignore
+    const itemName = String(item.fields.name || "").toLowerCase();
+    const score = keywords.reduce((acc, k) => (itemName.includes(k) ? acc + 1 : acc), 0);
+    return { item, score };
+  })
+  .filter((obj) => obj.score > 0)
+  .sort((a, b) => b.score - a.score); // Sort by highest keyword match
+
+// Extract matched items
+let relatedProducts = scoredProducts.map((obj) => obj.item);
+
+// If less than 4 matches, fill with other products to ensure 4 are displayed
+if (relatedProducts.length < 4) {
+  const otherProducts = allProducts.filter((item) => {
+    if (item.sys.id === currentProductId) return false;
+    if (relatedProducts.some((p) => p.sys.id === item.sys.id)) return false; // Prevent duplicates
+    return true;
+  });
+
+  relatedProducts = [...relatedProducts, ...otherProducts];
+}
+
+// Limit the results to a maximum of 4 products
+relatedProducts = relatedProducts.slice(0, 4);
+
+const sectionTitle = ui[local]?.products?.single?.["related products"] || "Related Products";
+---
+
+{relatedProducts.length > 0 && (
+  <section class={`wrapper text-black flex flex-col items-start relative z-0 sm:my-10 my-6`}>
+    <h2 class="lg:text-4xl text-3xl font-medium mb-6">
+      {sectionTitle}
+    </h2>
+    
+    <div class="w-full relative z-0 mt-4">
+      <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {relatedProducts.map((item) => (
+          <li>
+            <ProductCard {...item} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
