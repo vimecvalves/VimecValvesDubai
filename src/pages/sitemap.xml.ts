@@ -30,17 +30,12 @@ export const GET: APIRoute = async () => {
     locales.forEach((currentLocale) => {
       const loc = `${siteUrl}/${currentLocale}${pathWithoutLocale}`;
       const alternates = locales.map(
-        (altLocale) => `  <xhtml:link rel="alternate" hreflang="${altLocale}" href="${siteUrl}/${altLocale}${pathWithoutLocale}"/>`
-      ).join('\n');
+        (altLocale) => `<xhtml:link rel="alternate" hreflang="${altLocale}" href="${siteUrl}/${altLocale}${pathWithoutLocale}"/>`
+      ).join('');
       
-      const xDefault = `  <xhtml:link rel="alternate" hreflang="x-default" href="${siteUrl}/en${pathWithoutLocale}"/>`;
+      const xDefault = `<xhtml:link rel="alternate" hreflang="x-default" href="${siteUrl}/en${pathWithoutLocale}"/>`;
 
-      urlEntries.add(`<url>
-  <loc>${loc}</loc>
-  <lastmod>${updatedAt}</lastmod>
-${alternates}
-${xDefault}
-</url>`);
+      urlEntries.add(`<url> <loc>${loc}</loc> <lastmod>${updatedAt}</lastmod> ${alternates} ${xDefault} </url>`);
     });
   };
 
