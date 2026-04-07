@@ -87,6 +87,10 @@ const productSchema = {
     "@type": "Offer",
     "url": new URL(Astro.url.pathname, Astro.site).toString(),
     "priceCurrency": "GBP",
+    "priceSpecification": {
+      "@type": "PriceSpecification",
+      "price": "0"
+    },
     "availability": "https://schema.org/InStock"
   }
 };
