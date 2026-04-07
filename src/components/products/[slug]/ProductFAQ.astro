@@ -1,0 +1,56 @@
+---
+const faqs = [
+  {
+    question: "What is a Double Block and Bleed Valve?",
+    answer: "A Double Block and Bleed (DBB) valve is a compact valve system that provides dual isolation and a bleed function in a single unit. It enhances safety, saves space, and reduces leakage points compared to traditional multi-valve setups used in the oil and gas industry."
+  },
+  {
+    question: "Where are Vimec valves manufactured?",
+    answer: "Vimec Valves are entirely designed, engineered, and manufactured at our state-of-the-art facility in Italy, ensuring precision, high-quality material sourcing, and strict adherence to European and international production standards."
+  },
+  {
+    question: "What industries use sampling valves?",
+    answer: "Sampling valves are critical for safely extracting process media without halting operations. They are heavily utilized across petrochemical, oil and gas, pharmaceutical, chemical processing, and power generation industries ensuring operator safety and zero-emission."
+  },
+  {
+    question: "What standards do Vimec valves comply with?",
+    answer: "Vimec valves are rigorously tested and fully compliant with major international certifications, including ISO, PED, ATEX, and API norms. We guarantee absolute zero-emission reliability and safety under severe and corrosive operating conditions."
+  }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+};
+---
+
+<section class="wrapper sm:my-10 my-6">
+  <h2 class="lg:text-4xl text-3xl font-medium mb-8 text-[#183a65]">Frequently Asked Questions</h2>
+  
+  <div class="flex flex-col gap-4">
+    {faqs.map((faq) => (
+      <details class="group border border-gray-300 rounded-lg bg-white shadow-sm overflow-hidden open:border-[#183a65]/30 transition-colors">
+        <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-lg hover:bg-gray-50 transition-colors">
+          <span>{faq.question}</span>
+          <span class="transition-transform duration-300 group-open:rotate-180 text-gray-500 group-open:text-[#183a65]">
+            <svg fill="none" height="20" width="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg>
+          </span>
+        </summary>
+        <div class="text-gray-600 p-5 pt-0 text-md leading-relaxed group-open:animate-fadeIn">
+          <p>{faq.answer}</p>
+        </div>
+      </details>
+    ))}
+  </div>
+</section>
+
+<!-- Inject structured data directly alongside component for automatic nested parsing -->
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
