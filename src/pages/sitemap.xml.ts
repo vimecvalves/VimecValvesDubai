@@ -8,7 +8,7 @@ export const GET: APIRoute = async () => {
   const staticRoutes = [
     '',
     '/about-us',
-    '/contact_us',
+    '/contact-us',
     '/downloads',
     '/products',
     '/gallery',
@@ -23,17 +23,24 @@ export const GET: APIRoute = async () => {
 
   const urlEntries = new Set<string>();
 
+  const today = new Date().toISOString();
+
   // Helper to generate the URL blocks with hreflangs
-  const pushUrlBlock = (pathWithoutLocale: string) => {
+  const pushUrlBlock = (pathWithoutLocale: string, updatedAt: string = today) => {
     locales.forEach((currentLocale) => {
       const loc = `${siteUrl}/${currentLocale}${pathWithoutLocale}`;
       const alternates = locales.map(
-        (altLocale) => `<xhtml:link rel="alternate" hreflang="${altLocale}" href="${siteUrl}/${altLocale}${pathWithoutLocale}"/>`
-      ).join('');
+        (altLocale) => `  <xhtml:link rel="alternate" hreflang="${altLocale}" href="${siteUrl}/${altLocale}${pathWithoutLocale}"/>`
+      ).join('\n');
       
-      const xDefault = `<xhtml:link rel="alternate" hreflang="x-default" href="${siteUrl}/en${pathWithoutLocale}"/>`;
+      const xDefault = `  <xhtml:link rel="alternate" hreflang="x-default" href="${siteUrl}/en${pathWithoutLocale}"/>`;
 
-      urlEntries.add(`<url> <loc>${loc}</loc> ${alternates} ${xDefault} </url>`);
+      urlEntries.add(`<url>
+  <loc>${loc}</loc>
+  <lastmod>${updatedAt}</lastmod>
+${alternates}
+${xDefault}
+</url>`);
     });
   };
 
@@ -47,7 +54,7 @@ export const GET: APIRoute = async () => {
     products.items.forEach((item) => {
       // @ts-ignore - slug may not exist in types yet
       const slug = item.fields.slug ?? slugify(item.fields.name);
-      pushUrlBlock(`/products/${slug}`);
+      pushUrlBlock(`/products/${slug}`, new Date(item.sys.updatedAt).toISOString());
     });
   }
 
@@ -56,7 +63,7 @@ export const GET: APIRoute = async () => {
     gallery.items.forEach((item) => {
       // @ts-ignore
       const slug = item.fields.slug ?? slugify(item.fields.title);
-      pushUrlBlock(`/gallery/${slug}`);
+      pushUrlBlock(`/gallery/${slug}`, new Date(item.sys.updatedAt).toISOString());
     });
   }
 
@@ -65,7 +72,7 @@ export const GET: APIRoute = async () => {
     news.items.forEach((item) => {
       // @ts-ignore
       const slug = item.fields.slug ?? slugify(item.fields.title);
-      pushUrlBlock(`/news-events/${slug}`);
+      pushUrlBlock(`/news-events/${slug}`, new Date(item.sys.updatedAt).toISOString());
     });
   }
 
@@ -74,7 +81,7 @@ export const GET: APIRoute = async () => {
     aboutUs.items.forEach((item) => {
       // @ts-ignore
       const slug = item.fields.slug ?? slugify(item.fields.title);
-      pushUrlBlock(`/about-us/${slug}`);
+      pushUrlBlock(`/about-us/${slug}`, new Date(item.sys.updatedAt).toISOString());
     });
   }
 
