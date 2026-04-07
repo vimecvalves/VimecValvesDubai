@@ -29,15 +29,11 @@ export const GET: APIRoute = async () => {
       const loc = `${siteUrl}/${currentLocale}${pathWithoutLocale}`;
       const alternates = locales.map(
         (altLocale) => `<xhtml:link rel="alternate" hreflang="${altLocale}" href="${siteUrl}/${altLocale}${pathWithoutLocale}"/>`
-      ).join('\n    ');
+      ).join('');
       
       const xDefault = `<xhtml:link rel="alternate" hreflang="x-default" href="${siteUrl}/en${pathWithoutLocale}"/>`;
 
-      urlEntries.push(`<url>
-    <loc>${loc}</loc>
-    ${alternates}
-    ${xDefault}
-  </url>`);
+      urlEntries.push(`<url> <loc>${loc}</loc> ${alternates} ${xDefault} </url>`);
     });
   };
 
@@ -84,8 +80,11 @@ export const GET: APIRoute = async () => {
 
   // Construct standard sitemap XML
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  ${urlEntries.join('\n  ')}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+${urlEntries.join('\n')}
+
 </urlset>`;
 
   return new Response(sitemap, {
