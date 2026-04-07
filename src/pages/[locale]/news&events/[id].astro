@@ -1,56 +1,23 @@
 ---
-import Layout from "@/components/layout/Layout.astro";
-import HeroSection from "@/components/news&events/[id]/HeroSection.astro";
 import { contentfulClient } from "@/libs/content/contentful/data";
 import type { TypeNewsNEvents } from "@/libs/content/contentful/entriesType";
-import main_padding from "@/styles/padding";
-import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
-import { Image } from "astro:assets";
+import { slugify } from "@/libs/utils/slugify";
 
-const { id } = Astro.params;
-const local = Astro.currentLocale as "en" | "it";
 export const prerender = false;
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
+const { id } = Astro.params;
+const local = Astro.currentLocale as "en" | "it";
 
-const data = await contentfulClient.getEntry<TypeNewsNEvents>(id!, {
-  locale: local,
-});
+try {
+  const data = await contentfulClient.getEntry<TypeNewsNEvents>(id!, { locale: local });
+  if (data) {
+    // @ts-ignore
+    const slug = data.fields.slug ?? slugify(data.fields.title);
+    return Astro.redirect(`/${local}/news-events/${slug}`, 301);
+  }
+} catch (error) {
+  // Ignore fetch errors, fallback to 404
+}
+
+return new Response(null, { status: 404 });
 ---
-
-<Layout
-  title={`${data.fields.title} | Vimec News`}
-  description={`Read the latest news and updates from Vimec Valves regarding ${data.fields.title}.`}
-  image={data.fields.featuredImage?.fields?.file?.url}
->
-  <script slot="head" type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": data.fields.title,
-    "image": [
-      data.fields.featuredImage?.fields?.file?.url ? `https:${data.fields.featuredImage.fields.file.url}` : ""
-    ],
-    "datePublished": data.sys.createdAt,
-    "author": {
-      "@type": "Organization",
-      "name": "Vimec Valves"
-    }
-  })} />
-  <HeroSection {...data} />
-
-  <section
-    class:list={["wrapper mt-6 flex flex-col items-start", main_padding.b]}
-  >
-    <Image
-      src={data.fields.featuredImage.fields.file.url}
-      alt={data.fields.title || "Featured image"}
-      transition:name={data.fields.featuredImage.fields.file.url}
-      width={data.fields.featuredImage.fields.file.details.image.width}
-      height={data.fields.featuredImage.fields.file.details.image.height}
-      class="max-h-[800px] w-full rounded-[20px] object-cover"
-    />
-    <span
-      class="mt-6 [column-gap:30px] md:[column-count:2]"
-      set:html={documentToHtmlString(data.fields.description)}
-    />
-  </section>
-</Layout>
