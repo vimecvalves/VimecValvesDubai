@@ -5,6 +5,7 @@ import { slugify } from "@/libs/utils/slugify";
 export const GET: APIRoute = async () => {
   const siteUrl = "https://www.vimecvalves.co.uk";
   const locales = ['en', 'it'];
+  
   const staticRoutes = [
     '',
     '/about-us',
@@ -15,86 +16,93 @@ export const GET: APIRoute = async () => {
     '/news-events'
   ];
 
-  // Fetch all dynamically created product, gallery, and news entries from Contentful
+  // Fetch all dynamically created product, gallery, news, and about-us entries from Contentful
   const products = await contentfulClient.getEntries({ content_type: "product" });
   const gallery = await contentfulClient.getEntries({ content_type: "gallery" });
   const news = await contentfulClient.getEntries({ content_type: "newsEvents" });
   const aboutUs = await contentfulClient.getEntries({ content_type: "departmentAboutUs" });
 
-  const urlEntries = new Set<string>();
-
+  const urls = new Map<string, string>();
   const today = new Date().toISOString();
 
-  // Helper to generate the URL blocks with hreflangs
-  const pushUrlBlock = (pathWithoutLocale: string, updatedAt: string = today) => {
+  function createUrlBlock(loc: string, lastmod: string, alternates: string) {
+    return `<url>
+  <loc>${loc}</loc>
+  <lastmod>${lastmod}</lastmod>
+${alternates}
+</url>`;
+  }
+
+  const pushPath = (pathWithoutLocale: string, updatedAt: string = today) => {
     locales.forEach((currentLocale) => {
       const loc = `${siteUrl}/${currentLocale}${pathWithoutLocale}`;
-      const alternates = locales.map(
-        (altLocale) => `<xhtml:link rel="alternate" hreflang="${altLocale}" href="${siteUrl}/${altLocale}${pathWithoutLocale}"/>`
-      ).join('');
       
-      const xDefault = `<xhtml:link rel="alternate" hreflang="x-default" href="${siteUrl}/en${pathWithoutLocale}"/>`;
-
-      urlEntries.add(`<url> <loc>${loc}</loc> <lastmod>${updatedAt}</lastmod> ${alternates} ${xDefault} </url>`);
+      const alternatesArray = locales.map(
+        (altLocale) => `  <xhtml:link rel="alternate" hreflang="${altLocale}" href="${siteUrl}/${altLocale}${pathWithoutLocale}" />`
+      );
+      alternatesArray.push(`  <xhtml:link rel="alternate" hreflang="x-default" href="${siteUrl}/en${pathWithoutLocale}" />`);
+      
+      const alternates = alternatesArray.join('\n');
+      
+      if (!urls.has(loc)) {
+        urls.set(loc, createUrlBlock(loc, updatedAt, alternates));
+      }
     });
   };
 
   // Add static paths
   staticRoutes.forEach((route) => {
-    pushUrlBlock(route);
+    pushPath(route);
   });
 
-  // Add product pages (using slugification system)
+  // Add dynamic product paths
   if (products?.items) {
     products.items.forEach((item) => {
-      // @ts-ignore - slug may not exist in types yet
+      // @ts-ignore
       const slug = item.fields.slug ?? slugify(item.fields.name);
-      pushUrlBlock(`/products/${slug}`, new Date(item.sys.updatedAt).toISOString());
+      pushPath(`/products/${slug}`, new Date(item.sys.updatedAt).toISOString());
     });
   }
 
-  // Add gallery pages (using slugification system)
+  // Add dynamic gallery paths
   if (gallery?.items) {
     gallery.items.forEach((item) => {
       // @ts-ignore
       const slug = item.fields.slug ?? slugify(item.fields.title);
-      pushUrlBlock(`/gallery/${slug}`, new Date(item.sys.updatedAt).toISOString());
+      pushPath(`/gallery/${slug}`, new Date(item.sys.updatedAt).toISOString());
     });
   }
 
-  // Add news pages (using slugification system)
+  // Add dynamic news-events paths
   if (news?.items) {
     news.items.forEach((item) => {
       // @ts-ignore
       const slug = item.fields.slug ?? slugify(item.fields.title);
-      pushUrlBlock(`/news-events/${slug}`, new Date(item.sys.updatedAt).toISOString());
+      pushPath(`/news-events/${slug}`, new Date(item.sys.updatedAt).toISOString());
     });
   }
 
-  // Add about-us pages (using slugification system)
+  // Add dynamic about-us paths
   if (aboutUs?.items) {
     aboutUs.items.forEach((item) => {
       // @ts-ignore
       const slug = item.fields.slug ?? slugify(item.fields.title);
-      pushUrlBlock(`/about-us/${slug}`, new Date(item.sys.updatedAt).toISOString());
+      pushPath(`/about-us/${slug}`, new Date(item.sys.updatedAt).toISOString());
     });
   }
 
-  // Construct standard sitemap XML
-  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  const allUrlBlocks = Array.from(urls.values()).join('\n');
 
-${Array.from(urlEntries).join('\n')}
-
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${allUrlBlocks}
 </urlset>`;
 
-  return new Response(sitemap, {
+  return new Response(xml, {
     status: 200,
     headers: {
-      'Content-Type': 'application/xml',
-      'Cache-Control': 's-maxage=3600, stale-while-revalidate=86400',
+      "Content-Type": "application/xml",
+      "Cache-Control": "s-maxage=3600, stale-while-revalidate=86400"
     }
   });
 };
-
