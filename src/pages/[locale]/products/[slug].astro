@@ -21,7 +21,9 @@ const allProducts = await contentfulClient.getEntries<TypeProduct>({
 
 const data = allProducts.items.find((item) => {
   // @ts-ignore
-  const generatedSlug = item.fields.slug ?? slugify(item.fields.name);
+  const catTitle = item.fields.category?.fields?.title || '';
+  const fallbackSlug = slugify(`${catTitle ? catTitle + '-' : ''}${item.fields.name}`);
+  const generatedSlug = item.fields.slug ?? fallbackSlug;
   return generatedSlug === slug;
 });
 

@@ -16,7 +16,9 @@ const { fields, sys, className, eagerLoading = false } = Astro.props;
 
 const { name, images, category } = fields;
 // @ts-ignore
-const slug = fields.slug ?? slugify(name);
+const catTitle = category?.fields?.title || '';
+const fallbackSlug = slugify(`${catTitle ? catTitle + '-' : ''}${name}`);
+const slug = fields.slug ?? fallbackSlug;
 
 ---
 

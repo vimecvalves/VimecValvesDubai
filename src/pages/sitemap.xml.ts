@@ -17,7 +17,7 @@ export const GET: APIRoute = async () => {
   ];
 
   // Fetch all dynamically created product, gallery, news, and about-us entries from Contentful
-  const products = await contentfulClient.getEntries({ content_type: "product" });
+  const products = await contentfulClient.getEntries({ content_type: "product", include: 2 });
   const gallery = await contentfulClient.getEntries({ content_type: "gallery" });
   const news = await contentfulClient.getEntries({ content_type: "newsEvents" });
   const aboutUs = await contentfulClient.getEntries({ content_type: "departmentAboutUs" });
@@ -59,7 +59,9 @@ ${alternates}
   if (products?.items) {
     products.items.forEach((item) => {
       // @ts-ignore
-      const slug = item.fields.slug ?? slugify(item.fields.name);
+      const catTitle = item.fields.category?.fields?.title || '';
+      const fallbackSlug = slugify(`${catTitle ? catTitle + '-' : ''}${item.fields.name}`);
+      const slug = item.fields.slug ?? fallbackSlug;
       pushPath(`/products/${slug}`, new Date(item.sys.updatedAt).toISOString());
     });
   }
