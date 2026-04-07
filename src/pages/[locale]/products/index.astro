@@ -9,6 +9,7 @@ import HeroSectionHeader from "@/ui/HeroSectionHeader.astro";
 import ProductCard from "@/ui/ProductCard.astro";
 
 import { getRelativeLocaleUrlList } from "astro:i18n";
+import { slugify } from "@/libs/utils/slugify";
 
 export const prerender = false;
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
