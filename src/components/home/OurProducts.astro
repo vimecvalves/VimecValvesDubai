@@ -8,15 +8,15 @@ import { ui } from "@/i18n/ui";
 import CustomBtn from "@/ui/CustomBtn.astro";
 const locale = Astro.currentLocale as "en" | "it";
 
+// Fetch ALL products from contentful by removing the limit constraint
 let data = await contentfulClient.getEntries<TypeProduct>({
   content_type: "product",
   locale: locale,
-  limit: 6,
 });
 ---
 
 <section
-  class={`wrapper text-black flex flex-col items-start  relative z-0  ${main_padding.y}`}
+  class={`wrapper text-black flex flex-col items-start relative z-0 ${main_padding.y}`}
 >
   <div class="flex items-center sm:justify-between justify-center w-full">
     <h2 class="reveal-up lg:text-5xl text-4xl font-medium">{ui[locale].home.products}</h2>
@@ -28,46 +28,41 @@ let data = await contentfulClient.getEntries<TypeProduct>({
     class="sm:my-10 my-6 sm:border-gray-400 border-t-transparent max-sm:bg-transparent w-full"
   />
   <div
-    class="w-full flex items-start justify-start gap-4 relative z-0 max-sm:hidden group"
+    class="w-full flex items-start justify-start gap-4 relative z-0 group"
   >
     <product-slider class="contents">
-      <div class="swiper products-home !pt-6 !pb-12 !px-4 !-mt-6 !-mb-12 !-mx-4">
-      <div class="swiper-wrapper">
-        {
-          data.items.map((item) => (
-            <div class="swiper-slide !h-auto sm:!w-[min(100%,360px)] py-3 px-1">
-              <ProductCard
-                {...item}
-              />
-            </div>
-          ))
-        }
+      <div class="swiper products-home !pt-6 !pb-12 !px-4 !-mt-6 !-mb-12 !-mx-4 w-full">
+        <div class="swiper-wrapper flex">
+          {
+            data.items.map((item) => (
+              <div class="swiper-slide !h-auto py-3 px-1">
+                <ProductCard
+                  {...item}
+                />
+              </div>
+            ))
+          }
+        </div>
       </div>
-    </div>
 
-    <div
-      class="absolute w-full left-0 px-4 md:px-8 flex items-center justify-between z-50 text-vim-blue text-4xl top-[45%] -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-    >
-      <Icon
-        name="weui:arrow-outlined"
-        class="!w-12 !h-12 p-2 rounded-full !aspect-square flex items-center justify-center rotate-180 cursor-pointer text-vim-blue bg-white/90 backdrop-blur-sm shadow-md hover:shadow-xl hover:scale-105 hover:bg-vim-blue hover:text-white transition-all duration-300 swiper-button-prev pointer-events-auto"
-      />
-      <Icon
-        name="weui:arrow-outlined"
-        class="!w-12 !h-12 p-2 rounded-full !aspect-square flex items-center justify-center cursor-pointer text-vim-blue bg-white/90 backdrop-blur-sm shadow-md hover:shadow-xl hover:scale-105 hover:bg-vim-blue hover:text-white transition-all duration-300 swiper-button-next pointer-events-auto"
-      />
-    </div>
+      <div
+        class="absolute w-full left-0 px-4 md:px-8 flex items-center justify-between z-50 text-vim-blue text-4xl top-[45%] -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+      >
+        <Icon
+          name="weui:arrow-outlined"
+          class="!w-12 !h-12 p-2 rounded-full !aspect-square flex items-center justify-center rotate-180 cursor-pointer text-vim-blue bg-white/90 backdrop-blur-sm shadow-md hover:shadow-xl hover:scale-105 hover:bg-vim-blue hover:text-white transition-all duration-300 swiper-button-prev pointer-events-auto"
+        />
+        <Icon
+          name="weui:arrow-outlined"
+          class="!w-12 !h-12 p-2 rounded-full !aspect-square flex items-center justify-center cursor-pointer text-vim-blue bg-white/90 backdrop-blur-sm shadow-md hover:shadow-xl hover:scale-105 hover:bg-vim-blue hover:text-white transition-all duration-300 swiper-button-next pointer-events-auto"
+        />
+      </div>
       <div class="swiper-pagination absolute left-0 !-bottom-14 z-50"></div>
     </product-slider>
   </div>
-  <div
-    class="w-full flex items-start flex-col justify-start gap-4 relative z-0 sm:hidden"
-  >
-    {data.items.map((item) => <ProductCard {...item} />)}
-  </div>
   <CustomBtn
     href="products"
-    className="sm:hidden w-full  mx-auto mt-6 uppercase"
+    className="sm:hidden w-full mx-auto mt-6 uppercase"
     >{ui[locale].buttons["view-all-products"]}</CustomBtn
   >
 </section>
@@ -76,18 +71,16 @@ let data = await contentfulClient.getEntries<TypeProduct>({
   import Swiper from "swiper";
   import {
     Navigation,
-    FreeMode,
-    Thumbs,
     Mousewheel,
     Autoplay,
     Pagination,
+    FreeMode,
   } from "swiper/modules";
 
   import "swiper/css";
   import "swiper/css/navigation";
-  import "swiper/css/free-mode";
-  import "swiper/css/thumbs";
   import "swiper/css/pagination";
+  import "swiper/css/free-mode";
 
   class ProductSlider extends HTMLElement {
     connectedCallback() {
@@ -97,21 +90,33 @@ let data = await contentfulClient.getEntries<TypeProduct>({
       swiperEl.classList.remove("swiper-initialized");
 
       this.swiper = new Swiper(swiperEl, {
-        modules: [Navigation, Thumbs, Mousewheel, Autoplay, Pagination],
-        spaceBetween: 30,
-        slidesPerView: "auto",
+        modules: [Navigation, Mousewheel, Autoplay, Pagination, FreeMode],
+        spaceBetween: 24,
+        slidesPerView: 1, // Mobile
+        slidesPerGroup: 1,
         grabCursor: true,
-        mousewheel: {
-          forceToAxis: true,
-          releaseOnEdges: true,
+        loop: false, // No repeated elements 
+        freeMode: {
+          enabled: true,
+          momentum: true,
         },
-        freeMode: true,
-        loop: true,
-        speed: 800,
         autoplay: {
-          delay: 4500,
+          delay: 4000,
           pauseOnMouseEnter: true,
           disableOnInteraction: false,
+          waitForTransition: true
+        },
+        mousewheel: {
+          forceToAxis: true,
+        },
+        speed: 800,
+        breakpoints: {
+          768: { // Tablet
+            slidesPerView: 2,
+          },
+          1024: { // Desktop
+            slidesPerView: 4,
+          }
         },
         navigation: {
           nextEl: this.querySelector(".swiper-button-next"),

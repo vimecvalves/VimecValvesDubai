@@ -25,34 +25,30 @@ const local = Astro.currentLocale as "en" | "it";
   class={`${main_padding.t} flex flex-col items-center justify-center text-black  ${!hideTop && "border-t-vim-red/15 border-t "}`}
 >
   <menu
-    style=`display:${hideTop ? "none" : "" } `
-    class="wrapper mb-10 grid w-full gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-10 lg:gap-y-10"
+    style={`display:${hideTop ? "none" : ""}`}
+    class="wrapper mb-10 grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-start"
   >
-    <li
-    class="flex flex-col items-center justify-center md:items-start md:justify-start max-md:col-span-2 max-sm:col-span-1 md:row-span-2"
-    >
+    <li class="flex flex-col items-center justify-center md:items-start md:justify-start">
       <Image
         src="https://raw.githubusercontent.com/vimecvalves/Public/refs/heads/main/New%20Logo.svg"
         width={200}
         height={90}
-        alt=""
+        alt="Vimec Logo"
         class="h-[90px] w-auto object-contain"
       />
-      <div
-        class="mt-10 flex flex-col items-start justify-start gap-4 max-lg:hidden"
-      >
+      <div class="mt-8 flex flex-col items-center md:items-start justify-start gap-4">
         <p class="md:max-w-[30ch]">
           {ui[local].sections.footer["follow-us-on"]}
         </p>
 
-        <menu class="flex items-center justify-start gap-4">
+        <menu class="flex items-center justify-center md:justify-start gap-4">
           {
-            socialMedia.map((item, idx) => (
+            socialMedia.map((item) => (
               <a
                 href={item.link}
                 target="_blank"
                 aria-label={`Visit our ${item.icon.split(':')[1] || 'Social'} page`}
-                class="text-vim-blue hover:bg-vim-blue flex aspect-square h-auto items-center justify-center rounded border border-current p-2 hover:text-white"
+                class="text-vim-blue hover:bg-vim-blue flex aspect-square h-auto items-center justify-center rounded border border-current p-2 hover:text-white transition-colors"
               >
                 <Icon name={item.icon} />
               </a>
@@ -63,27 +59,25 @@ const local = Astro.currentLocale as "en" | "it";
     </li>
 
     {
-      ui[local].sections.footer.links.slice(0, 2).map((item, idx) => (
-        <li class={`grid h-fit gap-2 ${idx >= 2 && ""} `}>
+      ui[local].sections.footer.links.slice(0, 2).map((item) => (
+        <li class="grid h-fit gap-2">
           <p class="text-vim-blue flex items-center justify-start gap-1">
-            {" "}
             {"icon" in item && <Icon name={item.icon} />}
-            {item.title}{" "}
-            {item.flag && <Icon name={item.flag} class="ml-2 text-xs" />}
+            {item.title}
+            {"flag" in item && <Icon name={item.flag} class="ml-2 text-xs" />}
           </p>
           {"link" in item && (
-            <Link set:html={item.link.text} href={item.link.href} class="" />
+            <Link set:html={item.link.text} href={item.link.href} />
           )}
 
           {item.links && (
             <menu class="grid gap-2">
-              {item.links.map((nest, nestIdx) => (
+              {item.links.map((nest) => (
                 <Link
                   href={nest.href}
                   class="flex items-center justify-start gap-1"
                 >
-                  {" "}
-                  <Icon name={nest.icon} class="text-vim-blue" /> {nest.text}{" "}
+                  <Icon name={nest.icon} class="text-vim-blue" /> {nest.text}
                   {"flag" in nest && (
                     <Icon name={nest.flag} class="ml-2 text-xs" />
                   )}
@@ -96,33 +90,31 @@ const local = Astro.currentLocale as "en" | "it";
     }
 
     {
-      ui[local].sections.footer.links.slice(-1).map((item, idx) => (
-        <div class="grid gap-5 lg:gap-10 lg:gap-y-10">
-          <li class={`grid h-fit gap-2 ${idx >= 2 && "max-md:col-span-2"} `}>
+      ui[local].sections.footer.links.slice(-1).map((item) => (
+        <li class="flex flex-col gap-6 h-fit">
+          <div class="grid h-fit gap-2">
             <p class="text-vim-blue flex items-center justify-start gap-1">
-              {" "}
               {"icon" in item && <Icon name={item.icon} />}
-              {item.title}{" "}
+              {item.title}
               {"flag" in item && <Icon name={item.flag} class="ml-2 text-xs" />}
             </p>
             {"link" in item && (
-              <Link set:html={item.link.text} href={item.link.href} class="" />
+              <Link set:html={item.link.text} href={item.link.href} />
             )}
 
             {item.links && (
               <menu class="grid gap-2">
-                {item.links.map((nest, nestIdx) => (
+                {item.links.map((nest) => (
                   <Link
                     href={nest.href}
                     target={nest.target}
                     class="flex items-baseline justify-start gap-1"
                   >
-                    {" "}
                     <Icon
                       name={nest.icon}
                       class="text-vim-blue shrink-0 pt-1"
-                    />{" "}
-                    {nest.text}{" "}
+                    />
+                    {nest.text}
                     {"flag" in nest && (
                       <Icon name={nest.flag} class="ml-2 text-xs" />
                     )}
@@ -130,66 +122,26 @@ const local = Astro.currentLocale as "en" | "it";
                 ))}
               </menu>
             )}
-          </li>
+          </div>
 
-          <li class="flex h-fit items-center gap-2 max-sm:hidden">
-            <div class="flex aspect-square h-full w-max shrink-0 items-center justify-center overflow-hidden rounded-md">
+          <div class="flex h-fit items-center gap-3">
+            <div class="flex aspect-square h-[4.5rem] w-max shrink-0 items-center justify-center overflow-hidden rounded-md bg-gray-100">
               <Image src={concat_us} alt="" class="size-full object-cover" />
             </div>
             <div class="flex flex-col items-start gap-2 text-sm">
-              <p class="max-w-[20ch]">{ui[local].sections.footer.md.subtile}</p>
+              <p class="max-w-[20ch] leading-tight">{ui[local].sections.footer.md.subtile}</p>
               <a
                 href="mailto:sales@vimecvalves.co.uk"
                 aria-label="Email sales@vimecvalves.co.uk"
-                class="text-vim-blue hover:bg-vim-blue border-vim-blue cursor-pointer rounded-md border px-4 py-1 text-start !text-sm font-medium uppercase duration-300 hover:text-white"
+                class="text-vim-blue hover:bg-vim-blue border-vim-blue cursor-pointer rounded-md border px-4 py-1 text-start text-xs lg:text-sm font-medium uppercase duration-300 hover:text-white"
               >
                 {ui[local].sections.footer.md["button-name"]}
               </a>
             </div>
-          </li>
-        </div>
+          </div>
+        </li>
       ))
     }
-
-    <li
-      style=`display:${hideTop ? "none" : "" } `
-      class="grid h-fit gap-2 lg:hidden"
-    >
-      <p class="flex items-center justify-start gap-1">
-        {ui[defaultLang].sections.footer["follow-us-on"]}
-      </p>
-      <menu class="flex items-center justify-start gap-4">
-        {
-          socialMedia.map((item) => (
-            <Link
-              href={item.link}
-              target="_blank"
-              aria-label={`Visit our ${item.icon.split(':')[1] || 'Social'} page`}
-              class="text-vim-blue flex aspect-square h-auto items-center justify-center rounded border border-current p-2"
-            >
-              <Icon name={item.icon} />
-            </Link>
-          ))
-        }
-      </menu>
-    </li>
-    <li class="flex h-fit items-center gap-2 sm:hidden">
-      <div
-        class="flex aspect-square h-full w-max shrink-0 items-center justify-center overflow-hidden rounded-md"
-      >
-        <Image src={concat_us} alt="" class="size-full object-cover" />
-      </div>
-      <div class="flex flex-col items-start gap-2 text-sm">
-        <p class="max-w-[20ch]">{ui[local].sections.footer.md.subtile}</p>
-        <a
-          href="mailto:sales@vimecvalves.co.uk"
-          aria-label="Email sales@vimecvalves.co.uk"
-          class="text-vim-blue hover:bg-vim-blue border-vim-blue cursor-pointer rounded-md border px-4 py-1 text-start text-xs font-medium uppercase duration-300 hover:text-white lg:text-sm"
-        >
-          {ui[local].sections.footer.md["button-name"]}
-        </a>
-      </div>
-    </li>
   </menu>
 
   <div class="border-vim-blue w-full border-t py-6">
