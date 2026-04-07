@@ -82,7 +82,13 @@ const productSchema = {
     "@type": "Brand",
     "name": "Vimec Valves"
   },
-  "url": new URL(Astro.url.pathname, Astro.site).toString()
+  "url": new URL(Astro.url.pathname, Astro.site).toString(),
+  "offers": {
+    "@type": "Offer",
+    "url": new URL(Astro.url.pathname, Astro.site).toString(),
+    "priceCurrency": "GBP",
+    "availability": "https://schema.org/InStock"
+  }
 };
 ---
 
