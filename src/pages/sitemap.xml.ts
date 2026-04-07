@@ -21,7 +21,7 @@ export const GET: APIRoute = async () => {
   const news = await contentfulClient.getEntries({ content_type: "newsEvents" });
   const aboutUs = await contentfulClient.getEntries({ content_type: "departmentAboutUs" });
 
-  const urlEntries: string[] = [];
+  const urlEntries = new Set<string>();
 
   // Helper to generate the URL blocks with hreflangs
   const pushUrlBlock = (pathWithoutLocale: string) => {
@@ -33,7 +33,7 @@ export const GET: APIRoute = async () => {
       
       const xDefault = `<xhtml:link rel="alternate" hreflang="x-default" href="${siteUrl}/en${pathWithoutLocale}"/>`;
 
-      urlEntries.push(`<url> <loc>${loc}</loc> ${alternates} ${xDefault} </url>`);
+      urlEntries.add(`<url> <loc>${loc}</loc> ${alternates} ${xDefault} </url>`);
     });
   };
 
@@ -83,7 +83,7 @@ export const GET: APIRoute = async () => {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-${urlEntries.join('\n')}
+${Array.from(urlEntries).join('\n')}
 
 </urlset>`;
 
