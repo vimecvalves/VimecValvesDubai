@@ -10,6 +10,7 @@ export const prerender = false;
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
 
 const { slug } = Astro.params;
+import { routes } from "@/i18n/routes";
 const local = Astro.currentLocale as "en" | "it";
 
 const otherLocal = local === "it" ? "en" : "it";
@@ -37,19 +38,19 @@ if (!data) {
   const otherDataMatch = otherDepartmentsRes.items.find((item) => getSlug(item) === slug || item.sys.id === slug);
   if (otherDataMatch) {
     const currentLocData = allDepartments.items.find(i => i.sys.id === otherDataMatch.sys.id);
-    if (currentLocData) return Astro.redirect(`/${local}/about-us/${getSlug(currentLocData)}`, 301);
+    if (currentLocData) return Astro.redirect(`/${local}/${routes['about-us'][local]}/${getSlug(currentLocData)}`, 301);
   }
   return new Response(null, { status: 404 });
 } else {
   const resolvedSlug = getSlug(data);
   if (slug === data.sys.id && slug !== resolvedSlug) {
-    return Astro.redirect(`/${local}/about-us/${resolvedSlug}`, 301);
+    return Astro.redirect(`/${local}/${routes['about-us'][local]}/${resolvedSlug}`, 301);
   }
   
   const otherLocData = otherDepartmentsRes.items.find(i => i.sys.id === data.sys.id);
   alternateUrls = {
-    [local]: `/${local}/about-us/${resolvedSlug}`,
-    [otherLocal]: `/${otherLocal}/about-us/${otherLocData ? getSlug(otherLocData) : resolvedSlug}`
+    [local]: `/${local}/${routes['about-us'][local]}/${resolvedSlug}`,
+    [otherLocal]: `/${otherLocal}/${routes['about-us'][otherLocal]}/${otherLocData ? getSlug(otherLocData) : resolvedSlug}`
   };
 }
 ---

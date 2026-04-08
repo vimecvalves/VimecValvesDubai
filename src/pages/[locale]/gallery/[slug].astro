@@ -13,6 +13,7 @@ import type { TypeGallery } from "@/libs/content/contentful/entriesType";
 
 const { slug } = Astro.params;
 const local = Astro.currentLocale as "en" | "it";
+import { routes } from "@/i18n/routes";
 
 const otherLocal = local === "it" ? "en" : "it";
 
@@ -39,19 +40,19 @@ if (!data) {
   const otherDataMatch = otherGalleriesRes.items.find(item => getSlug(item) === slug || item.sys.id === slug);
   if (otherDataMatch) {
     const currentLocData = allGalleries.items.find(i => i.sys.id === otherDataMatch.sys.id);
-    if (currentLocData) return Astro.redirect(`/${local}/gallery/${getSlug(currentLocData)}`, 301);
+    if (currentLocData) return Astro.redirect(`/${local}/${routes.gallery[local]}/${getSlug(currentLocData)}`, 301);
   }
   return new Response(null, { status: 404 });
 } else {
   const resolvedSlug = getSlug(data);
   if (slug === data.sys.id && slug !== resolvedSlug) {
-    return Astro.redirect(`/${local}/gallery/${resolvedSlug}`, 301);
+    return Astro.redirect(`/${local}/${routes.gallery[local]}/${resolvedSlug}`, 301);
   }
   
   const otherLocData = otherGalleriesRes.items.find(i => i.sys.id === data.sys.id);
   alternateUrls = {
-    [local]: `/${local}/gallery/${resolvedSlug}`,
-    [otherLocal]: `/${otherLocal}/gallery/${otherLocData ? getSlug(otherLocData) : resolvedSlug}`
+    [local]: `/${local}/${routes.gallery[local]}/${resolvedSlug}`,
+    [otherLocal]: `/${otherLocal}/${routes.gallery[otherLocal]}/${otherLocData ? getSlug(otherLocData) : resolvedSlug}`
   };
 }
 

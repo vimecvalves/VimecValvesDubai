@@ -1,5 +1,6 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
+import { getLocalizedPath } from "@/i18n/routes";
 import { ui } from "@/i18n/ui";
 import { Icon } from "astro-icon/components";
 import main_padding from "@/styles/padding";
@@ -57,7 +58,7 @@ const { links, locale, searchData } = Astro.props;
             <div class="flex items-center justify-between w-full">
               {/* Main navigation link — always navigates */}
               <a
-                href={getRelativeLocaleUrl(locale, item.link)}
+                href={getRelativeLocaleUrl(locale, getLocalizedPath(item.link, locale).replace(/^\//, ''))}
                 class="flex-1 flex items-center justify-start gap-2 nav-item-link"
                 data-index={idx}
               >
@@ -86,7 +87,7 @@ const { links, locale, searchData } = Astro.props;
                 {item.list.map((subItem) => (
                   <li class="px-4 py-2">
                     <a
-                      href={`/${locale + "/" + subItem.link}`}
+                      href={getRelativeLocaleUrl(locale, getLocalizedPath(subItem.link, locale).replace(/^\//, ''))}
                       class="hover:text-black/80"
                     >
                       {subItem.title}

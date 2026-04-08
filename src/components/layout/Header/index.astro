@@ -30,9 +30,15 @@ import {
 } from "@/libs/content/contentful/entriesType";
 import Logo from "./Logo.astro";
 import { slugify } from "@/libs/utils/slugify";
+import { getLocalizedPath } from "@/i18n/routes";
 
 // @ts-ignore
-const link = (l: string) => getRelativeLocaleUrl(locale, l);
+const link = (l: string) => {
+  const parts = l.split('/');
+  const translatedBase = getLocalizedPath(parts[0], locale!).replace(/^\//, '');
+  const finalPath = [translatedBase, ...parts.slice(1)].filter(Boolean).join('/');
+  return getRelativeLocaleUrl(locale!, finalPath);
+};
 
 const [product, downloads, newsEvents, gallery, departmentAboutUs] =
   await Promise.all([
@@ -282,7 +288,7 @@ const navLinks = links.map((item) => {
             data-has-list={item.list ? "true" : "false"}
           >
             <a
-              href={getRelativeLocaleUrl(locale, item.link)}
+              href={getRelativeLocaleUrl(locale!, getLocalizedPath(item.link, locale!).replace(/^\//, ''))}
               class="desktop-nav-link flex items-center justify-center gap-2 whitespace-nowrap"
               data-index={idx}
             >

@@ -6,10 +6,19 @@ const props = Astro.props;
 const locale = Astro.currentLocale as "en" | "it";
 
 import { getRelativeLocaleUrl } from "astro:i18n";
+import { getLocalizedPath } from "@/i18n/routes";
+
+const parseLink = (href: string) => {
+  if (href.startsWith('http') || href.startsWith('mailto') || href.startsWith('tel')) return href;
+  const parts = href.split('/');
+  const translatedBase = getLocalizedPath(parts[0], locale!).replace(/^\//, '');
+  const finalPath = [translatedBase, ...parts.slice(1)].filter(Boolean).join('/');
+  return getRelativeLocaleUrl(locale!, finalPath);
+};
 
 // @ts-ignore
 const link = props.href && props.href !== "#"
-  ? getRelativeLocaleUrl(locale, props.href)
+  ? parseLink(String(props.href))
   : undefined;
 ---
 

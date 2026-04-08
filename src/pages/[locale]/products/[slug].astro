@@ -13,6 +13,7 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, s
 
 const { slug } = Astro.params;
 const local = (Astro.currentLocale || Astro.params.locale) as "en" | "it";
+import { routes } from "@/i18n/routes";
 
 const otherLocal = local === "it" ? "en" : "it";
 
@@ -84,7 +85,7 @@ if (!data) {
   if (otherDataMatch) {
     const currentLocData = allProducts.items.find(i => i.sys.id === otherDataMatch.sys.id);
     if (currentLocData) {
-       return Astro.redirect(`/${local}/products/${getSlug(currentLocData)}`, 301);
+       return Astro.redirect(`/${local}/${routes.products[local]}/${getSlug(currentLocData)}`, 301);
     }
   }
   return new Response(null, { status: 404, statusText: 'Not found' });
@@ -93,8 +94,8 @@ if (!data) {
   const otherLocData = otherProductsRes.items.find(i => i.sys.id === data.sys.id);
   
   alternateUrls = {
-    [local]: `/${local}/products/${getSlug(data)}`,
-    [otherLocal]: `/${otherLocal}/products/${otherLocData ? getSlug(otherLocData) : getSlug(data)}`
+    [local]: `/${local}/${routes.products[local]}/${getSlug(data)}`,
+    [otherLocal]: `/${otherLocal}/${routes.products[otherLocal]}/${otherLocData ? getSlug(otherLocData) : getSlug(data)}`
   };
 }
 
@@ -157,7 +158,7 @@ const itemListSchema = {
     return {
       "@type": "ListItem",
       "position": index + 1,
-      "url": new URL(`/${local}/products/${slugItem}`, Astro.site).toString(),
+      "url": new URL(`/${local}/${routes.products[local]}/${slugItem}`, Astro.site).toString(),
       "name": item.fields.name
     };
   })

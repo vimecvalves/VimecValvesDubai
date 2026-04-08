@@ -9,6 +9,7 @@ import { Image } from "astro:assets";
 import { slugify } from "@/libs/utils/slugify";
 
 const { slug } = Astro.params;
+import { routes } from "@/i18n/routes";
 const local = Astro.currentLocale as "en" | "it";
 export const prerender = false;
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
@@ -38,14 +39,14 @@ if (!data) {
   const otherDataMatch = otherNewsRes.items.find(item => getSlug(item) === slug);
   if (otherDataMatch) {
     const currentLocData = allNews.items.find(i => i.sys.id === otherDataMatch.sys.id);
-    if (currentLocData) return Astro.redirect(`/${local}/news-events/${getSlug(currentLocData)}`, 301);
+    if (currentLocData) return Astro.redirect(`/${local}/${routes['news-events'][local]}/${getSlug(currentLocData)}`, 301);
   }
   return new Response(null, { status: 404 });
 } else {
   const otherLocData = otherNewsRes.items.find(i => i.sys.id === data.sys.id);
   alternateUrls = {
-    [local]: `/${local}/news-events/${getSlug(data)}`,
-    [otherLocal]: `/${otherLocal}/news-events/${otherLocData ? getSlug(otherLocData) : getSlug(data)}`
+    [local]: `/${local}/${routes['news-events'][local]}/${getSlug(data)}`,
+    [otherLocal]: `/${otherLocal}/${routes['news-events'][otherLocal]}/${otherLocData ? getSlug(otherLocData) : getSlug(data)}`
   };
 }
 ---
