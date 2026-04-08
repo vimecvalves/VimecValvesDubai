@@ -1,0 +1,6 @@
+---
+// Catch-all route to ensure Vercel forwards all unmapped paths (like translated routes) to Astro's SSR Lambda
+// where middleware.ts will intercept and rewrite them properly!
+export const prerender = false;
+return new Response(null, { status: 404, statusText: "Not found" });
+---
