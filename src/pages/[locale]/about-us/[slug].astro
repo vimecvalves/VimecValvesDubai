@@ -12,31 +12,52 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, s
 const { slug } = Astro.params;
 const local = Astro.currentLocale as "en" | "it";
 
-const allDepartments = await contentfulClient.getEntries<TypeDepartmentAboutUs>({
-  content_type: 'departmentAboutUs',
-  locale: local,
-  include: 2,
-});
+const otherLocal = local === "it" ? "en" : "it";
 
-const data = allDepartments.items.find((item) => {
-  // @ts-ignore
-  const itemSlug = item.fields.slug ?? slugify(item.fields.title);
-  return itemSlug === slug || item.sys.id === slug;
-});
+const [allDepartmentsRes, otherDepartmentsRes] = await Promise.all([
+  contentfulClient.getEntries<TypeDepartmentAboutUs>({
+    content_type: 'departmentAboutUs',
+    locale: local,
+    include: 2,
+  }),
+  contentfulClient.getEntries<TypeDepartmentAboutUs>({
+    content_type: 'departmentAboutUs',
+    locale: otherLocal,
+    include: 2,
+  })
+]);
 
-if (!data) return new Response(null, { status: 404 });
+const getSlug = (item: any) => item.fields.slug ?? slugify(item.fields.title);
 
-// @ts-ignore
-const resolvedSlug = data.fields.slug ?? slugify(data.fields.title);
+const allDepartments = allDepartmentsRes;
+let data = allDepartments.items.find((item) => getSlug(item) === slug || item.sys.id === slug);
+let alternateUrls: Record<string, string> = {};
 
-if (slug === data.sys.id && slug !== resolvedSlug) {
-  return Astro.redirect(`/${local}/about-us/${resolvedSlug}`, 301);
+if (!data) {
+  const otherDataMatch = otherDepartmentsRes.items.find((item) => getSlug(item) === slug || item.sys.id === slug);
+  if (otherDataMatch) {
+    const currentLocData = allDepartments.items.find(i => i.sys.id === otherDataMatch.sys.id);
+    if (currentLocData) return Astro.redirect(`/${local}/about-us/${getSlug(currentLocData)}`, 301);
+  }
+  return new Response(null, { status: 404 });
+} else {
+  const resolvedSlug = getSlug(data);
+  if (slug === data.sys.id && slug !== resolvedSlug) {
+    return Astro.redirect(`/${local}/about-us/${resolvedSlug}`, 301);
+  }
+  
+  const otherLocData = otherDepartmentsRes.items.find(i => i.sys.id === data.sys.id);
+  alternateUrls = {
+    [local]: `/${local}/about-us/${resolvedSlug}`,
+    [otherLocal]: `/${otherLocal}/about-us/${otherLocData ? getSlug(otherLocData) : resolvedSlug}`
+  };
 }
 ---
 
 <Layout
   title={`${data.fields.title} | Vimec Valves`}
   description={`Learn more about the ${data.fields.title} department at Vimec Valves, committed to engineering and manufacturing high-quality industrial valves.`}
+  alternateUrls={alternateUrls}
 >
   <HeroSection data={data} />
   <GetInTouch />
