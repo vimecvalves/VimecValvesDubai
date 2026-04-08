@@ -31,7 +31,7 @@ let data = await contentfulClient.getEntries<TypeProduct>({
     class="w-full flex items-start justify-start gap-4 relative z-0 group"
   >
     <product-slider class="contents">
-      <div class="swiper products-home !pt-6 !pb-12 !px-4 !-mt-6 !-mb-12 !-mx-4 w-full">
+      <div class="swiper products-home !pt-6 !pb-16 !px-4 !-mt-6 !-mx-4 w-full">
         <div class="swiper-wrapper flex">
           {
             data.items.map((item) => (
@@ -57,12 +57,12 @@ let data = await contentfulClient.getEntries<TypeProduct>({
           class="!w-12 !h-12 p-2 rounded-full !aspect-square flex items-center justify-center cursor-pointer text-vim-blue bg-white/90 backdrop-blur-sm shadow-md hover:shadow-xl hover:scale-105 hover:bg-vim-blue hover:text-white transition-all duration-300 swiper-button-next pointer-events-auto"
         />
       </div>
-      <div class="swiper-pagination absolute left-0 !-bottom-14 z-50"></div>
+      <div class="swiper-pagination absolute left-0 bottom-4 z-50"></div>
     </product-slider>
   </div>
   <CustomBtn
     href="products"
-    className="sm:hidden w-full mx-auto mt-6 uppercase"
+    className="sm:hidden w-full mx-auto mt-12 uppercase"
     >{ui[locale].buttons["view-all-products"]}</CustomBtn
   >
 </section>
@@ -95,21 +95,21 @@ let data = await contentfulClient.getEntries<TypeProduct>({
         slidesPerView: 1, // Mobile
         slidesPerGroup: 1,
         grabCursor: true,
-        loop: false, // No repeated elements 
+        loop: true,
+        loopAdditionalSlides: 3,
         freeMode: {
           enabled: true,
           momentum: true,
         },
         autoplay: {
           delay: 4000,
-          pauseOnMouseEnter: true,
           disableOnInteraction: false,
-          waitForTransition: true
+          pauseOnMouseEnter: true
         },
         mousewheel: {
           forceToAxis: true,
         },
-        speed: 800,
+        speed: 900,
         breakpoints: {
           768: { // Tablet
             slidesPerView: 2,

@@ -22,77 +22,149 @@ const flatData = data.items.flatMap((item) => item.fields.references);
     {ui[local].home["supply-references"]}
   </h2>
 
-  <div class="w-full">
-    <supply-references-slider class="contents">
-      <div class="swiper supply-references-home overflow-hidden">
-        <div class="swiper-wrapper">
-        {
-          flatData.map((item) => (
-            <div class="swiper-slide flex !w-max flex-col items-start justify-start rounded-lg px-6 py-6">
-              <Image
-                src={item.fields.file.url}
-                alt={item.fields.title || "Supply reference"}
-                class="h-[66px] w-auto object-contain"
-                height={300}
-                width={300}
-              />
-            </div>
-          ))
-        }
-        </div>
-      </div>
-    </supply-references-slider>
-  </div>
-
-  <script>
-    import Swiper from "swiper";
-    import { Autoplay, Mousewheel } from "swiper/modules";
-    import "swiper/css";
-
-    class SupplyReferencesSlider extends HTMLElement {
-      connectedCallback() {
-        const swiperEl = this.querySelector(".swiper.supply-references-home");
-        if (!swiperEl) return;
-
-        swiperEl.classList.remove("swiper-initialized");
-
-        this.swiper = new Swiper(swiperEl, {
-          modules: [Autoplay, Mousewheel],
-          mousewheel: {
-            forceToAxis: true,
-            releaseOnEdges: true,
-          },
-          spaceBetween: 40,
-          slidesPerView: "auto",
-          speed: 800,
-          loop: true,
-          autoplay: {
-            delay: 4500,
-            disableOnInteraction: false,
-          },
-        });
-
-        this.handleBeforePreparation = () => {
-          if (this.swiper && !this.swiper.destroyed) {
-            this.swiper.destroy(true, true);
-          }
-        };
-
-        document.addEventListener("astro:before-preparation", this.handleBeforePreparation, { once: true });
+  <drag-marquee class="w-full marquee-container flex overflow-hidden">
+    <div class="logo-track flex items-center">
+      {
+        flatData.map((item) => (
+          <div class="flex !w-max flex-col items-start justify-start rounded-lg px-6 py-6">
+            <Image
+              src={item.fields.file.url}
+              alt={item.fields.title || "Supply reference"}
+              class="h-[66px] w-auto object-contain"
+              height={300}
+              width={300}
+            />
+          </div>
+        ))
       }
-
-      disconnectedCallback() {
-        if (this.handleBeforePreparation) {
-          document.removeEventListener("astro:before-preparation", this.handleBeforePreparation);
-        }
-        if (this.swiper && !this.swiper.destroyed) {
-          this.swiper.destroy(true, true);
-        }
+    </div>
+    <div aria-hidden="true" class="logo-track flex items-center">
+      {
+        flatData.map((item) => (
+          <div class="flex !w-max flex-col items-start justify-start rounded-lg px-6 py-6">
+            <Image
+              src={item.fields.file.url}
+              alt={item.fields.title || "Supply reference"}
+              class="h-[66px] w-auto object-contain"
+              height={300}
+              width={300}
+            />
+          </div>
+        ))
       }
-    }
-
-    if (!customElements.get("supply-references-slider")) {
-      customElements.define("supply-references-slider", SupplyReferencesSlider);
-    }
-  </script>
+    </div>
+  </drag-marquee>
 </section>
+
+<script>
+  class DragMarquee extends HTMLElement {
+    connectedCallback() {
+      this.tracks = Array.from(this.querySelectorAll('.logo-track')) as HTMLElement[];
+      if (this.tracks.length === 0) return;
+      
+      this.isHovered = false;
+      this.isDragging = false;
+      this.startX = 0;
+      this.currentX = 0;
+      this.offset = 0;
+      this.speed = 1.0; 
+      this.trackWidth = 0;
+      
+      const resizeObserver = new ResizeObserver((entries) => {
+        if (entries[0] && entries[0].contentRect.width > 0) {
+          this.trackWidth = entries[0].contentRect.width;
+        }
+      });
+      resizeObserver.observe(this.tracks[0]);
+
+      this.addEventListener('mouseenter', () => this.isHovered = true);
+      this.addEventListener('mouseleave', () => {
+        this.isHovered = false;
+        if (this.isDragging) {
+          this.isDragging = false;
+          this.style.cursor = 'grab';
+        }
+      });
+
+      const down = (x: number) => {
+        this.isDragging = true;
+        this.startX = x;
+        this.currentX = this.offset;
+        this.style.cursor = 'grabbing';
+      };
+      const move = (x: number) => {
+        if (!this.isDragging) return;
+        const walk = (x - this.startX) * 1.5;
+        this.offset = this.currentX + walk;
+      };
+      const up = () => {
+        if (this.isDragging) {
+          this.isDragging = false;
+          this.style.cursor = 'grab';
+        }
+      };
+
+      this.addEventListener('mousedown', (e) => down((e as MouseEvent).pageX));
+      window.addEventListener('mousemove', (e) => move((e as MouseEvent).pageX));
+      window.addEventListener('mouseup', up);
+
+      this.addEventListener('touchstart', (e) => down((e as TouchEvent).touches[0].pageX), { passive: true });
+      this.addEventListener('touchmove', (e) => move((e as TouchEvent).touches[0].pageX), { passive: true });
+      window.addEventListener('touchend', up);
+
+      this.addEventListener('wheel', (e) => {
+        const wheelEvent = e as WheelEvent;
+        // Scroll horizontally if either X or Y wheel input is provided
+        if (Math.abs(wheelEvent.deltaX) > 0 || Math.abs(wheelEvent.deltaY) > 0) {
+            // Usually trackpad horizontal scrolling gives deltaX
+            // Normal mouse scroll gives deltaY. Let's merge them
+            const delta = Math.abs(wheelEvent.deltaX) > Math.abs(wheelEvent.deltaY) ? wheelEvent.deltaX : wheelEvent.deltaY;
+            this.offset -= delta * 0.5;
+        }
+      }, { passive: true });
+
+      const animate = () => {
+        if (!this.isDragging && !this.isHovered) {
+          this.offset -= this.speed;
+        }
+        
+        if (this.trackWidth > 0) {
+          if (this.offset <= -this.trackWidth) {
+            this.offset += this.trackWidth;
+            this.currentX += this.trackWidth;
+          } else if (this.offset > 0) {
+            this.offset -= this.trackWidth;
+            this.currentX -= this.trackWidth;
+          }
+        }
+        
+        this.tracks.forEach(track => {
+          track.style.transform = `translateX(${this.offset}px)`;
+        });
+        
+        requestAnimationFrame(animate);
+      };
+
+      requestAnimationFrame(animate);
+      this.style.cursor = 'grab';
+    }
+  }
+
+  if (!customElements.get("drag-marquee")) {
+    customElements.define("drag-marquee", DragMarquee);
+  }
+</script>
+
+<style>
+  .logo-track {
+    display: flex;
+    flex-shrink: 0;
+    min-width: max-content;
+    will-change: transform;
+  }
+
+  .marquee-container {
+    -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  }
+</style>

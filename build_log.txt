@@ -1,0 +1,25 @@
+
+> vimec-valves-web@0.0.1 build
+> astro build
+
+13:41:16 [content] Syncing content
+13:41:16 [content] Synced content
+13:41:16 [types] Generated 25ms
+13:41:16 [build] output: "server"
+13:41:16 [build] mode: "server"
+13:41:16 [build] directory: /Users/Vimec/Documents/Website/UK/vimec-valves-web-main/dist/
+13:41:16 [build] adapter: @astrojs/vercel
+13:41:16 [build] Collecting build info...
+13:41:16 [build] ✓ Completed in 40ms.
+13:41:16 [build] Building server entrypoints...
+13:41:17 [ERROR] [vite] ✗ Build failed in 519ms
+[vite]: Rollup failed to resolve import "@/components/news&events/[id]/HeroSection.astro" from "/Users/Vimec/Documents/Website/UK/vimec-valves-web-main/src/pages/[locale]/news&events/[id].astro".
+This is most likely unintended because it can break your application at runtime.
+If you do want to externalize this module explicitly add it to
+`build.rollupOptions.external`
+  Stack trace:
+    at viteLog (file:///Users/Vimec/Documents/Website/UK/vimec-valves-web-main/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:46374:15)
+    at onwarn (file:///Users/Vimec/Documents/Website/UK/vimec-valves-web-main/node_modules/@vitejs/plugin-react/dist/index.js:90:7)
+    at onRollupLog (file:///Users/Vimec/Documents/Website/UK/vimec-valves-web-main/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:46422:5)
+    at file:///Users/Vimec/Documents/Website/UK/vimec-valves-web-main/node_modules/rollup/dist/es/shared/node-entry.js:21369:32
+    at ModuleLoader.handleInvalidResolvedId (file:///Users/Vimec/Documents/Website/UK/vimec-valves-web-main/node_modules/rollup/dist/es/shared/node-entry.js:22108:26)
