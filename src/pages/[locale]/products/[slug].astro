@@ -14,61 +14,88 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, s
 const { slug } = Astro.params;
 const local = (Astro.currentLocale || Astro.params.locale) as "en" | "it";
 
-const allProducts = await contentfulClient.getEntries<TypeProduct>({
-  content_type: 'product',
-  locale: local,
-});
+const otherLocal = local === "it" ? "en" : "it";
 
-const data = allProducts.items.find((item) => {
-  // @ts-ignore
+const [allProductsRes, otherProductsRes] = await Promise.all([
+  contentfulClient.getEntries<TypeProduct>({
+    content_type: 'product',
+    locale: local,
+  }),
+  contentfulClient.getEntries<TypeProduct>({
+    content_type: 'product',
+    locale: otherLocal,
+  })
+]);
+
+// Helper to mutate Italian items
+const applyItalianTranslations = (items: any[]) => {
+  items.forEach(item => {
+    const catUpper = item.fields?.category?.fields?.title?.toUpperCase() || '';
+    
+    // 1. Correct the main product names
+    if (['MODULAR', 'COMPACT', 'INTEGRAL'].includes(catUpper)) {
+      item.fields.name = 'Valvole Double Block & Bleed';
+    } else if (catUpper === 'TRUNNION') {
+      item.fields.name = 'Valvole a Sfera Trunnion';
+    } else if (['TOP ENTRY', 'FLOATING', 'METAL SEATED'].includes(catUpper)) {
+      item.fields.name = 'Valvole a Sfera';
+    } else if (['MANIFOLDS', 'MONOFLANGES', 'NEEDLE VALVE'].includes(catUpper)) {
+      item.fields.name = 'Strumentazione';
+    } else if (['CAST STEEL', 'FORGED STEEL'].includes(catUpper)) {
+      item.fields.name = 'Valvole a Saracinesca, Globo e Ritegno';
+    } else if (catUpper === 'DUAL PLATE') {
+      item.fields.name = 'Valvole di Ritegno';
+    } else if (['CONCENTRIC', 'HIGH PERFORMANCE'].includes(catUpper)) {
+      item.fields.name = 'Valvole a Farfalla';
+    } else {
+      let displayName = item.fields.name || '';
+      if (displayName.includes('Double Block & Bleed')) item.fields.name = 'Valvole Double Block & Bleed';
+      else if (displayName.includes('Ball Valves')) item.fields.name = 'Valvole a Sfera';
+      else if (displayName.includes('Instrumentation')) item.fields.name = 'Strumentazione';
+      else if (displayName.includes('Gate, Globe, Check')) item.fields.name = 'Valvole a Saracinesca, Globo e Ritegno';
+      else if (displayName.includes('Check Valves')) item.fields.name = 'Valvole di Ritegno';
+      else if (displayName.includes('Butterfly Valves')) item.fields.name = 'Valvole a Farfalla';
+    }
+
+    // 2. Correct Category titles
+    if (item.fields.category && item.fields.category.fields) {
+      if (catUpper === 'MODULAR') item.fields.category.fields.title = 'Modulare';
+      else if (catUpper === 'COMPACT') item.fields.category.fields.title = 'Compatto';
+      else if (catUpper === 'INTEGRAL') item.fields.category.fields.title = 'Integrale';
+    }
+  });
+};
+
+if (local === 'it') applyItalianTranslations(allProductsRes.items);
+if (otherLocal === 'it') applyItalianTranslations(otherProductsRes.items);
+
+const getSlug = (item: any) => {
   const catTitle = item.fields.category?.fields?.title || '';
-  const fallbackSlug = slugify(`${catTitle ? catTitle + '-' : ''}${item.fields.name}`);
-  const generatedSlug = item.fields.slug ?? fallbackSlug;
-  return generatedSlug === slug;
-});
+  return item.fields.slug ?? slugify(`${catTitle ? catTitle + '-' : ''}${item.fields.name}`);
+};
+
+const allProducts = allProductsRes;
+let data = allProducts.items.find(item => getSlug(item) === slug);
+let alternateUrls: Record<string, string> = {};
 
 if (!data) {
-  return new Response(null, {
-    status: 404,
-    statusText: 'Not found'
-  });
-}
-
-if (local === 'it') {
-  const catUpper = data.fields?.category?.fields?.title?.toUpperCase() || '';
+  // If not found in current locale, check other locale
+  const otherDataMatch = otherProductsRes.items.find(item => getSlug(item) === slug);
+  if (otherDataMatch) {
+    const currentLocData = allProducts.items.find(i => i.sys.id === otherDataMatch.sys.id);
+    if (currentLocData) {
+       return Astro.redirect(`/${local}/products/${getSlug(currentLocData)}`, 301);
+    }
+  }
+  return new Response(null, { status: 404, statusText: 'Not found' });
+} else {
+  // Data is found, compute alternate URLs
+  const otherLocData = otherProductsRes.items.find(i => i.sys.id === data.sys.id);
   
-  // 1. Correct the main product names based on their category mappings (since Italian names are wiped or broken as 'INTÉGRALE')
-  if (['MODULAR', 'COMPACT', 'INTEGRAL'].includes(catUpper)) {
-    data.fields.name = 'Valvole Double Block & Bleed';
-  } else if (catUpper === 'TRUNNION') {
-    data.fields.name = 'Valvole a Sfera Trunnion';
-  } else if (['TOP ENTRY', 'FLOATING', 'METAL SEATED'].includes(catUpper)) {
-    data.fields.name = 'Valvole a Sfera';
-  } else if (['MANIFOLDS', 'MONOFLANGES', 'NEEDLE VALVE'].includes(catUpper)) {
-    data.fields.name = 'Strumentazione';
-  } else if (['CAST STEEL', 'FORGED STEEL'].includes(catUpper)) {
-    data.fields.name = 'Valvole a Saracinesca, Globo e Ritegno';
-  } else if (catUpper === 'DUAL PLATE') {
-    data.fields.name = 'Valvole di Ritegno';
-  } else if (['CONCENTRIC', 'HIGH PERFORMANCE'].includes(catUpper)) {
-    data.fields.name = 'Valvole a Farfalla';
-  } else {
-    // Fallback if there are any others that retain English names
-    let displayName = data.fields.name || '';
-    if (displayName.includes('Double Block & Bleed')) data.fields.name = 'Valvole Double Block & Bleed';
-    else if (displayName.includes('Ball Valves')) data.fields.name = 'Valvole a Sfera';
-    else if (displayName.includes('Instrumentation')) data.fields.name = 'Strumentazione';
-    else if (displayName.includes('Gate, Globe, Check')) data.fields.name = 'Valvole a Saracinesca, Globo e Ritegno';
-    else if (displayName.includes('Check Valves')) data.fields.name = 'Valvole di Ritegno';
-    else if (displayName.includes('Butterfly Valves')) data.fields.name = 'Valvole a Farfalla';
-  }
-
-  // 2. Correct Category titles
-  if (data.fields.category && data.fields.category.fields) {
-    if (catUpper === 'MODULAR') data.fields.category.fields.title = 'Modulare';
-    else if (catUpper === 'COMPACT') data.fields.category.fields.title = 'Compatto';
-    else if (catUpper === 'INTEGRAL') data.fields.category.fields.title = 'Integrale';
-  }
+  alternateUrls = {
+    [local]: `/${local}/products/${getSlug(data)}`,
+    [otherLocal]: `/${otherLocal}/products/${otherLocData ? getSlug(otherLocData) : getSlug(data)}`
+  };
 }
 
 
@@ -140,6 +167,7 @@ const itemListSchema = {
 <Layout
   title={data.fields.name ? `${data.fields.name} Manufacturer | Industrial Valves | Vimec` : "Industrial Valve Manufacturer | Vimec"}
   description={`Explore our range of industrial sampling valves and process valves designed for oil, gas and process industries. Learn details about ${data.fields.name}.`}
+  alternateUrls={alternateUrls}
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(productSchema)} />
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />

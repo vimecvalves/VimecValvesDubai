@@ -13,28 +13,48 @@ const local = Astro.currentLocale as "en" | "it";
 export const prerender = false;
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
 
-const allNews = await contentfulClient.getEntries<TypeNewsNEvents>({
-  content_type: 'newsEvents',
-  locale: local,
-  include: 2,
-});
+const otherLocal = local === "it" ? "en" : "it";
 
-console.log("News URL Slug Param:", slug);
-console.log("News Available Slugs:", allNews.items.map(e => slugify(e.fields.title)));
+const [allNewsRes, otherNewsRes] = await Promise.all([
+  contentfulClient.getEntries<TypeNewsNEvents>({
+    content_type: 'newsEvents',
+    locale: local,
+    include: 2,
+  }),
+  contentfulClient.getEntries<TypeNewsNEvents>({
+    content_type: 'newsEvents',
+    locale: otherLocal,
+    include: 2,
+  })
+]);
 
-const data = allNews.items.find(item => {
-  // @ts-ignore
-  const itemSlug = item.fields.slug ?? slugify(item.fields.title);
-  return itemSlug === slug;
-});
+const getSlug = (item: any) => item.fields.slug ?? slugify(item.fields.title);
 
-if (!data) return new Response(null, { status: 404 });
+const allNews = allNewsRes;
+let data = allNews.items.find(item => getSlug(item) === slug);
+let alternateUrls: Record<string, string> = {};
+
+if (!data) {
+  const otherDataMatch = otherNewsRes.items.find(item => getSlug(item) === slug);
+  if (otherDataMatch) {
+    const currentLocData = allNews.items.find(i => i.sys.id === otherDataMatch.sys.id);
+    if (currentLocData) return Astro.redirect(`/${local}/news-events/${getSlug(currentLocData)}`, 301);
+  }
+  return new Response(null, { status: 404 });
+} else {
+  const otherLocData = otherNewsRes.items.find(i => i.sys.id === data.sys.id);
+  alternateUrls = {
+    [local]: `/${local}/news-events/${getSlug(data)}`,
+    [otherLocal]: `/${otherLocal}/news-events/${otherLocData ? getSlug(otherLocData) : getSlug(data)}`
+  };
+}
 ---
 
 <Layout
   title={`${data.fields.title} | Vimec Valves News`}
   description={`Read the latest news and updates from Vimec Valves regarding ${data.fields.title}.`}
   image={data.fields.featuredImage?.fields?.file?.url}
+  alternateUrls={alternateUrls}
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",

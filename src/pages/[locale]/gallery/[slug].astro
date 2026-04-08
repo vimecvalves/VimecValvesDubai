@@ -14,28 +14,45 @@ import type { TypeGallery } from "@/libs/content/contentful/entriesType";
 const { slug } = Astro.params;
 const local = Astro.currentLocale as "en" | "it";
 
-const allGalleries = await contentfulClient.getEntries<TypeGallery>({
-  content_type: 'gallery',
-  locale: local,
-  include: 2,
-});
+const otherLocal = local === "it" ? "en" : "it";
 
-console.log("Gallery URL Slug Param:", slug);
-console.log("Gallery Available Slugs:", allGalleries.items.map(e => slugify(e.fields.title)));
+const [allGalleriesRes, otherGalleriesRes] = await Promise.all([
+  contentfulClient.getEntries<TypeGallery>({
+    content_type: 'gallery',
+    locale: local,
+    include: 2,
+  }),
+  contentfulClient.getEntries<TypeGallery>({
+    content_type: 'gallery',
+    locale: otherLocal,
+    include: 2,
+  })
+]);
 
-const data = allGalleries.items.find((item) => {
-  // @ts-ignore
-  const itemSlug = item.fields.slug ?? slugify(item.fields.title);
-  return itemSlug === slug || item.sys.id === slug;
-});
+const getSlug = (item: any) => item.fields.slug ?? slugify(item.fields.title);
 
-if (!data) return new Response(null, { status: 404 });
+const allGalleries = allGalleriesRes;
+let data = allGalleries.items.find(item => getSlug(item) === slug || item.sys.id === slug);
+let alternateUrls: Record<string, string> = {};
 
-// @ts-ignore
-const resolvedSlug = data.fields.slug ?? slugify(data.fields.title);
-
-if (slug === data.sys.id && slug !== resolvedSlug) {
-  return Astro.redirect(`/${local}/gallery/${resolvedSlug}`, 301);
+if (!data) {
+  const otherDataMatch = otherGalleriesRes.items.find(item => getSlug(item) === slug || item.sys.id === slug);
+  if (otherDataMatch) {
+    const currentLocData = allGalleries.items.find(i => i.sys.id === otherDataMatch.sys.id);
+    if (currentLocData) return Astro.redirect(`/${local}/gallery/${getSlug(currentLocData)}`, 301);
+  }
+  return new Response(null, { status: 404 });
+} else {
+  const resolvedSlug = getSlug(data);
+  if (slug === data.sys.id && slug !== resolvedSlug) {
+    return Astro.redirect(`/${local}/gallery/${resolvedSlug}`, 301);
+  }
+  
+  const otherLocData = otherGalleriesRes.items.find(i => i.sys.id === data.sys.id);
+  alternateUrls = {
+    [local]: `/${local}/gallery/${resolvedSlug}`,
+    [otherLocal]: `/${otherLocal}/gallery/${otherLocData ? getSlug(otherLocData) : resolvedSlug}`
+  };
 }
 
 const breadcrumbsData = [
@@ -51,6 +68,7 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, s
 <Layout
   title={data.fields.title ? `${data.fields.title} | Vimec Valves Gallery` : "Product Gallery | Vimec Valves"}
   description={`View precision photos and details for ${data.fields.title} in the Vimec Valves gallery.`}
+  alternateUrls={alternateUrls}
 >
   <section
     class:list={[

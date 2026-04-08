@@ -4,6 +4,11 @@ import LanguageSwitcher from "./LanguageSwitcher.astro";
 import logo from "@/assets/image/Logo-changing.gif";
 import { Image } from "astro:assets";
 
+interface Props {
+  alternateUrls?: Record<string, string>;
+}
+const { alternateUrls } = Astro.props;
+
 const locale = Astro.currentLocale as "en" | "it";
 
 import MobileMenu from "./MobileMenu.astro";
@@ -252,7 +257,7 @@ const navLinks = links.map((item) => {
             ))
           }
         </div>
-        <LanguageSwitcher locale={locale!} />
+        <LanguageSwitcher locale={locale!} alternateUrls={alternateUrls} />
       </div>
     </div>
   </div>

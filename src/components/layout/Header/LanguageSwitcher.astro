@@ -4,9 +4,10 @@ import { Icon } from 'astro-icon/components';
 
 interface Props {
   locale: string;
+  alternateUrls?: Record<string, string>;
 }
 
-const { locale } = Astro.props;
+const { locale, alternateUrls } = Astro.props;
 const findLang = languages.find((item) => item.lang === locale);
 const pathname = new URL(Astro.request.url).pathname;
 // Extract page path without the current locale
@@ -21,14 +22,19 @@ const page = pathname.replace(`/${locale}/`, '').replace(`/${locale}`, '');
   </button>
 
   <menu class="lang-menu absolute left-0 top-10 z-10 bg-white py-3 rounded-md flex flex-col shadow-lg duration-300 ease-out w-fit translate-y-full pointer-events-none opacity-0 m-0">
-    {languages.map((item) => (
+    {languages.map((item) => {
+      const targetUrl = alternateUrls && alternateUrls[item.lang] 
+        ? alternateUrls[item.lang] 
+        : `/${item.lang}/${page}`;
+      return (
       <li class="list-none m-0 p-0">
-        <a href={`/${item.lang}/${page}`} class="flex items-center shrink-0 justify-start gap-3 hover:bg-slate-50 duration-300 px-3 py-2 cursor-pointer text-black decoration-auto">
+        <a href={targetUrl} class="flex items-center shrink-0 justify-start gap-3 hover:bg-slate-50 duration-300 px-3 py-2 cursor-pointer text-black decoration-auto">
           <Icon name={item.flag} />
           {item.text}
         </a>
       </li>
-    ))}
+      );
+    })}
   </menu>
 </div>
 
