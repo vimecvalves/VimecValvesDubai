@@ -37,6 +37,7 @@ const slug = fields.slug ?? fallbackSlug;
       height={320}
       loading={eagerLoading ? "eager" : "lazy"}
       fetchpriority={eagerLoading ? "high" : "auto"}
+      decoding={eagerLoading ? "auto" : "async"}
       class="h-full w-full object-contain group-hover:scale-110 transition-transform duration-500"
     />
   </div>

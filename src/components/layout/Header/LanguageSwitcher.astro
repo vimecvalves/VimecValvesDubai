@@ -44,7 +44,7 @@ const getTranslatedPath = (targetLang: string) => {
     <Icon name="fe:arrow-up" class="arrow duration-300 rotate-180" />
   </button>
 
-  <menu class="lang-menu absolute left-0 top-10 z-10 bg-white py-3 rounded-md flex flex-col shadow-lg duration-300 ease-out w-fit translate-y-full pointer-events-none opacity-0 m-0">
+  <menu class="lang-menu absolute right-0 top-full mt-2 z-10 bg-white py-3 rounded-md flex flex-col shadow-lg duration-300 ease-out w-fit translate-y-[20px] pointer-events-none opacity-0 m-0">
     {languages.map((item) => {
       const targetUrl = getTranslatedPath(item.lang);
       return (
@@ -71,11 +71,11 @@ const getTranslatedPath = (targetLang: string) => {
         e.stopPropagation();
         const isOpen = !menu?.classList.contains('opacity-0');
         if (isOpen) {
-          menu?.classList.add('translate-y-full', 'pointer-events-none', 'opacity-0');
+          menu?.classList.add('translate-y-[20px]', 'pointer-events-none', 'opacity-0');
           menu?.classList.remove('translate-y-0', 'pointer-events-auto');
           arrow?.classList.add('rotate-180');
         } else {
-          menu?.classList.remove('translate-y-full', 'pointer-events-none', 'opacity-0');
+          menu?.classList.remove('translate-y-[20px]', 'pointer-events-none', 'opacity-0');
           menu?.classList.add('translate-y-0', 'pointer-events-auto');
           arrow?.classList.remove('rotate-180');
         }
@@ -83,7 +83,7 @@ const getTranslatedPath = (targetLang: string) => {
 
       document.addEventListener('click', (e) => {
         if (!switcher.contains(e.target as Node)) {
-          menu?.classList.add('translate-y-full', 'pointer-events-none', 'opacity-0');
+          menu?.classList.add('translate-y-[20px]', 'pointer-events-none', 'opacity-0');
           menu?.classList.remove('translate-y-0', 'pointer-events-auto');
           arrow?.classList.add('rotate-180');
         }

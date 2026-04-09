@@ -291,6 +291,7 @@ const navLinks = links.map((item) => {
               href={getRelativeLocaleUrl(locale!, getLocalizedPath(item.link, locale!).replace(/^\//, ''))}
               class="desktop-nav-link flex items-center justify-center gap-2 whitespace-nowrap"
               data-index={idx}
+              data-astro-prefetch="hover"
             >
               {ui[locale].sections.nav[item.key]}{" "}
               {item.list && (
@@ -306,7 +307,7 @@ const navLinks = links.map((item) => {
               >
                 {item.list.map((subItem) => (
                   <li>
-                    <Link href={subItem.link} class="hover:text-black/80 block py-1">
+                    <Link href={subItem.link} class="hover:text-black/80 block py-1" data-astro-prefetch="hover">
                       {subItem.title}
                     </Link>
                   </li>
@@ -425,11 +426,18 @@ const navLinks = links.map((item) => {
     const header = document.querySelector("#main-nav-header");
     if (!header) return;
 
+    let ticking = false;
     window.addEventListener("scroll", () => {
-      if (window.scrollY > 40) {
-        header.classList.add("scrolled");
-      } else {
-        header.classList.remove("scrolled");
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (window.scrollY > 40) {
+            header.classList.add("scrolled");
+          } else {
+            header.classList.remove("scrolled");
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     }, { passive: true });
   }
@@ -446,7 +454,7 @@ const navLinks = links.map((item) => {
     top: 0;
     z-index: 1000;
     transform: translateY(0);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s ease, box-shadow 0.25s ease, backdrop-filter 0.25s ease;
   }
 
   #main-nav-header::before {
@@ -459,7 +467,7 @@ const navLinks = links.map((item) => {
     height: 100%;
     background: white;
     z-index: -1;
-    transition: background 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background 0.25s ease, box-shadow 0.25s ease, backdrop-filter 0.25s ease;
   }
 
   /* To make sticky work correctly inside an absolute container layout or when fixed */

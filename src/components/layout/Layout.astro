@@ -184,15 +184,27 @@ const itUrl = `${siteUrl}/it${pathWithoutLocale}`;
 
         observeElements();
 
+        let mutationTimeout;
         window.revealMutationObserver = new MutationObserver(() => {
-          observeElements();
+          clearTimeout(mutationTimeout);
+          mutationTimeout = setTimeout(() => {
+            observeElements();
+          }, 100);
         });
         
         window.revealMutationObserver.observe(document.body, { childList: true, subtree: true });
       }
 
-      document.addEventListener("DOMContentLoaded", initRevealAnimations);
-      document.addEventListener("astro:page-load", initRevealAnimations);
+      function runInit() {
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(initRevealAnimations);
+        } else {
+          setTimeout(initRevealAnimations, 1);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", runInit);
+      document.addEventListener("astro:page-load", runInit);
     </script>
   </body>
 </html>
