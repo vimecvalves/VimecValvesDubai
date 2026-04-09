@@ -65,28 +65,18 @@ const itUrl = `${siteUrl}/it${pathWithoutLocale}`;
     <link rel="preload" href={sfProBold} as="font" type="font/woff2" crossorigin="anonymous" />
     <link rel="preload" href={sfProMedium} as="font" type="font/woff2" crossorigin="anonymous" />
     <link rel="preload" href={sfProRegular} as="font" type="font/woff2" crossorigin="anonymous" />
-    <link rel="preconnect" href="https://images.ctfassets.net" crossorigin />
-    <link rel="preconnect" href="https://www.googletagmanager.com" />
-    <!-- Google Tag Manager (Deferred) -->
-    <script is:inline>
-      let gtmLoaded = false;
-      function loadGTM() {
-        if (gtmLoaded) return;
-        gtmLoaded = true;
-        (function (w, d, s, l, i) {
-          w[l] = w[l] || [];
-          w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-          var f = d.getElementsByTagName(s)[0],
-            j = d.createElement(s),
-            dl = l != "dataLayer" ? "&l=" + l : "";
-          j.async = true;
-          j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-          f.parentNode.insertBefore(j, f);
-        })(window, document, "script", "dataLayer", "GTM-MPQZFGXD");
-      }
-      const events = ['scroll', 'mousemove', 'touchstart', 'keydown'];
-      events.forEach(e => window.addEventListener(e, loadGTM, { once: true, passive: true }));
-      setTimeout(loadGTM, 2000);
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-MPQZFGXD");
     </script>
     <!-- End Google Tag Manager -->
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />

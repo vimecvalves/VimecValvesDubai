@@ -15,8 +15,6 @@ import Catalogue from "@/components/downloads/Catalogue";
 
 const local = Astro.currentLocale as "en" | "it";
 
-Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
-
 export const prerender = false;
 
 export function getStaticPaths() {
