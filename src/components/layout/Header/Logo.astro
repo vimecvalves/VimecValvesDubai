@@ -15,7 +15,6 @@ import { Image } from "astro:assets";
         width={200}
         height={90}
         loading="eager"
-        decoding="sync"
         class:list="w-full h-full object-contain"
       />
     </div>
@@ -28,7 +27,6 @@ import { Image } from "astro:assets";
         width={200}
         height={90}
         loading="eager"
-        decoding="sync"
         class:list="w-full h-full object-contain"
       />
     </div>
@@ -37,27 +35,10 @@ import { Image } from "astro:assets";
 
 <script is:inline>
   let flipped = false;
-  const initLogoFlipper = () => {
-    let flipper = document.querySelector(".flipper");
-    if (!flipper) return;
 
-    // Prevent duplicate intervals if Astro re-evaluates the script
-    if (window.logoFlipInterval) clearInterval(window.logoFlipInterval);
-    
-    window.logoFlipInterval = setInterval(() => {
-      // Re-query dynamically per tick just in case transitions wipe the DOM ref
-      flipper = document.querySelector(".flipper");
-      if (!flipper) return;
-
-      flipped = !flipped;
-      flipper.style.transform = flipped ? "rotateY(180deg)" : "rotateY(0deg)";
-    }, 4000);
-  };
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initLogoFlipper);
-  } else {
-    initLogoFlipper();
-  }
-  document.addEventListener("astro:page-load", initLogoFlipper);
+  setInterval(() => {
+    const flipper = document.querySelector(".flipper");
+    flipped = !flipped;
+    flipper.style.transform = flipped ? "rotateY(180deg)" : "rotateY(0deg)";
+  }, 4000); // Flip every 4 seconds (2s delay + 1.5s animation looks smooth)
 </script>
