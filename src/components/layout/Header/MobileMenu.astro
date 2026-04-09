@@ -24,21 +24,10 @@ interface Props {
 const { links, locale, searchData } = Astro.props;
 ---
 
-<div class="lg:hidden z-0 mobile-menu-container">
-  <button
-    id="mobile-menu-open-btn"
-    aria-label="Open mobile menu"
-    class="relative z-0 flex flex-col items-center justify-evenly p-2 w-10 h-10 border-2 border-vim-blue rounded-lg gap-1"
-  >
-    <span class="w-full h-0.5 bg-vim-blue rounded-full duration-300 transform line-1"></span>
-    <span class="w-full h-0.5 bg-vim-blue rounded-full duration-300 line-2"></span>
-    <span class="w-full h-0.5 bg-vim-blue rounded-full duration-300 transform line-3"></span>
-  </button>
-
-  <div
-    id="mobile-menu-overlay"
-    class={`fixed inset-0 z-[999] isolate overflow-y-scroll duration-300 bg-white w-full h-full ${main_padding.x} py-6 flex flex-col translate-y-20 opacity-0 pointer-events-none`}
-  >
+<div
+  id="mobile-menu-overlay"
+  class={`fixed top-0 left-0 z-[4000] isolate overflow-y-scroll duration-300 bg-white w-full h-[100vh] ${main_padding.x} py-6 flex flex-col translate-y-20 opacity-0 pointer-events-none`}
+>
     <button
       id="mobile-menu-close-btn"
       aria-label="Close mobile menu"
@@ -136,7 +125,6 @@ const { links, locale, searchData } = Astro.props;
       <Icon name="material-symbols-light:mail" class="text-vim-blue" />
       sales@vimecvalves.co.uk
     </a>
-  </div>
 </div>
 
 <script>
