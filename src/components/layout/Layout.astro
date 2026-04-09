@@ -184,12 +184,8 @@ const itUrl = `${siteUrl}/it${pathWithoutLocale}`;
 
         observeElements();
 
-        let mutationTimeout;
         window.revealMutationObserver = new MutationObserver(() => {
-          clearTimeout(mutationTimeout);
-          mutationTimeout = setTimeout(() => {
-            observeElements();
-          }, 100);
+          observeElements();
         });
         
         window.revealMutationObserver.observe(document.body, { childList: true, subtree: true });
