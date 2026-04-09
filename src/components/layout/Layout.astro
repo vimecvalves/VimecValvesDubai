@@ -195,16 +195,8 @@ const itUrl = `${siteUrl}/it${pathWithoutLocale}`;
         window.revealMutationObserver.observe(document.body, { childList: true, subtree: true });
       }
 
-      function runInit() {
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(initRevealAnimations);
-        } else {
-          setTimeout(initRevealAnimations, 1);
-        }
-      }
-
-      document.addEventListener("DOMContentLoaded", runInit);
-      document.addEventListener("astro:page-load", runInit);
+      document.addEventListener("DOMContentLoaded", initRevealAnimations);
+      document.addEventListener("astro:page-load", initRevealAnimations);
     </script>
   </body>
 </html>

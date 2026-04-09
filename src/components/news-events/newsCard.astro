@@ -29,8 +29,6 @@ const slug = item.fields.slug ?? slugify(item.fields.title);
       width={600}
       height={400}
       alt={item.fields.title || "News post image"}
-      decoding="async"
-      loading="lazy"
       class="h-full w-full rounded-xl object-cover transition-transform duration-400 ease-out group-hover:scale-105"
     />
   </div>
