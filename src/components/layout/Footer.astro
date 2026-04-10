@@ -80,18 +80,20 @@ const local = Astro.currentLocale as "en" | "it";
 
     {
       ui[local].sections.footer.links.slice(0, 2).map((item) => (
-        <li class="grid h-fit gap-2 border-t border-gray-200 pt-6 mt-6 sm:mt-0 lg:border-none lg:pt-0">
-          <p class="text-vim-blue font-medium leading-[1.4] relative inline-block w-fit pr-7 max-w-full">
-            {"icon" in item && <Icon name={item.icon} class="inline-block align-middle mr-1 shrink-0" />}
-            <span class="align-middle">{item.title}</span>
-            {"flag" in item && <Icon name={item.flag} class="absolute top-[2px] right-0 text-[1.25em]" />}
-          </p>
-          {"link" in item && (
-            <Link set:html={item.link.text} href={item.link.href} />
-          )}
+        <li class="flex flex-col h-full xl:grid xl:h-fit gap-2 border-t border-gray-200 pt-6 mt-6 sm:mt-0 lg:border-none lg:pt-0">
+          <div class="flex flex-col gap-2 sm:flex-1 xl:flex-none">
+            <p class="text-vim-blue font-medium leading-[1.4] relative inline-block w-fit pr-7 max-w-full">
+              {"icon" in item && <Icon name={item.icon} class="inline-block align-middle mr-1 shrink-0" />}
+              <span class="align-middle">{item.title}</span>
+              {"flag" in item && <Icon name={item.flag} class="absolute top-[2px] right-0 text-[1.25em]" />}
+            </p>
+            {"link" in item && (
+              <Link set:html={item.link.text} href={item.link.href} />
+            )}
+          </div>
 
           {item.links && (
-            <div class="mt-4 flex flex-col gap-1 lg:gap-2">
+            <div class="mt-4 sm:mt-auto xl:mt-4 flex flex-col gap-1 lg:gap-2">
               {item.links.map((nest) => (
                 <Link
                   href={nest.href}
@@ -116,19 +118,21 @@ const local = Astro.currentLocale as "en" | "it";
 
     {
       ui[local].sections.footer.links.slice(-1).map((item) => (
-        <li class="flex flex-col sm:grid sm:grid-cols-2 lg:flex lg:flex-col gap-6 lg:gap-6 h-fit border-t border-gray-200 pt-6 mt-6 sm:mt-0 lg:border-none lg:pt-0 sm:col-span-2 lg:col-span-1">
-          <div class="grid h-fit gap-2">
-            <p class="text-vim-blue font-medium leading-[1.4] relative inline-block w-fit pr-7 max-w-full">
-              {"icon" in item && <Icon name={item.icon} class="inline-block align-middle mr-1 shrink-0" />}
-              <span class="align-middle">{item.title}</span>
-              {"flag" in item && <Icon name={item.flag} class="absolute top-[2px] right-0 text-[1.25em]" />}
-            </p>
-            {"link" in item && (
-              <Link set:html={item.link.text} href={item.link.href} />
-            )}
+        <li class="flex flex-col sm:grid sm:grid-cols-2 lg:flex lg:flex-col gap-6 lg:gap-6 h-full xl:h-fit border-t border-gray-200 pt-6 mt-6 sm:mt-0 lg:border-none lg:pt-0 sm:col-span-2 lg:col-span-1">
+          <div class="flex flex-col h-full xl:grid xl:h-fit gap-2">
+            <div class="flex flex-col gap-2 sm:flex-1 xl:flex-none">
+              <p class="text-vim-blue font-medium leading-[1.4] relative inline-block w-fit pr-7 max-w-full">
+                {"icon" in item && <Icon name={item.icon} class="inline-block align-middle mr-1 shrink-0" />}
+                <span class="align-middle">{item.title}</span>
+                {"flag" in item && <Icon name={item.flag} class="absolute top-[2px] right-0 text-[1.25em]" />}
+              </p>
+              {"link" in item && (
+                <Link set:html={item.link.text} href={item.link.href} />
+              )}
+            </div>
 
             {item.links && (
-              <div class="mt-4 flex flex-col gap-1 lg:gap-2">
+              <div class="mt-4 sm:mt-auto xl:mt-4 flex flex-col gap-1 lg:gap-2">
                 {item.links.map((nest) => (
                   <Link
                     href={nest.href}
@@ -150,16 +154,16 @@ const local = Astro.currentLocale as "en" | "it";
             )}
           </div>
 
-          <div class="flex lg:hidden flex-col items-center justify-center gap-6 sm:gap-4 mt-8 sm:mt-0 h-full w-full">
-            <div class="flex aspect-square h-[6.5rem] sm:h-[4.5rem] w-max shrink-0 items-center justify-center overflow-hidden rounded-md bg-gray-100">
+          <div class="flex lg:hidden flex-col items-center justify-center gap-6 sm:gap-5 mt-8 sm:mt-0 h-full w-full">
+            <div class="flex aspect-square h-[6.5rem] sm:h-[5.5rem] w-max shrink-0 items-center justify-center overflow-hidden rounded-md bg-gray-100">
               <Image src={concat_us} alt="" class="size-full object-cover" />
             </div>
-            <div class="flex flex-col items-center gap-4 sm:gap-2 text-base sm:text-sm text-center">
+            <div class="flex flex-col items-center gap-4 sm:gap-3 text-base sm:text-[15px] text-center">
               <p class="max-w-[20ch] leading-tight">{ui[local].sections.footer.md.subtile}</p>
               <a
                 href="mailto:sales@vimec-valves.ae"
                 aria-label="Email sales@vimec-valves.ae"
-                class="inline-flex items-center justify-center text-vim-blue hover:bg-vim-blue border-vim-blue cursor-pointer rounded-md border px-5 py-2 text-sm sm:px-3 sm:py-1 sm:text-xs font-medium uppercase duration-300 hover:text-white whitespace-nowrap"
+                class="inline-flex items-center justify-center text-vim-blue hover:bg-vim-blue border-vim-blue cursor-pointer rounded-md border px-5 py-2 text-sm sm:px-4 sm:py-1.5 sm:text-[13px] font-medium uppercase duration-300 hover:text-white whitespace-nowrap"
               >
                 {ui[local].sections.footer.md["button-name"]}
               </a>
