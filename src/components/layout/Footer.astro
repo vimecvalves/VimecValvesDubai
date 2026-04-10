@@ -81,10 +81,10 @@ const local = Astro.currentLocale as "en" | "it";
     {
       ui[local].sections.footer.links.slice(0, 2).map((item) => (
         <li class="grid h-fit gap-2 border-t border-gray-200 pt-6 mt-6 sm:mt-0 lg:border-none lg:pt-0">
-          <p class="text-vim-blue flex items-center justify-start gap-1">
-            {"icon" in item && <Icon name={item.icon} />}
-            {item.title}
-            {"flag" in item && <Icon name={item.flag} class="ml-2 text-xs" />}
+          <p class="text-vim-blue font-medium leading-[1.4] relative inline-block w-fit pr-7 max-w-full">
+            {"icon" in item && <Icon name={item.icon} class="inline-block align-middle mr-1 shrink-0" />}
+            <span class="align-middle">{item.title}</span>
+            {"flag" in item && <Icon name={item.flag} class="absolute top-[2px] right-0 text-[1.25em]" />}
           </p>
           {"link" in item && (
             <Link set:html={item.link.text} href={item.link.href} />
@@ -95,12 +95,17 @@ const local = Astro.currentLocale as "en" | "it";
               {item.links.map((nest) => (
                 <Link
                   href={nest.href}
-                  class="flex items-center justify-start gap-1"
+                  class="flex items-start justify-start gap-3"
                 >
-                  <Icon name={nest.icon} class="text-vim-blue" /> {nest.text}
-                  {"flag" in nest && (
-                    <Icon name={nest.flag} class="ml-2 text-xs" />
-                  )}
+                  <span class="w-5 shrink-0 flex items-center justify-center mt-0.5">
+                    <Icon name={nest.icon} class="text-vim-blue text-[1.1rem]" />
+                  </span>
+                  <span class="flex-1 break-words">
+                    {nest.text}
+                    {"flag" in nest && (
+                      <Icon name={nest.flag} class="inline-block ml-2 text-xs" />
+                    )}
+                  </span>
                 </Link>
               ))}
             </div>
@@ -113,10 +118,10 @@ const local = Astro.currentLocale as "en" | "it";
       ui[local].sections.footer.links.slice(-1).map((item) => (
         <li class="flex flex-col sm:grid sm:grid-cols-2 lg:flex lg:flex-col gap-6 lg:gap-6 h-fit border-t border-gray-200 pt-6 mt-6 sm:mt-0 lg:border-none lg:pt-0 sm:col-span-2 lg:col-span-1">
           <div class="grid h-fit gap-2">
-            <p class="text-vim-blue flex items-center justify-start gap-1">
-              {"icon" in item && <Icon name={item.icon} />}
-              {item.title}
-              {"flag" in item && <Icon name={item.flag} class="ml-2 text-xs" />}
+            <p class="text-vim-blue font-medium leading-[1.4] relative inline-block w-fit pr-7 max-w-full">
+              {"icon" in item && <Icon name={item.icon} class="inline-block align-middle mr-1 shrink-0" />}
+              <span class="align-middle">{item.title}</span>
+              {"flag" in item && <Icon name={item.flag} class="absolute top-[2px] right-0 text-[1.25em]" />}
             </p>
             {"link" in item && (
               <Link set:html={item.link.text} href={item.link.href} />
@@ -128,16 +133,17 @@ const local = Astro.currentLocale as "en" | "it";
                   <Link
                     href={nest.href}
                     target={nest.target}
-                    class="flex items-baseline justify-start gap-1"
+                    class="flex items-start justify-start gap-3"
                   >
-                    <Icon
-                      name={nest.icon}
-                      class="text-vim-blue shrink-0 pt-1"
-                    />
-                    {nest.text}
-                    {"flag" in nest && (
-                      <Icon name={nest.flag} class="ml-2 text-xs" />
-                    )}
+                    <span class="w-5 shrink-0 flex items-center justify-center mt-0.5">
+                      <Icon name={nest.icon} class="text-vim-blue text-[1.1rem]" />
+                    </span>
+                    <span class="flex-1 break-words">
+                      {nest.text}
+                      {"flag" in nest && (
+                        <Icon name={nest.flag} class="inline-block ml-2 text-xs" />
+                      )}
+                    </span>
                   </Link>
                 ))}
               </div>
