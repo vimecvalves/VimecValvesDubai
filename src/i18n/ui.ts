@@ -20,7 +20,7 @@ export const ui = {
     home: {
       'hero-section': {
         title:
-          'Italian Manufacturer of High Quality Valves for Oil & Gas Sector',
+          'Italian Manufacturer of Industrial Valves serving the Middle East region.',
         subtitle:
           'Our products are engineered with precision to ensure safety, reliability, and optimal performance in even the most demanding conditions.',
       },
@@ -161,40 +161,39 @@ export const ui = {
         location: [
           {
             title: '',
-
             data: [
               {
-                type: 'Sales Office in United Kingdom',
-                id: 'huk',
+                type: 'Middle East Regional Office – Dubai',
+                id: 'dmcc',
                 links: [
                   {
                     icon: 'bxs:map',
                     title: 'Location',
                     link: {
-                      text: 'Vimec Valves U.K. Ltd<br> Office 20, The Coach House,<br> 11 Owler Ings Road, Brighouse,<br> West Yorkshire, HD6 1EJ,<br> U.K.',
-                      href: 'https://www.google.com/maps/place/Vimec+Valves+U.K.+Ltd/@53.738122,-1.792556,17z/',
+                      text: 'Vimec Valves Distribution FZCO<br> Unit No: UT-11-CO-113,<br> DMCC Business Centre, Level No 11, Uptown Tower<br> Dubai, United Arab Emirates',
+                      href: 'https://www.google.com/maps/place/X2+Tower,+Jumeirah+Lake+Towers,+Dubai/@25.074364,55.138491,17z/',
                     },
                   },
                   {
                     icon: 'ic:round-phone',
                     title: 'Phone',
                     link: {
-                      text: '+44 1902 953025',
-                      href: 'tel:+441902953025',
+                      text: '+971 4430 3511',
+                      href: 'tel:+97144303511',
                     },
                   },
                   {
                     icon: 'material-symbols:mail',
                     title: 'Email',
                     link: {
-                      text: 'sales@vimecvalves.uk',
-                      href: 'mailto:sales@vimecvalves.uk',
+                      text: 'sales@vimec-valves.ae',
+                      href: 'mailto:sales@vimec-valves.ae',
                     },
                   },
                 ],
               },
               {
-                type: 'Manufacturing facility in ITALY',
+                type: 'Manufacturing Headquarters',
                 id: 'mfi',
                 links: [
                   {
@@ -223,38 +222,32 @@ export const ui = {
                   },
                 ],
               },
-            ],
-          },
-          {
-            title: 'Global Distributors',
-
-            data: [
               {
-                type: 'United Arab Emirates',
-                id: 'dmcc',
+                type: 'European Sales Office',
+                id: 'huk',
                 links: [
                   {
                     icon: 'bxs:map',
                     title: 'Location',
                     link: {
-                      text: 'Vimec Valves Distribution FZCO<br> Unit No: UT-11-CO-113,<br> DMCC Business Centre, Level No 11, Uptown Tower<br> Dubai, United Arab Emirates',
-                      href: 'https://www.google.com/maps/place/X2+Tower,+Jumeirah+Lake+Towers,+Dubai/@25.074364,55.138491,17z/',
+                      text: 'Vimec Valves U.K. Ltd<br> Office 20, The Coach House,<br> 11 Owler Ings Road, Brighouse,<br> West Yorkshire, HD6 1EJ,<br> U.K.',
+                      href: 'https://www.google.com/maps/place/Vimec+Valves+U.K.+Ltd/@53.738122,-1.792556,17z/',
                     },
                   },
                   {
                     icon: 'ic:round-phone',
                     title: 'Phone',
                     link: {
-                      text: '+971 4430 3511',
-                      href: 'tel:+97144303511',
+                      text: '+44 1902 953025',
+                      href: 'tel:+441902953025',
                     },
                   },
                   {
                     icon: 'material-symbols:mail',
                     title: 'Email',
                     link: {
-                      text: 'sales@vimec-valves.ae',
-                      href: 'mailto:sales@vimec-valves.ae',
+                      text: 'sales@vimecvalves.co.uk',
+                      href: 'mailto:sales@vimecvalves.co.uk',
                     },
                   },
                 ],
@@ -310,26 +303,27 @@ export const ui = {
         ],
         links: [
           {
-            title: 'United Kingdom',
+            title: 'Middle East Regional Office – Dubai',
             link: {
-              text: 'Vimec Valves U.K. Ltd<br> Office 20, The Coach House,<br> 11 Owler Ings Road, Brighouse,<br> West Yorkshire, HD6 1EJ, U.K. ',
+              text: 'Vimec Valves Distribution FZCO<br> Unit No: UT-11-CO-113,<br> DMCC Business Centre, Level 11, Uptown Tower<br> Dubai, United Arab Emirates',
             },
             icon: 'bxs:map',
-            flag: 'circle-flags:uk',
+            flag: 'circle-flags:ae',
             links: [
               {
-                text: 'sales@vimecvalves.co.uk',
+                text: 'sales@vimec-valves.ae',
+                href: 'mailto:sales@vimec-valves.ae',
                 icon: 'material-symbols:mail',
               },
               {
-              text: '+44 1902 953025',
-              href: 'tel:+441902953025',
-              icon: 'ic:round-phone',
+                text: '+971 4430 3511',
+                href: 'tel:+97144303511',
+                icon: 'ic:round-phone',
               },
             ],
           },
           {
-            title: 'Italy',
+            title: 'Manufacturing Headquarters',
             link: {
               text: 'Vimec Group Italia Srl<br>  Via Lago d’Iseo no.5,<br>  Bolgare, 24060,<br>  Bergamo (BG), Italy ',
             },
@@ -338,26 +332,33 @@ export const ui = {
             links: [
               {
                 text: 'sales@vimecvalves.it',
-
+                href: 'mailto:sales@vimecvalves.it',
                 icon: 'material-symbols:mail',
               },
               {
                 text: '+39 035 0950025',
-
+                href: 'tel:+390350950025',
                 icon: 'ic:round-phone',
               },
             ],
           },
           {
-            title: 'Global Distributers',
-            flag: 'flat-color-icons:globe',
+            title: 'European Sales Office',
+            link: {
+              text: 'Vimec Valves U.K. Ltd<br> Office 20, The Coach House,<br> 11 Owler Ings Road, Brighouse,<br> West Yorkshire, HD6 1EJ, U.K. ',
+            },
+            icon: 'bxs:map',
+            flag: 'circle-flags:uk',
             links: [
               {
-                text: 'Vimec Valves Distribution FZCO',
-                href: '/contact_us#dmcc',
-                flag: 'circle-flags:ae',
-                target: '_self',
-                icon: 'bxs:map',
+                text: 'sales@vimecvalves.co.uk',
+                href: 'mailto:sales@vimecvalves.co.uk',
+                icon: 'material-symbols:mail',
+              },
+              {
+              text: '+44 1902 953025',
+              href: 'tel:+441902953025',
+              icon: 'ic:round-phone',
               },
             ],
           },
@@ -379,7 +380,7 @@ export const ui = {
     home: {
       'hero-section': {
         title:
-          'Produttore Italiano Di Valvole Di Alta Qualità Per Il Settore Petrolifero E Del Gas',
+          'Produttore Italiano Di Valvole Industriali Al Servizio Della Regione Del Medio Oriente.',
         subtitle:
           'I nostri prodotti sono progettati con precisione per garantire sicurezza, affidabilità e prestazioni ottimali anche nelle condizioni più impegnative.',
       },
@@ -519,15 +520,15 @@ export const ui = {
             title: '',
             data: [
               {
-                type: 'Ufficio vendite nel Regno Unito',
-                id: 'huk',
+                type: 'Ufficio Regionale Medio Oriente – Dubai',
+                id: 'dmcc',
                 links: [
                   {
                     icon: 'bxs:map',
                     title: 'Posizione',
                     link: {
-                      text: 'Vimec Valves U.K. Ltd<br> Ufficio 20, The Coach House,<br> 11 Owler Ings Road, Brighouse,<br> West Yorkshire, HD6 1EJ,<br> Regno Unito',
-                      href: 'https://www.google.com/maps/place/Vimec+Valves+U.K.+Ltd/@53.738122,-1.792556,17z/',
+                      text: 'Vimec Valves Distribution FZCO<br> Unit No: UT-11-CO-113,<br> DMCC Business Centre,<br> Dubai, Level No 11, Uptown Tower',
+                      href: 'https://www.google.com/maps/place/X2+Tower,+Jumeirah+Lake+Towers,+Dubai/@25.074364,55.138491,17z/',
                       target: '_blank',
                     },
                   },
@@ -535,8 +536,8 @@ export const ui = {
                     icon: 'ic:round-phone',
                     title: 'Telefono',
                     link: {
-                      text: '+44 1902 953025',
-                      href: 'tel:+441902953025',
+                      text: '+971 4430 3511',
+                      href: 'tel:+97144303511',
                       target: '_blank',
                     },
                   },
@@ -544,15 +545,15 @@ export const ui = {
                     icon: 'material-symbols:mail',
                     title: 'Email',
                     link: {
-                      text: 'sales@vimecvalves.co.uk',
-                      href: 'mailto:sales@vimecvalves.co.uk',
+                      text: 'sales@vimec-valves.ae',
+                      href: 'mailto:sales@vimec-valves.ae',
                       target: '_blank',
                     },
                   },
                 ],
               },
               {
-                type: 'Stabilimento di produzione in ITALIA',
+                type: 'Sede Centrale di Produzione',
                 id: 'mfi',
                 links: [
                   {
@@ -584,21 +585,16 @@ export const ui = {
                   },
                 ],
               },
-            ],
-          },
-          {
-            title: 'Distributori Globali',
-            data: [
               {
-                type: 'Emirati Arabi Uniti',
-                id: 'dmcc',
+                type: 'Ufficio Vendite Europeo',
+                id: 'huk',
                 links: [
                   {
                     icon: 'bxs:map',
                     title: 'Posizione',
                     link: {
-                      text: 'Vimec Valves Distribution FZCO<br> Unit No: UT-11-CO-113,<br> DMCC Business Centre,<br> Dubai, Level No 11, Uptown Tower',
-                      href: 'https://www.google.com/maps/place/X2+Tower,+Jumeirah+Lake+Towers,+Dubai/@25.074364,55.138491,17z/',
+                      text: 'Vimec Valves U.K. Ltd<br> Ufficio 20, The Coach House,<br> 11 Owler Ings Road, Brighouse,<br> West Yorkshire, HD6 1EJ,<br> Regno Unito',
+                      href: 'https://www.google.com/maps/place/Vimec+Valves+U.K.+Ltd/@53.738122,-1.792556,17z/',
                       target: '_blank',
                     },
                   },
@@ -606,8 +602,8 @@ export const ui = {
                     icon: 'ic:round-phone',
                     title: 'Telefono',
                     link: {
-                      text: '+971 4430 3511',
-                      href: 'tel:+97144303511',
+                      text: '+44 1902 953025',
+                      href: 'tel:+441902953025',
                       target: '_blank',
                     },
                   },
@@ -615,8 +611,8 @@ export const ui = {
                     icon: 'material-symbols:mail',
                     title: 'Email',
                     link: {
-                      text: 'sales@vimec-valves.ae',
-                      href: 'mailto:sales@vimec-valves.ae',
+                      text: 'sales@vimecvalves.co.uk',
+                      href: 'mailto:sales@vimecvalves.co.uk',
                       target: '_blank',
                     },
                   },
@@ -674,29 +670,27 @@ export const ui = {
 
         links: [
           {
-            title: 'Regno Unito',
+            title: 'Ufficio Regionale Medio Oriente – Dubai',
             link: {
-              text: 'Vimec Valves U.K. Ltd<br>Ufficio 20, The Coach House,<br>11 Owler Ings Road, Brighouse,<br>West Yorkshire, HD6 1EJ, Regno Unito',
+              text: 'Vimec Valves Distribution FZCO<br> Unit No: UT-11-CO-113,<br> DMCC Business Centre, Level 11, Uptown Tower<br> Dubai, United Arab Emirates',
             },
             icon: 'bxs:map',
-            flag: 'circle-flags:uk',
+            flag: 'circle-flags:ae',
             links: [
               {
-                text: 'sales@vimecvalves.co.uk',
-                href: 'mailto:sales@vimecvalves.co.uk',
+                text: 'sales@vimec-valves.ae',
+                href: 'mailto:sales@vimec-valves.ae',
                 icon: 'material-symbols:mail',
-                target: '_blank',
               },
               {
-              text: '+44 1902 953025',
-              href: 'tel:+441902953025',
-              icon: 'ic:round-phone',
-              target: '_blank',
+                text: '+971 4430 3511',
+                href: 'tel:+97144303511',
+                icon: 'ic:round-phone',
               },
             ],
           },
           {
-            title: 'Italia',
+            title: 'Sede Centrale di Produzione',
             link: {
               text: 'Vimec Group Italia Srl<br>Via Lago d’Iseo n. 5,<br>Bolgare, 24060,<br>Bergamo (BG), Italia',
             },
@@ -718,14 +712,24 @@ export const ui = {
             ],
           },
           {
-            title: 'Distributori globali',
-            flag: 'flat-color-icons:globe',
+            title: 'Ufficio Vendite Europeo',
+            link: {
+              text: 'Vimec Valves U.K. Ltd<br>Ufficio 20, The Coach House,<br>11 Owler Ings Road, Brighouse,<br>West Yorkshire, HD6 1EJ, Regno Unito',
+            },
+            icon: 'bxs:map',
+            flag: 'circle-flags:uk',
             links: [
               {
-                text: 'Vimec Valves Distribution FZCO',
-                href: '/contact_us',
-                flag: 'circle-flags:ae',
-                icon: 'bxs:map',
+                text: 'sales@vimecvalves.co.uk',
+                href: 'mailto:sales@vimecvalves.co.uk',
+                icon: 'material-symbols:mail',
+                target: '_blank',
+              },
+              {
+              text: '+44 1902 953025',
+              href: 'tel:+441902953025',
+              icon: 'ic:round-phone',
+              target: '_blank',
               },
             ],
           },

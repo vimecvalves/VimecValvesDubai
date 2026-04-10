@@ -26,41 +26,61 @@ const local = Astro.currentLocale as "en" | "it";
 >
   <menu
     style={`display:${hideTop ? "none" : ""}`}
-    class="wrapper mb-10 grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-start"
+    class="wrapper mb-10 grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 items-stretch"
   >
-    <li class="flex flex-col items-center justify-center md:items-start md:justify-start">
-      <Image
-        src="https://raw.githubusercontent.com/vimecvalves/Public/refs/heads/main/New%20Logo.svg"
-        width={200}
-        height={90}
-        alt="Vimec Logo"
-        class="h-[90px] w-auto object-contain"
-      />
-      <div class="mt-8 flex flex-col items-center md:items-start justify-start gap-4">
-        <p class="md:max-w-[30ch]">
-          {ui[local].sections.footer["follow-us-on"]}
-        </p>
+    <li class="flex flex-col items-center text-center sm:grid sm:grid-cols-2 sm:gap-10 lg:flex lg:flex-col lg:items-start lg:text-left h-full gap-8 sm:col-span-2 lg:col-span-1 w-full">
+      <div class="flex justify-center lg:justify-start w-full">
+        <Image
+          src="https://raw.githubusercontent.com/vimecvalves/Public/refs/heads/main/New%20Logo.svg"
+          width={200}
+          height={90}
+          alt="Vimec Logo"
+          class="h-[110px] sm:h-[90px] w-auto object-contain object-center lg:object-left"
+        />
+      </div>
+      <div class="flex flex-col items-center lg:items-start justify-center lg:justify-between gap-4 lg:gap-6 lg:h-full w-full">
+        <div class="flex flex-col items-center lg:items-start justify-center lg:justify-start gap-4">
+          <p class="max-w-[30ch]">
+            {ui[local].sections.footer["follow-us-on"]}
+          </p>
 
-        <menu class="flex items-center justify-center md:justify-start gap-4">
-          {
-            socialMedia.map((item) => (
-              <a
-                href={item.link}
-                target="_blank"
-                aria-label={`Visit our ${item.icon.split(':')[1] || 'Social'} page`}
-                class="text-vim-blue hover:bg-vim-blue flex aspect-square h-auto items-center justify-center rounded border border-current p-2 hover:text-white transition-colors"
-              >
-                <Icon name={item.icon} />
-              </a>
-            ))
-          }
-        </menu>
+          <menu class="flex items-center justify-center lg:justify-start gap-4 scale-110 sm:scale-100 origin-center lg:origin-left">
+            {
+              socialMedia.map((item) => (
+                <a
+                  href={item.link}
+                  target="_blank"
+                  aria-label={`Visit our ${item.icon.split(':')[1] || 'Social'} page`}
+                  class="text-vim-blue hover:bg-vim-blue flex aspect-square h-auto items-center justify-center rounded border border-current p-2 hover:text-white transition-colors"
+                >
+                  <Icon name={item.icon} />
+                </a>
+              ))
+            }
+          </menu>
+        </div>
+
+        <div class="hidden lg:flex h-fit flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-start gap-3">
+          <div class="flex aspect-square h-[4.5rem] w-max shrink-0 items-center justify-center overflow-hidden rounded-md bg-gray-100">
+            <Image src={concat_us} alt="" class="size-full object-cover" />
+          </div>
+          <div class="flex flex-col items-center sm:items-start gap-2 text-sm text-center sm:text-left">
+            <p class="max-w-[20ch] leading-tight">{ui[local].sections.footer.md.subtile}</p>
+            <a
+              href="mailto:sales@vimec-valves.ae"
+              aria-label="Email sales@vimec-valves.ae"
+              class="inline-flex items-center justify-center text-vim-blue hover:bg-vim-blue border-vim-blue cursor-pointer rounded-md border px-3 py-1 text-xs font-medium uppercase duration-300 hover:text-white whitespace-nowrap"
+            >
+              {ui[local].sections.footer.md["button-name"]}
+            </a>
+          </div>
+        </div>
       </div>
     </li>
 
     {
       ui[local].sections.footer.links.slice(0, 2).map((item) => (
-        <li class="grid h-fit gap-2">
+        <li class="grid h-fit gap-2 border-t border-gray-200 pt-6 mt-6 sm:mt-0 lg:border-none lg:pt-0">
           <p class="text-vim-blue flex items-center justify-start gap-1">
             {"icon" in item && <Icon name={item.icon} />}
             {item.title}
@@ -71,7 +91,7 @@ const local = Astro.currentLocale as "en" | "it";
           )}
 
           {item.links && (
-            <menu class="grid gap-2">
+            <div class="mt-4 flex flex-col gap-1 lg:gap-2">
               {item.links.map((nest) => (
                 <Link
                   href={nest.href}
@@ -83,7 +103,7 @@ const local = Astro.currentLocale as "en" | "it";
                   )}
                 </Link>
               ))}
-            </menu>
+            </div>
           )}
         </li>
       ))
@@ -91,7 +111,7 @@ const local = Astro.currentLocale as "en" | "it";
 
     {
       ui[local].sections.footer.links.slice(-1).map((item) => (
-        <li class="flex flex-col gap-6 h-fit">
+        <li class="flex flex-col sm:grid sm:grid-cols-2 lg:flex lg:flex-col gap-6 lg:gap-6 h-fit border-t border-gray-200 pt-6 mt-6 sm:mt-0 lg:border-none lg:pt-0 sm:col-span-2 lg:col-span-1">
           <div class="grid h-fit gap-2">
             <p class="text-vim-blue flex items-center justify-start gap-1">
               {"icon" in item && <Icon name={item.icon} />}
@@ -103,7 +123,7 @@ const local = Astro.currentLocale as "en" | "it";
             )}
 
             {item.links && (
-              <menu class="grid gap-2">
+              <div class="mt-4 flex flex-col gap-1 lg:gap-2">
                 {item.links.map((nest) => (
                   <Link
                     href={nest.href}
@@ -120,20 +140,20 @@ const local = Astro.currentLocale as "en" | "it";
                     )}
                   </Link>
                 ))}
-              </menu>
+              </div>
             )}
           </div>
 
-          <div class="flex h-fit items-center gap-3">
-            <div class="flex aspect-square h-[4.5rem] w-max shrink-0 items-center justify-center overflow-hidden rounded-md bg-gray-100">
+          <div class="flex lg:hidden flex-col items-center justify-center gap-6 sm:gap-4 mt-8 sm:mt-0 h-full w-full">
+            <div class="flex aspect-square h-[6.5rem] sm:h-[4.5rem] w-max shrink-0 items-center justify-center overflow-hidden rounded-md bg-gray-100">
               <Image src={concat_us} alt="" class="size-full object-cover" />
             </div>
-            <div class="flex flex-col items-start gap-2 text-sm">
+            <div class="flex flex-col items-center gap-4 sm:gap-2 text-base sm:text-sm text-center">
               <p class="max-w-[20ch] leading-tight">{ui[local].sections.footer.md.subtile}</p>
               <a
-                href="mailto:sales@vimecvalves.co.uk"
-                aria-label="Email sales@vimecvalves.co.uk"
-                class="text-vim-blue hover:bg-vim-blue border-vim-blue cursor-pointer rounded-md border px-4 py-1 text-start text-xs lg:text-sm font-medium uppercase duration-300 hover:text-white"
+                href="mailto:sales@vimec-valves.ae"
+                aria-label="Email sales@vimec-valves.ae"
+                class="inline-flex items-center justify-center text-vim-blue hover:bg-vim-blue border-vim-blue cursor-pointer rounded-md border px-5 py-2 text-sm sm:px-3 sm:py-1 sm:text-xs font-medium uppercase duration-300 hover:text-white whitespace-nowrap"
               >
                 {ui[local].sections.footer.md["button-name"]}
               </a>
