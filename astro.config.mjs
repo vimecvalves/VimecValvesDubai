@@ -8,7 +8,7 @@ import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  site: "https://www.vimecvalves.co.uk",
+  site: "https://www.vimec-valves.ae",
 
   i18n: {
     defaultLocale: "en",

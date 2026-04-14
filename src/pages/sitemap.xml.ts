@@ -3,13 +3,13 @@ import { contentfulClient } from "@/libs/content/contentful/data";
 import { slugify } from "@/libs/utils/slugify";
 
 export const GET: APIRoute = async () => {
-  const siteUrl = "https://www.vimecvalves.co.uk";
+  const siteUrl = "https://www.vimec-valves.ae";
   const locales = ['en', 'it'];
   
   const staticRoutes = [
     '',
     '/about-us',
-    '/contact-us',
+    '/contact_us',
     '/downloads',
     '/products',
     '/gallery',
